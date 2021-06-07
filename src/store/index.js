@@ -1,0 +1,58 @@
+import { createStore } from "vuex";
+import { parseOrNull } from "@/util";
+
+export default createStore({
+    state: {
+        token: localStorage.getItem("bi_token")
+            ? localStorage.getItem("bi_token")
+            : "",
+        username: parseOrNull(localStorage.getItem("bi_user"), "username")
+            ? parseOrNull(localStorage.getItem("bi_user"), "username")
+            : "",
+        nickname: parseOrNull(localStorage.getItem("bi_user"), "nickname")
+            ? parseOrNull(localStorage.getItem("bi_user"), "nickname")
+            : "",
+        role: parseOrNull(localStorage.getItem("bi_user"), "role")
+            ? parseOrNull(localStorage.getItem("bi_user"), "role")
+            : "",
+        logout: false,
+        network: true,
+    },
+    mutations: {
+        SET_LOGOUT: (state, payload) => {
+            state.logout = payload;
+        },
+        SET_NETWORK_STATUS: (state, payload) => {
+            state.network = payload;
+        },
+        SET_TOKEN: (state, payload) => {
+            state.token = payload.token;
+            localStorage.setItem("bi_token", state.token);
+        },
+        CLEAR_TOKEN: (state) => {
+            state.token = null;
+            localStorage.removeItem("bi_token");
+        },
+        SET_USER_INFO: (state, payload) => {
+            state.role = payload.role;
+            state.username = payload.username;
+            state.nickname = payload.nickname;
+            localStorage.setItem(
+                "bi_user",
+                JSON.stringify({
+                    role: payload.role,
+                    username: payload.username,
+                    nickname: payload.nickname,
+                })
+            );
+        },
+        CLEAR_USER_INFO: (state) => {
+            state.role = null;
+            state.username = null;
+            state.nickname = null;
+            localStorage.removeItem("bi_user");
+        },
+    },
+    actions: {},
+    modules: {},
+});
