@@ -9,6 +9,9 @@ import "ant-design-vue/dist/antd.css";
 if (process.env.VUE_APP_MOCK === "true") {
     import("@/api/mock/login");
     import("@/api/mock/user_info");
+    import("@/api/mock/validate_username");
+    import("@/api/mock/validate_email");
+    import("@/api/mock/register");
 }
 
 const app = createApp(App);

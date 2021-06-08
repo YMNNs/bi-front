@@ -7,7 +7,7 @@
             show-icon
         />
     </div>
-    <div style="padding: 200px">
+    <div style="padding: 15vh">
         <a-card :bordered="true" style="width: 350px; margin: 0 auto">
             <img src="../assets/logo.svg" alt="BILYN" style="margin: 30px" />
             <div style="text-align: center">
@@ -66,8 +66,9 @@
                 </a-form-item>
             </a-form>
             <div style="text-align: center">
-                <a href="/" target="_blank" disabled="true">注册</a>&nbsp;&nbsp;
-                <a href="/" target="_blank" disabled="true">忘记密码</a>
+                <a @click="$router.push('/register')" target="_blank">注册</a
+                >&nbsp;&nbsp;
+                <a href="/" target="_blank" disabled="true">忘记密码？</a>
             </div>
         </a-card>
     </div>
@@ -184,30 +185,34 @@ export default defineComponent({
                             if (response.data.status.code === 0) {
                                 //成功后继续请求用户信息
                                 store.commit("SET_TOKEN", response.data.data);
-                                user_info().then((response) => {
-                                    console.log(response);
-                                    if (response.data.status.code === 0) {
-                                        // 成功后设置用户信息
-                                        store.commit(
-                                            "SET_USER_INFO",
-                                            response.data.data.user
-                                        );
-                                        if ($route.redirectedFrom) {
-                                            $router.push({
-                                                path: decodeURIComponent(
-                                                    $route.redirectedFrom
-                                                        .fullPath
-                                                ),
-                                            });
+                                user_info()
+                                    .then((response) => {
+                                        console.log(response);
+                                        if (response.data.status.code === 0) {
+                                            // 成功后设置用户信息
+                                            store.commit(
+                                                "SET_USER_INFO",
+                                                response.data.data.user
+                                            );
+                                            if ($route.redirectedFrom) {
+                                                $router.push({
+                                                    path: decodeURIComponent(
+                                                        $route.redirectedFrom
+                                                            .fullPath
+                                                    ),
+                                                });
+                                            } else {
+                                                $router.push("/");
+                                            }
                                         } else {
-                                            $router.push("/");
+                                            message.error(
+                                                response.data.status.message
+                                            );
                                         }
-                                    } else {
-                                        message.error(
-                                            response.data.status.message
-                                        );
-                                    }
-                                });
+                                    })
+                                    .catch((err) => {
+                                        console.log("error", err);
+                                    });
                             } else {
                                 message.error(response.data.status.message);
                             }
