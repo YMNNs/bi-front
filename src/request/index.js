@@ -4,7 +4,7 @@ import router from "@/router";
 import { message } from "ant-design-vue";
 
 // 创建axios实例
-const instance = axios.create({ timeout: 1000 * 12 });
+const instance = axios.create({ timeout: 1000 * 6 });
 // 设置post请求头
 instance.defaults.headers.post["Content-Type"] = "application/json";
 // 设置baseUrl
@@ -29,32 +29,54 @@ instance.interceptors.request.use(
     (error) => Promise.error(error)
 );
 
-// 响应拦截器
+// // 响应拦截器
+// instance.interceptors.response.use(
+//     // 请求成功
+//     (response) => {
+//         console.log("请求成功");
+//         store.commit("SET_NETWORK_STATUS", true);
+//         console.log(response);
+//         if (response.status === 200) return response;
+//         else return Promise.reject(response);
+//     },
+//     // 请求失败
+//     (error) => {
+//         const { response } = error;
+//         if (response) {
+//             // 请求已发出，但是不在2xx的范围
+//             console.log("请求失败：" + response.status);
+//             store.commit("SET_NETWORK_STATUS", true);
+//             errorHandle(response.status, response.data.status.message);
+//             return Promise.reject(response);
+//         } else {
+//             // 处理断网的情况
+//             // eg:请求超时或断网时，更新state的network状态
+//             // network状态在app.vue中控制着一个全局的断网提示组件的显示隐藏
+//             // 关于断网组件中的刷新重新获取数据，会在断网组件中说明
+//             console.log("未收到响应");
+//             store.commit("SET_NETWORK_STATUS", false);
+//         }
+//     }
+// );
+
 instance.interceptors.response.use(
-    // 请求成功
     (response) => {
-        console.log("请求成功");
-        store.commit("SET_NETWORK_STATUS", true);
-        console.log(response);
-        if (response.status === 200) return response;
-        else return Promise.reject(response);
-    },
-    // 请求失败
-    (error) => {
-        const { response } = error;
-        if (response) {
-            // 请求已发出，但是不在2xx的范围
-            console.log("请求失败：" + response.status);
+        if (response && response.data && response.data.status) {
+            console.log("收到正确响应");
             store.commit("SET_NETWORK_STATUS", true);
-            errorHandle(response.status, response.data.status.message);
-            return Promise.reject(response);
+            return response;
+        }
+    },
+    (error) => {
+        if (error.status) {
+            console.log("收到错误响应");
+            store.commit("SET_NETWORK_STATUS", true);
+            errorHandle(error.status, error.data.status.message);
+            return Promise.reject(error);
         } else {
-            // 处理断网的情况
-            // eg:请求超时或断网时，更新state的network状态
-            // network状态在app.vue中控制着一个全局的断网提示组件的显示隐藏
-            // 关于断网组件中的刷新重新获取数据，会在断网组件中说明
             console.log("未收到响应");
             store.commit("SET_NETWORK_STATUS", false);
+            return Promise.reject(error);
         }
     }
 );
@@ -67,6 +89,7 @@ export default instance;
  */
 const toLogin = () => {
     store.commit("CLEAR_LOGIN_INFO");
+    store.commit("CLEAR_TOKEN");
     router.replace({
         path: "/login",
         query: {
