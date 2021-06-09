@@ -1,97 +1,97 @@
 <template>
-    <div class="page-wrapper" v-if="step === 'register'">
+    <div class="page-wrapper">
         <a-card :bordered="true" style="width: 700px; margin: 0 auto">
-            <!--            <h1>注册</h1>-->
-            <!--            <p>-->
-            <!--                请填写表单以注册<strong>{{ appTitle }}</strong>-->
-            <!--            </p>-->
-            <!--            <br />-->
-            <a-page-header
-                title="注册"
-                :sub-title="subtitle"
-                @back="$router.go(-1)"
-            />
-            <br />
-            <!--注册表单-->
-            <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
-                <a-form-item v-bind="validateInfos.email" label="电子邮件地址">
-                    <a-input
-                        v-model:value="modelRef.email"
-                        size="large"
-                        style="width: 100%"
-                        @blur="validate('email').catch()"
-                    ></a-input>
-                </a-form-item>
-                <a-form-item v-bind="validateInfos.username" label="用户名">
-                    <a-input
-                        v-model:value="modelRef.username"
-                        size="large"
-                        style="width: 100%"
-                        @blur="validate('username').catch()"
-                    ></a-input>
-                </a-form-item>
-                <a-form-item v-bind="validateInfos.password" label="密码">
-                    <a-input-password
-                        v-model:value="modelRef.password"
-                        size="large"
-                        style="width: 100%"
-                        @blur="validate('password').catch()"
-                    ></a-input-password>
-                </a-form-item>
-                <a-form-item v-bind="validateInfos.nickname" label="昵称">
-                    <a-input
-                        v-model:value="modelRef.nickname"
-                        size="large"
-                        placeholder="可稍后设置"
-                        style="width: 100%"
-                        @blur="validate('nickname').catch()"
-                    ></a-input>
-                </a-form-item>
-                <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
-                    <a-button type="primary" @click.prevent="onSubmit"
-                        >注册
-                    </a-button>
-                    <a-button style="margin-left: 10px" @click="resetFields"
-                        >重置
-                    </a-button>
-                    <p>
-                        <a-typography-text type="secondary">
-                            选择<strong>注册</strong>来完成注册，选择<strong>重置</strong>来清空表单以供重新填写。
-                        </a-typography-text>
-                    </p>
-                </a-form-item>
-            </a-form>
-        </a-card>
-    </div>
-    <div class="page-wrapper" v-if="step === 'done'">
-        <a-result
-            status="success"
-            title="注册完成"
-            sub-title="我们已经向您的电子邮箱发送了一封验证邮件，请您尽快完成邮件验证。"
-        >
-            <template #extra>
-                <a-button
-                    key="console"
-                    type="primary"
-                    @click="$router.push('/')"
-                    >前往控制台
-                </a-button>
-                <a-button key="buy" @click.prevent="window.close()"
-                    >关闭页面
-                </a-button>
+            <!--    注册页-->
+            <template v-if="step === 'register'">
+                <a-page-header
+                    title="注册"
+                    :sub-title="subtitle"
+                    @back="$router.go(-1)"
+                />
+                <br />
+                <!--注册表单-->
+                <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
+                    <a-form-item
+                        v-bind="validateInfos.email"
+                        label="电子邮件地址"
+                    >
+                        <a-input
+                            v-model:value="modelRef.email"
+                            size="large"
+                            style="width: 100%"
+                            @blur="validate('email').catch()"
+                        ></a-input>
+                    </a-form-item>
+                    <a-form-item v-bind="validateInfos.username" label="用户名">
+                        <a-input
+                            v-model:value="modelRef.username"
+                            size="large"
+                            style="width: 100%"
+                            @blur="validate('username').catch()"
+                        ></a-input>
+                    </a-form-item>
+                    <a-form-item v-bind="validateInfos.password" label="密码">
+                        <a-input-password
+                            v-model:value="modelRef.password"
+                            size="large"
+                            style="width: 100%"
+                            @blur="validate('password').catch()"
+                        ></a-input-password>
+                    </a-form-item>
+                    <a-form-item v-bind="validateInfos.nickname" label="昵称">
+                        <a-input
+                            v-model:value="modelRef.nickname"
+                            size="large"
+                            placeholder="可稍后设置"
+                            style="width: 100%"
+                            @blur="validate('nickname').catch()"
+                        ></a-input>
+                    </a-form-item>
+                    <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
+                        <a-button type="primary" @click.prevent="onSubmit"
+                            >注册
+                        </a-button>
+                        <a-button style="margin-left: 10px" @click="resetFields"
+                            >重置
+                        </a-button>
+                        <p>
+                            <br />
+                            <a-typography-text type="secondary">
+                                选择<strong>注册</strong>来完成注册，选择<strong>重置</strong>来清空表单以供重新填写。
+                            </a-typography-text>
+                        </p>
+                    </a-form-item>
+                </a-form>
             </template>
-        </a-result>
+            <!--    注册结果页-->
+            <template v-if="step === 'done'">
+                <a-result
+                    status="success"
+                    title="注册完成"
+                    sub-title="我们已经向您的电子邮箱发送了一封验证邮件，请您尽快完成邮件验证。"
+                >
+                    <template #extra>
+                        <a-button
+                            key="console"
+                            type="primary"
+                            @click="$router.push('/')"
+                            >前往控制台
+                        </a-button>
+                    </template>
+                </a-result>
+            </template>
+        </a-card>
     </div>
 </template>
 
 <script>
 import { defineComponent, reactive, toRaw, toRefs } from "vue";
 import { useForm } from "@ant-design-vue/use";
-import { validate_username } from "@/api/validate_username";
-import { validate_email } from "@/api/validate_email";
-import { register } from "@/api/register";
+import { validate_username } from "@/api/post/validate_username";
+import { validate_email } from "@/api/post/validate_email";
+import { register } from "@/api/post/register";
 import { useStore } from "vuex";
-import { user_info } from "@/api/user_info";
+import { user_info } from "@/api/post/user_info";
 
 export default defineComponent({
     setup() {

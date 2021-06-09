@@ -2,7 +2,7 @@ import Mock from "mockjs";
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + "user/info", "post", (request) => {
     console.log(request.body);
-    const token = JSON.parse(request.body).token;
+    const { token } = JSON.parse(request.body);
     if (token) {
         // 返回用户信息
         return {

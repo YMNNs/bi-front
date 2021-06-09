@@ -1,8 +1,6 @@
-import axios from "@/request/index";
+import axios from "@/request";
 import md5 from "js-md5";
 import { randomString } from "@/util";
-//import store from '@/store'
-//import router from "@/router";
 
 export function login(login, password, rememberMe) {
     const salt = randomString();

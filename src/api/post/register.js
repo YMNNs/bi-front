@@ -1,4 +1,4 @@
-import axios from "@/request/index";
+import axios from "@/request";
 
 export function register(email, username, password, nickname) {
     return axios.post("user/register", {
@@ -6,5 +6,5 @@ export function register(email, username, password, nickname) {
         username: username,
         password: password,
         nickname: nickname,
-    }); //data没有也不能不写
+    });
 }

@@ -33,6 +33,13 @@ const routes = [
         hidden: true,
     },
     {
+        path: "/reset_password",
+        name: "reset_password",
+        component: () => import("@/components/reset_password"),
+        meta: { title: "重置密码" },
+        hidden: true,
+    },
+    {
         path: "/403",
         name: "e403",
         component: () => import("@/components/error_pages/e403"),

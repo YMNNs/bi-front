@@ -68,7 +68,9 @@
             <div style="text-align: center">
                 <a @click="$router.push('/register')" target="_blank">注册</a
                 >&nbsp;&nbsp;
-                <a href="/" target="_blank" disabled="true">忘记密码？</a>
+                <a @click="$router.push('/reset_password')" target="_blank"
+                    >忘记密码？</a
+                >
             </div>
         </a-card>
     </div>
@@ -85,8 +87,8 @@ import {
     watch,
 } from "vue";
 import { useForm } from "@ant-design-vue/use";
-import { login } from "@/api/login";
-import { user_info } from "@/api/user_info";
+import { login } from "@/api/post/login";
+import { user_info } from "@/api/post/user_info";
 import { useStore } from "vuex";
 import { message } from "ant-design-vue";
 import { useRoute, useRouter } from "vue-router";

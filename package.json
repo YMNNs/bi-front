@@ -14,14 +14,14 @@
     },
     "dependencies": {
         "@ant-design-vue/use": "^0.0.1-alpha.10",
-        "@ant-design/colors": "^5.1.1",
+        "@ant-design/colors": "^6.0.0",
         "@ant-design/icons-vue": "^6.0.1",
-        "ant-design-vue": "^2.1.6",
-        "core-js": "^3.6.5",
+        "ant-design-vue": "^2.2.0-beta.2",
+        "core-js": "^3.14.0",
         "js-md5": "^0.7.3",
         "mockjs": "^1.1.0",
         "nprogress": "^0.2.0",
-        "vue": "^3.0.0",
+        "vue": "^3.1.1",
         "vue-router": "^4.0.0-0",
         "vuex": "^4.0.0-0"
     },
@@ -42,6 +42,6 @@
         "eslint": "^6.7.2",
         "eslint-plugin-prettier": "^3.3.1",
         "eslint-plugin-vue": "^7.0.0",
-        "prettier": "^2.2.1"
+        "prettier": "^2.3.1"
     }
 }
