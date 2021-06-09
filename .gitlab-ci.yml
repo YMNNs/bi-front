@@ -1,0 +1,64 @@
+# 构建阶段
+stages:
+  - install_deps
+  - deploy_develop
+  - deploy_master
+
+cache:
+  paths:
+    # 缓存node_modules将大大提高ci运行的速度
+    - node_modules/
+    - public/
+
+# 构建工作-安装依赖并检查代码
+job_install_deps:
+  stage: install_deps
+  # 匹配使用哪个tag的runner(注册时填写的)
+  tags:
+    - deploy
+  only:
+    - develop
+    - master
+  script:
+    - npm install
+    - npm run lint
+
+
+# 编译并部署develop
+job_deploy_develop:
+  stage: deploy_develop
+  # 匹配使用哪个tag的runner
+  tags:
+    - deploy
+  # 所有操作只在如下分支上进行
+  only:
+    - develop
+  # 阶段运行的脚本
+  script:
+    - npm run build-develop
+    - rm -rf /var/www/develop/*
+    - cp -rf ./dist/* /var/www/develop/
+    - sudo /usr/sbin/apache2ctl graceful #重启apache
+  environment:
+    name: develop
+    url: http://bi-develop.stager.top
+
+
+# 编译并部署master
+job_deploy_master:
+  stage: deploy_master
+  # 匹配使用哪个tag的runner
+  tags:
+    - deploy
+  # 所有操作只在如下分支上进行
+  only:
+    - master
+  # 阶段运行的脚本
+  script:
+    - npm run build-master
+    - rm -rf /var/www/master/*
+    - cp -rf ./dist/* /var/www/master/
+    - sudo /usr/sbin/apache2ctl graceful #重启apache
+  environment:
+    name: master
+    url: http://bi-master.stager.top

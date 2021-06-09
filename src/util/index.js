@@ -1,0 +1,71 @@
+/**
+ * 判断对象是否在某数组中
+ * @param obj
+ * @returns {boolean}
+ */
+Array.prototype.isInArray = function (obj) {
+    let index = this.length;
+    while (index--) {
+        if (this[index] === obj) {
+            return true;
+        }
+    }
+    return false;
+};
+
+/**
+ * 带错误处理的解析对象
+ * @param o JSON字符串
+ * @param k key
+ * @returns {undefined|*} 解析的对象或undefined
+ * @constructor
+ */
+export function parseOrNull(o, k) {
+    try {
+        if (!k) return JSON.parse(o);
+        else return JSON.parse(o)[k];
+    } catch (e) {
+        return undefined;
+    }
+}
+
+/**
+ * 格式化日期
+ * @param fmt
+ * @returns {*}
+ * @constructor
+ */
+Date.prototype.Format = function (fmt) {
+    const o = {
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "H+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        S: this.getMilliseconds(), //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(
+            RegExp.$1,
+            (this.getFullYear() + "").substr(4 - RegExp.$1.length)
+        );
+    for (const k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(
+                RegExp.$1,
+                RegExp.$1.length === 1
+                    ? o[k]
+                    : ("00" + o[k]).substr(("" + o[k]).length)
+            );
+    return fmt;
+};
+
+export function randomString(e) {
+    e = e || 32;
+    let t = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678",
+        a = t.length,
+        n = "";
+    for (let i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
+    return n;
+}
