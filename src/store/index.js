@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import { parseOrNull } from "@/util";
+import { user_info } from "@/api/post/user_info";
 
 export default createStore({
     state: {
@@ -53,6 +54,26 @@ export default createStore({
             localStorage.removeItem("bi_user");
         },
     },
-    actions: {},
+    actions: {
+        UPDATE_USER_INFO: (context) => {
+            console.log("请求用户信息");
+            user_info()
+                .then((response) => {
+                    if (response.data.status.code === 0) {
+                        // 有用户信息
+                        console.log("有用户信息");
+                        context.commit(
+                            "SET_USER_INFO",
+                            response.data.data.user
+                        );
+                    } else {
+                        console.log("无用户信息");
+                        context.commit("CLEAR_TOKEN");
+                        context.commit("CLEAR_USER_INFO");
+                    }
+                })
+                .catch();
+        },
+    },
     modules: {},
 });

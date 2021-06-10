@@ -61,6 +61,17 @@ const routes = [
         meta: { role: ["user"], requireAuth: true },
         children: [
             {
+                path: "/edit_user_profile",
+                component: () => import("@/components/edit_user_profile"),
+                name: "edit_user_profile",
+                meta: {
+                    title: "编辑个人信息",
+                    role: ["user"],
+                    requireAuth: true,
+                    hidden: true,
+                },
+            },
+            {
                 path: "/dashboard",
                 component: () => import("@/components/dashboard"),
                 name: "dashboard",
