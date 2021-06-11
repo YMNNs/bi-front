@@ -73,7 +73,7 @@
                                                 <a-menu-divider />
                                                 <a-menu-item>
                                                     <a
-                                                        @click="
+                                                        @click.prevent="
                                                             $router.push(
                                                                 '/edit_user_profile'
                                                             )
@@ -83,7 +83,7 @@
                                                 </a-menu-item>
                                                 <a-menu-divider />
                                                 <a-menu-item>
-                                                    <a @click="logout">
+                                                    <a @click.prevent="logout">
                                                         退出登录
                                                     </a>
                                                 </a-menu-item>

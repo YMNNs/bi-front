@@ -6,7 +6,7 @@ Mock.mock(
     "post",
     (request) => {
         const { email } = JSON.parse(request.body);
-        if (email === mock_data.token) {
+        if (email === mock_data.email) {
             // 电子邮件地址正确
             return {
                 status: {

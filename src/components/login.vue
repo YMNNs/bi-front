@@ -7,7 +7,7 @@
             show-icon
         />
     </div>
-    <div class="tip" v-else-if="local_test">
+    <div class="tip" v-else-if="local_test === 'true'">
         <a-alert
             message="本地测试环境"
             description="所有后端数据均由 Mock.js 提供，请使用 api/mock/mock_data.js 中提供的用户名和密码登录。"
