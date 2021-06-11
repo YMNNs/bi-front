@@ -3,9 +3,9 @@
         <a-layout-sider v-model:collapsed="collapsed" collapsible>
             <div class="logo">
                 <img
-                    src="../assets/logo_white.svg"
+                    src="../assets/bi_logo_white.svg"
                     alt="BILYN"
-                    style="margin: 5px"
+                    style="max-height: 32px"
                 />
             </div>
             <a-menu
@@ -78,9 +78,10 @@
                                                                 '/edit_user_profile'
                                                             )
                                                         "
-                                                        >编辑个人信息</a
+                                                        >设置</a
                                                     >
                                                 </a-menu-item>
+                                                <a-menu-divider />
                                                 <a-menu-item>
                                                     <a @click="logout">
                                                         退出登录
@@ -108,13 +109,13 @@
                 </div>
             </a-layout-content>
             <a-layout-footer style="text-align: center">
-                ©2021 {{ systemTitle }}
+                ©{{ new Date().getFullYear() }} {{ systemTitle }}
             </a-layout-footer>
         </a-layout>
     </a-layout>
 </template>
 <script>
-import { defineComponent, onUpdated, reactive, toRefs } from "vue";
+import { defineComponent, reactive, toRefs } from "vue";
 import {
     //AlertOutlined,
     createFromIconfontCN,
@@ -125,16 +126,18 @@ import "@/util/index";
 import router from "@/router";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { logout as logout_request } from "@/api/post/logout";
+import { icon_url } from "@/util/iconfont";
 
 const IconFont = createFromIconfontCN({
-    scriptUrl: "//at.alicdn.com/t/font_2592763_y6lwfjbbcao.js", //图标,随时更新
+    scriptUrl: icon_url, //图标,随时更新
 });
 
 export default defineComponent({
     components: {
         //AlertOutlined,
-        IconFont,
         DownOutlined,
+        IconFont,
         //UserOutlined,
     },
     setup() {
@@ -148,13 +151,18 @@ export default defineComponent({
             });
         };
 
-        onUpdated(() => {
-            // updateUserInfo();
-        });
-
         const logout = () => {
-            store.commit("SET_LOGOUT", true);
-            $router.push("/login");
+            logout_request()
+                .then((response) => {
+                    if (response.data) {
+                        //退出成功
+                        store.commit("SET_LOGOUT", true);
+                        store.commit("CLEAR_USER_INFO");
+                        store.commit("CLEAR_TOKEN");
+                        $router.push("/login");
+                    }
+                })
+                .catch();
         };
 
         const systemTitle = process.env.VUE_APP_TITLE;

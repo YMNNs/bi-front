@@ -9,7 +9,11 @@
                     @back="$router.go(-1)"
                 />
                 <br />
-                <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
+                <a-form
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol"
+                    hideRequiredMark="true"
+                >
                     <a-form-item
                         v-bind="validateInfos_request.email"
                         label="电子邮件地址"

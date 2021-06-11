@@ -1,18 +1,19 @@
 import Mock from "mockjs";
+import { mock_data } from "@/api/mock/mock_data";
 
 Mock.mock(
     process.env.VUE_APP_API_BASE_URL + "user/register",
     "post",
     (request) => {
         const { email, username } = JSON.parse(request.body);
-        if (email === "1@2.com") {
+        if (email === mock_data.email) {
             return {
                 status: {
                     code: 11,
                     message: "电子邮件地址已被占用",
                 },
             };
-        } else if (username === "a") {
+        } else if (username === mock_data.username) {
             return {
                 status: {
                     code: 21,
@@ -26,8 +27,7 @@ Mock.mock(
                     message: "注册成功",
                 },
                 data: {
-                    token: "123321",
-                    expire_time: "1623033546",
+                    token: mock_data.token,
                 },
             };
         }

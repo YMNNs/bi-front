@@ -1,11 +1,12 @@
 import Mock from "mockjs";
+import { mock_data } from "@/api/mock/mock_data";
 
 Mock.mock(
     process.env.VUE_APP_API_BASE_URL + "user/request_reset_password",
     "post",
     (request) => {
         const { email } = JSON.parse(request.body);
-        if (email === "a@b.com") {
+        if (email === mock_data.token) {
             // 电子邮件地址正确
             return {
                 status: {

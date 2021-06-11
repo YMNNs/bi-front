@@ -1,4 +1,5 @@
 import Mock from "mockjs";
+import { mock_data } from "@/api/mock/mock_data";
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + "user/info", "post", (request) => {
     console.log(request.body);
@@ -12,11 +13,11 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + "user/info", "post", (request) => {
             },
             data: {
                 user: {
-                    id: 123,
-                    username: "zhangsan",
-                    nickname: "张三",
-                    email: "zhangsan@bi.com",
-                    email_verified: true,
+                    id: mock_data.user_id,
+                    username: mock_data.username,
+                    nickname: mock_data.nickname,
+                    email: mock_data.email,
+                    email_verified: mock_data.email_verified,
                     status: "enabled",
                     role: "user",
                     last_login: "1623033546",

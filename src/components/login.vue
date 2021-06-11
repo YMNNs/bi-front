@@ -1,9 +1,17 @@
 <template>
-    <div id="tip" v-if="logout">
+    <div class="tip" v-if="logout">
         <a-alert
             message="成功"
             description="您已退出登录，使用下面的表单可以再次登录。"
             type="success"
+            show-icon
+        />
+    </div>
+    <div class="tip" v-else-if="local_test">
+        <a-alert
+            message="本地测试环境"
+            description="所有后端数据均由 Mock.js 提供，请使用 api/mock/mock_data.js 中提供的用户名和密码登录。"
+            type="info"
             show-icon
         />
     </div>
@@ -81,6 +89,7 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons-vue";
 import {
     defineComponent,
     onMounted,
+    onUnmounted,
     reactive,
     toRaw,
     toRefs,
@@ -116,14 +125,16 @@ export default defineComponent({
         const $route = useRoute();
         const state = reactive({
             logout: false,
+            local_test: process.env.VUE_APP_MOCK,
         });
 
         onMounted(() => {
             state.logout = store.state.logout;
-            if (state.logout) {
-                store.commit("CLEAR_USER_INFO");
-                store.commit("CLEAR_TOKEN");
-            }
+        });
+
+        onUnmounted(() => {
+            state.logout = false;
+            store.commit("SET_LOGOUT", false);
         });
 
         // 表单模型
@@ -239,7 +250,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#tip {
+.tip {
     width: 800px;
     position: absolute;
     left: 50%;

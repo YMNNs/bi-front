@@ -1,12 +1,16 @@
 import Mock from "mockjs";
 import md5 from "js-md5";
+import { mock_data } from "@/api/mock/mock_data";
 
 Mock.mock(
     process.env.VUE_APP_API_BASE_URL + "user/login",
     "post",
     (request) => {
         const { login, password, salt } = JSON.parse(request.body);
-        if (login === "a" && password === md5(md5("1") + salt)) {
+        if (
+            login === mock_data.username &&
+            password === md5(md5(mock_data.password) + salt)
+        ) {
             //登录成功
             return {
                 status: {
@@ -14,8 +18,7 @@ Mock.mock(
                     message: "登录成功",
                 },
                 data: {
-                    token: "123321",
-                    expire_time: "1623033546",
+                    token: mock_data.token,
                 },
             };
         } else {

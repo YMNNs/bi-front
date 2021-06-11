@@ -15,6 +15,12 @@ if (process.env.VUE_APP_MOCK === "true") {
     import("@/api/mock/reset_password");
     import("@/api/mock/validate_reset_password_token");
     import("@/api/mock/login");
+    import("@/api/mock/modify_user_profile");
+    import("@/api/mock/change_password");
+    import("@/api/mock/logout");
+    import("@/api/mock/delete_account");
+    import("@/api/mock/resend_activation_email");
+    import("@/api/mock/activate_email");
 }
 
 const app = createApp(App);
