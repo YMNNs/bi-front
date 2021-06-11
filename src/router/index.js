@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import store from "@/store";
-import { message } from "ant-design-vue";
+import { notification } from "ant-design-vue";
 // 页面加载进度条
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
@@ -33,6 +33,13 @@ const routes = [
         hidden: true,
     },
     {
+        path: "/verify_email",
+        name: "verify_email",
+        component: () => import("@/components/verify_email"),
+        meta: { title: "激活电子邮件地址" },
+        hidden: true,
+    },
+    {
         path: "/reset_password",
         name: "reset_password",
         component: () => import("@/components/reset_password"),
@@ -61,6 +68,17 @@ const routes = [
         meta: { role: ["user"], requireAuth: true },
         children: [
             {
+                path: "/edit_user_profile",
+                component: () => import("@/components/edit_user_profile"),
+                name: "edit_user_profile",
+                meta: {
+                    title: "编辑个人信息",
+                    role: ["user"],
+                    requireAuth: true,
+                    hidden: true,
+                },
+            },
+            {
                 path: "/dashboard",
                 component: () => import("@/components/dashboard"),
                 name: "dashboard",
@@ -68,17 +86,29 @@ const routes = [
                     title: "仪表盘",
                     role: ["user"],
                     requireAuth: true,
-                    icon: "icon-yibiaopan",
+                    icon: "icon-dashboard",
                 },
             },
             {
-                path: "/d2",
-                component: () => import("@/components/d2"),
-                name: "d2",
+                path: "/chart_management",
+                component: () => import("@/components/chart_management"),
+                name: "chart_management",
                 meta: {
-                    title: "d2",
+                    title: "图表管理",
                     role: ["user"],
                     requireAuth: true,
+                    icon: "icon-barchart",
+                },
+            },
+            {
+                path: "/data_management",
+                component: () => import("@/components/data_management"),
+                name: "data_management",
+                meta: {
+                    title: "数据管理",
+                    role: ["user"],
+                    requireAuth: true,
+                    icon: "icon-data",
                 },
             },
         ],
@@ -90,7 +120,6 @@ const routes = [
 ];
 
 const router = createRouter({
-    // history: createWebHistory(process.env.BASE_URL),
     history: createWebHistory(),
     routes: routes,
 });
@@ -108,7 +137,10 @@ router.beforeEach((to, from, next) => {
     const role = store.state.role;
     if (to.meta.requireAuth) {
         if (!token) {
-            message.warning("需要登录，正在跳转至登录页面。");
+            notification["warning"]({
+                message: "需要登录",
+                description: "正在跳转到登录页面。",
+            });
             next("/login");
         }
         if (!to.meta.role || to.meta.role.isInArray(role)) {

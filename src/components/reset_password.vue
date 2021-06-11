@@ -9,7 +9,11 @@
                     @back="$router.go(-1)"
                 />
                 <br />
-                <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
+                <a-form
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol"
+                    hideRequiredMark="true"
+                >
                     <a-form-item
                         v-bind="validateInfos_request.email"
                         label="电子邮件地址"
@@ -27,12 +31,12 @@
                             @click.prevent="onSubmit_request"
                             >发送重置密码邮件
                         </a-button>
-                        <p>
-                            <br />
-                            <a-typography-text type="secondary">
+                        <template #help>
+                            <p>
+                                <br />
                                 选择<strong>发送重置密码邮件</strong>来验证您对账号的所有权，在您完成重置前密码不会被修改。
-                            </a-typography-text>
-                        </p>
+                            </p>
+                        </template>
                     </a-form-item>
                 </a-form>
             </template>
@@ -60,12 +64,12 @@
                         <a-button type="primary" @click.prevent="onSubmit_reset"
                             >重置密码
                         </a-button>
-                        <p>
-                            <br />
-                            <a-typography-text type="secondary">
+                        <template #help>
+                            <p>
+                                <br />
                                 选择<strong>重置密码</strong>来保存新密码，在您完成重置前密码不会被修改。
-                            </a-typography-text>
-                        </p>
+                            </p>
+                        </template>
                     </a-form-item>
                 </a-form>
             </template>

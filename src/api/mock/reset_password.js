@@ -1,11 +1,12 @@
 import Mock from "mockjs";
+import { mock_data } from "@/api/mock/mock_data";
 
 Mock.mock(
     process.env.VUE_APP_API_BASE_URL + "user/reset_password",
     "post",
     (request) => {
         const { reset_password_token, password } = JSON.parse(request.body);
-        if (reset_password_token === "123123") {
+        if (reset_password_token === mock_data.reset_password_token) {
             // token 正确
             if (password.length >= 8 && password.length <= 16) {
                 // 密码格式正确

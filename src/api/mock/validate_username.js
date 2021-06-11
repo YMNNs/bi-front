@@ -1,4 +1,5 @@
 import Mock from "mockjs";
+import { mock_data } from "@/api/mock/mock_data";
 
 Mock.mock(
     process.env.VUE_APP_API_BASE_URL + "user/validate_username",
@@ -6,7 +7,7 @@ Mock.mock(
     (request) => {
         console.log(request.body);
         const { username } = JSON.parse(request.body);
-        if (username === "a") {
+        if (username === mock_data.username) {
             return {
                 status: {
                     code: 1,

@@ -2,7 +2,11 @@
     <a-layout style="min-height: 100vh">
         <a-layout-sider v-model:collapsed="collapsed" collapsible>
             <div class="logo">
-                <AlertOutlined />
+                <img
+                    src="../assets/bi_logo_white.svg"
+                    alt="BILYN"
+                    style="max-height: 32px"
+                />
             </div>
             <a-menu
                 :openKeys="openKeys"
@@ -43,28 +47,52 @@
                         <div id="sys_title">{{ systemTitle }}</div>
                     </a-col>
                     <a-col :span="12">
-                        <div id="user_info">
-                            <a-avatar :size="40">
-                                <template #icon>
-                                    <UserOutlined />
-                                </template>
-                            </a-avatar>
-                            <div id="drop_down">
-                                <a-dropdown>
-                                    <a class="ant-dropdown-link" @click.prevent>
-                                        {{ nickname }}
-                                        <DownOutlined />
-                                    </a>
-                                    <template #overlay>
-                                        <a-menu>
-                                            <a-menu-item>
-                                                <a @click="logout">退出登录</a>
-                                            </a-menu-item>
-                                        </a-menu>
-                                    </template>
-                                </a-dropdown>
-                            </div>
-                        </div>
+                        <a-row
+                            type="flex"
+                            justify="end"
+                            style="margin-right: 16px"
+                        >
+                            <a-col :span="24">
+                                <div id="drop_down">
+                                    <a-dropdown>
+                                        <a
+                                            class="ant-dropdown-link"
+                                            @click.prevent
+                                        >
+                                            {{ nickname }}
+                                            <DownOutlined />
+                                        </a>
+                                        <template #overlay>
+                                            <a-menu>
+                                                <a-menu-item>
+                                                    登录为
+                                                    <strong>{{
+                                                        username
+                                                    }}</strong>
+                                                </a-menu-item>
+                                                <a-menu-divider />
+                                                <a-menu-item>
+                                                    <a
+                                                        @click="
+                                                            $router.push(
+                                                                '/edit_user_profile'
+                                                            )
+                                                        "
+                                                        >设置</a
+                                                    >
+                                                </a-menu-item>
+                                                <a-menu-divider />
+                                                <a-menu-item>
+                                                    <a @click="logout">
+                                                        退出登录
+                                                    </a>
+                                                </a-menu-item>
+                                            </a-menu>
+                                        </template>
+                                    </a-dropdown>
+                                </div>
+                            </a-col>
+                        </a-row>
                     </a-col>
                 </a-row>
             </a-layout-header>
@@ -81,7 +109,7 @@
                 </div>
             </a-layout-content>
             <a-layout-footer style="text-align: center">
-                ©2021 {{ systemTitle }}
+                ©{{ new Date().getFullYear() }} {{ systemTitle }}
             </a-layout-footer>
         </a-layout>
     </a-layout>
@@ -89,33 +117,52 @@
 <script>
 import { defineComponent, reactive, toRefs } from "vue";
 import {
-    AlertOutlined,
+    //AlertOutlined,
     createFromIconfontCN,
     DownOutlined,
-    UserOutlined,
+    //UserOutlined,
 } from "@ant-design/icons-vue";
 import "@/util/index";
 import router from "@/router";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { logout as logout_request } from "@/api/post/logout";
+import { icon_url } from "@/util/iconfont";
 
 const IconFont = createFromIconfontCN({
-    scriptUrl: "//at.alicdn.com/t/font_2592763_y6lwfjbbcao.js", //图标,随时更新
+    scriptUrl: icon_url, //图标,随时更新
 });
 
 export default defineComponent({
     components: {
-        AlertOutlined,
-        IconFont,
+        //AlertOutlined,
         DownOutlined,
-        UserOutlined,
+        IconFont,
+        //UserOutlined,
     },
     setup() {
         const store = useStore();
         const $router = useRouter();
+
+        const updateUserInfo = () => {
+            store.dispatch("UPDATE_USER_INFO").then(() => {
+                state.nickname = store.state.nickname;
+                state.username = store.state.username;
+            });
+        };
+
         const logout = () => {
-            store.commit("SET_LOGOUT", true);
-            $router.push("/login");
+            logout_request()
+                .then((response) => {
+                    if (response.data) {
+                        //退出成功
+                        store.commit("SET_LOGOUT", true);
+                        store.commit("CLEAR_USER_INFO");
+                        store.commit("CLEAR_TOKEN");
+                        $router.push("/login");
+                    }
+                })
+                .catch();
         };
 
         const systemTitle = process.env.VUE_APP_TITLE;
@@ -125,6 +172,7 @@ export default defineComponent({
             openKeys: [],
             selectedKeys: [],
             nickname: "",
+            username: "",
         });
         /**
          * 只展开当前父级菜单
@@ -144,11 +192,16 @@ export default defineComponent({
             }
         };
 
-        return { ...toRefs(state), onOpenChange, systemTitle, logout };
+        return {
+            ...toRefs(state),
+            onOpenChange,
+            systemTitle,
+            logout,
+            updateUserInfo,
+        };
     },
     created() {
-        const store = useStore();
-        this.nickname = store.state.nickname;
+        this.updateUserInfo();
         for (let menuItem of this.menuItems) {
             this.rootSubmenuKeys.push(menuItem.path);
         }
@@ -190,7 +243,10 @@ export default defineComponent({
                 if (route.name === "layout") {
                     for (let child of route.children) {
                         //二级路由
-                        if (child.meta.role.isInArray(role)) {
+                        if (
+                            child.meta.role.isInArray(role) &&
+                            !child.meta.hidden
+                        ) {
                             //判断权限
                             let node = JSON.parse(JSON.stringify(child));
                             if (node.children) {
@@ -201,7 +257,10 @@ export default defineComponent({
                             } else {
                                 for (let child1 of child.children) {
                                     //三级路由
-                                    if (child1.meta.role.isInArray(role)) {
+                                    if (
+                                        child1.meta.role.isInArray(role) &&
+                                        !child1.meta.hidden
+                                    ) {
                                         //判断权限
                                         node.children.push(
                                             JSON.parse(JSON.stringify(child1))
@@ -227,12 +286,6 @@ export default defineComponent({
     background: rgba(255, 255, 255, 0.3);
 }
 
-#user_info {
-    width: fit-content;
-    margin-left: auto;
-    margin-right: 32px;
-}
-
 #sys_title {
     margin-left: 16px;
     color: rgb(0, 21, 41);
@@ -253,11 +306,7 @@ export default defineComponent({
     font-size: large;
 }
 
-.site-layout .site-layout-background {
-    background: #fff;
-}
-
-[data-theme="dark"] .site-layout .site-layout-background {
+[data-theme="dark"] {
     background: #141414;
 }
 </style>

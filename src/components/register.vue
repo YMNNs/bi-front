@@ -54,12 +54,12 @@
                         <a-button style="margin-left: 10px" @click="resetFields"
                             >重置
                         </a-button>
-                        <p>
-                            <br />
-                            <a-typography-text type="secondary">
+                        <template #help
+                            ><p>
+                                <br />
                                 选择<strong>注册</strong>来完成注册，选择<strong>重置</strong>来清空表单以供重新填写。
-                            </a-typography-text>
-                        </p>
+                            </p></template
+                        >
                     </a-form-item>
                 </a-form>
             </template>
