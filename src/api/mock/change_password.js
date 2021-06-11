@@ -6,6 +6,7 @@ Mock.mock(
     "post",
     (request) => {
         const { old_password, new_password } = JSON.parse(request.body);
+
         if (old_password !== mock_data.password) {
             //密码不匹配
             return {

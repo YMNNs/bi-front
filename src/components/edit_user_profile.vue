@@ -188,8 +188,8 @@
                             <strong>你确定要这么做吗？</strong>
                         </template>
                         <a-alert
-                            message="请注意"
-                            description="这非常重要。"
+                            message="注意"
+                            description="请认真阅读下面的说明，这非常重要。"
                             type="error"
                             show-icon
                         >

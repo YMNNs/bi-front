@@ -21,9 +21,12 @@ instance.interceptors.request.use(
         // 后台根据携带的token判断用户的登录情况，并返回给我们对应的状态码
         // 而后我们可以在响应拦截器中，根据状态码进行一些统一的操作。
         const token = store.state.token;
-        console.log("获取到token：" + token);
-        token && (config.data.token = token);
-        console.log(config.data);
+        if (token) {
+            // 判断是否存在token，如果存在的话，则每个http header都加上token
+            config.headers.Authorization = token;
+            console.log("添加token" + token);
+        }
+        console.log(config);
         return config;
     },
     (error) => Promise.error(error)
