@@ -111,6 +111,17 @@ const routes = [
                     icon: "icon-data",
                 },
             },
+            {
+                path: "/data_display",
+                component: () => import("@/components/data_display"),
+                name: "data_display",
+                meta: {
+                    title: "数据展示",
+                    role: ["user"],
+                    requireAuth: true,
+                    icon: "icon-data",
+                },
+            },
         ],
     },
     {
