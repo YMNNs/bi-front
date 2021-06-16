@@ -119,7 +119,7 @@ const routes = [
                     title: "数据展示",
                     role: ["user"],
                     requireAuth: true,
-                    icon: "icon-data",
+                    hidden: true,
                 },
             },
         ],
