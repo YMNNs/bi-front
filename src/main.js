@@ -24,6 +24,7 @@ if (process.env.VUE_APP_MOCK === "true") {
     import("@/api/mock/table_content");
     import("@/api/mock/all_charts");
     import("@/api/mock/delete_chart");
+    import("@/api/mock/all_tables");
 }
 
 const app = createApp(App);

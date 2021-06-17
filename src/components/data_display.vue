@@ -180,6 +180,8 @@ import {
 import { cloneDeep } from "lodash-es";
 import { table_content } from "@/api/post/table_content";
 import { message } from "ant-design-vue";
+import { useRoute } from "vue-router";
+import router from "@/router";
 
 export default defineComponent({
     components: {
@@ -188,18 +190,8 @@ export default defineComponent({
         EditOutlined,
     },
     setup() {
-        //模拟调用假接口传入表格数据
-        onMounted(() => {
-            table_content().then((response) => {
-                if (response.data.status.code === 0) {
-                    state.table_name = response.data.data.table.table_name;
-                    state.pagination.total = response.data.data.table.total;
-                    state.dataSource = response.data.data.table.dataSource;
-                    state.columns = response.data.data.table.columns;
-                }
-            });
-        });
         const state = reactive({
+            table_id: -1,
             table_name: "",
             dataSource: [],
             columns: [
@@ -291,17 +283,15 @@ export default defineComponent({
                 onChange: (current) => {
                     state.loading = true;
                     state.pagination.defaultCurrent = current;
-                    table_content(state.table_name, current).then(
-                        (response) => {
-                            if (response.data.status.code === 0) {
-                                state.dataSource =
-                                    response.data.data.table.dataSource;
-                            } else {
-                                message.error(response.data.status.message);
-                            }
-                            state.loading = false;
+                    table_content(state.table_id, current).then((response) => {
+                        if (response.data.status.code === 0) {
+                            state.dataSource =
+                                response.data.data.table.dataSource;
+                        } else {
+                            message.error(response.data.status.message);
                         }
-                    );
+                        state.loading = false;
+                    });
                 },
             },
             //单元格搜索所用
@@ -309,8 +299,27 @@ export default defineComponent({
             searchedColumn: "",
         });
 
-        const searchInput = ref();
+        //模拟调用假接口传入表格数据
+        const route = useRoute();
+        onMounted(() => {
+            state.table_id = parseInt(route.params.id[0]);
+            console.log(state.table_id);
+            //参数格式不正确
+            if (isNaN(state.table_id)) {
+                router.push("/data_management");
+            }
+            table_content(state.table_id).then((response) => {
+                if (response.data.status.code === 0) {
+                    state.table_id = response.data.data.table.table_id;
+                    state.table_name = response.data.data.table.table_name;
+                    state.pagination.total = response.data.data.table.total;
+                    state.dataSource = response.data.data.table.dataSource;
+                    state.columns = response.data.data.table.columns;
+                }
+            });
+        });
 
+        const searchInput = ref();
         //处理自定义筛选
         const handleSearch = (selectedKeys, confirm, dataIndex) => {
             confirm();

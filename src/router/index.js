@@ -123,7 +123,7 @@ const routes = [
                 },
             },
             {
-                path: "/data_display",
+                path: "/data_display/:id",
                 component: () => import("@/components/data_display"),
                 name: "data_display",
                 meta: {
