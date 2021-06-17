@@ -21,6 +21,8 @@ if (process.env.VUE_APP_MOCK === "true") {
     import("@/api/mock/delete_account");
     import("@/api/mock/resend_activation_email");
     import("@/api/mock/activate_email");
+    import("@/api/mock/all_charts");
+    import("@/api/mock/delete_chart");
 }
 
 const app = createApp(App);

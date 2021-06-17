@@ -9,7 +9,7 @@ Mock.mock(
                 code: 0,
                 message: "发送邮件成功",
             },
-            data: {},
+            data: null,
         };
     }
 );

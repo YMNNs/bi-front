@@ -12,7 +12,7 @@ Mock.mock(
                     code: 0,
                     message: "重置密码令牌可用",
                 },
-                data: {},
+                data: null,
             };
         } else {
             return {
@@ -20,7 +20,7 @@ Mock.mock(
                     code: 1,
                     message: "重置密码令牌无效",
                 },
-                data: {},
+                data: null,
             };
         }
     }

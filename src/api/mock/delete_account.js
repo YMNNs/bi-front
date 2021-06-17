@@ -17,7 +17,7 @@ Mock.mock(
                     code: 0,
                     message: "用户已注销",
                 },
-                data: {},
+                data: null,
             };
         } else {
             return {
@@ -25,7 +25,7 @@ Mock.mock(
                     code: 1,
                     message: "用户名或密码无效",
                 },
-                data: {},
+                data: null,
             };
         }
     }

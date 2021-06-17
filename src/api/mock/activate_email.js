@@ -14,7 +14,7 @@ Mock.mock(
                     code: 0,
                     message: "电子邮件地址已激活",
                 },
-                data: {},
+                data: null,
             };
         } else {
             console.log("激活失败");
@@ -23,7 +23,7 @@ Mock.mock(
                     code: 1,
                     message: "激活电子邮件地址令牌过期或无效",
                 },
-                data: {},
+                data: null,
             };
         }
     }

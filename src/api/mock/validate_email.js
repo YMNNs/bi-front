@@ -13,7 +13,7 @@ Mock.mock(
                     code: 1,
                     message: "电子邮件地址已被占用",
                 },
-                data: {},
+                data: null,
             };
         } else if (
             email.match("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$")
@@ -23,7 +23,7 @@ Mock.mock(
                     code: 0,
                     message: "电子邮件地址可用",
                 },
-                data: {},
+                data: null,
             };
         } else
             return {
@@ -31,7 +31,7 @@ Mock.mock(
                     code: 2,
                     message: "电子邮件地址无效",
                 },
-                data: {},
+                data: null,
             };
     }
 );

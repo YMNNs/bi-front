@@ -13,7 +13,7 @@ Mock.mock(
                     code: 0,
                     message: "已发送邮件",
                 },
-                data: {},
+                data: null,
             };
         } else if (
             email.match("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$")
@@ -24,7 +24,7 @@ Mock.mock(
                     code: 2,
                     message: "电子邮件地址未注册",
                 },
-                data: {},
+                data: null,
             };
         } else {
             // 电子邮件地址格式错误
@@ -33,7 +33,7 @@ Mock.mock(
                     code: 5,
                     message: "电子邮件地址格式错误",
                 },
-                data: {},
+                data: null,
             };
         }
     }
