@@ -15,7 +15,7 @@ Mock.mock(
                         code: 0,
                         message: "密码已重置",
                     },
-                    data: {},
+                    data: null,
                 };
             } else {
                 // 密码格式错误
@@ -24,7 +24,7 @@ Mock.mock(
                         code: 7,
                         message: "密码格式错误",
                     },
-                    data: {},
+                    data: null,
                 };
             }
         } else {
@@ -34,7 +34,7 @@ Mock.mock(
                     code: 1,
                     message: "重置密码令牌无效",
                 },
-                data: {},
+                data: null,
             };
         }
     }

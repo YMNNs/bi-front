@@ -13,7 +13,7 @@ Mock.mock(
                     code: 1,
                     message: "用户名已被占用",
                 },
-                data: {},
+                data: null,
             };
         } else {
             return {
@@ -21,7 +21,7 @@ Mock.mock(
                     code: 0,
                     message: "用户名可用",
                 },
-                data: {},
+                data: null,
             };
         }
     }

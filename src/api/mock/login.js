@@ -28,7 +28,7 @@ Mock.mock(
                     code: 2,
                     message: "密码无效",
                 },
-                data: {},
+                data: null,
             };
         }
     }

@@ -79,6 +79,17 @@ const routes = [
                 },
             },
             {
+                path: "/new_chart",
+                component: () => import("@/components/new_chart"),
+                name: "new_chart",
+                meta: {
+                    title: "新建图表",
+                    role: ["user"],
+                    requireAuth: true,
+                    hidden: true,
+                },
+            },
+            {
                 path: "/dashboard",
                 component: () => import("@/components/dashboard"),
                 name: "dashboard",
@@ -109,6 +120,17 @@ const routes = [
                     role: ["user"],
                     requireAuth: true,
                     icon: "icon-data",
+                },
+            },
+            {
+                path: "/data_display",
+                component: () => import("@/components/data_display"),
+                name: "data_display",
+                meta: {
+                    title: "数据展示",
+                    role: ["user"],
+                    requireAuth: true,
+                    hidden: true,
                 },
             },
         ],

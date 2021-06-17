@@ -5,16 +5,16 @@
         @back="$router.go(-1)"
     />
     <a-row>
-        <a-col span="22" offset="1">
+        <a-col :span="22" :offset="1">
             <a-divider />
             <a-row :gutter="32">
-                <a-col span="8"
+                <a-col :span="8"
                     ><a-typography-title :level="3"
                         >个人信息</a-typography-title
                     >
                     <p>此信息将显示在您的个人资料中。</p>
                 </a-col>
-                <a-col span="14"
+                <a-col :span="14"
                     ><a-form layout="vertical">
                         <a-form-item v-bind="validateInfos_profile.username">
                             <template #label>
@@ -96,16 +96,16 @@
         </a-col>
     </a-row>
     <a-row>
-        <a-col span="22" offset="1">
+        <a-col :span="22" :offset="1">
             <a-divider />
             <a-row :gutter="32">
-                <a-col span="8"
+                <a-col :span="8"
                     ><a-typography-title :level="3">密码</a-typography-title>
                     <p>
                         密码更新成功后，您将被重定向到登录页面，您可以使用新密码登录。
                     </p>
                 </a-col>
-                <a-col span="14">
+                <a-col :span="14">
                     <a-form layout="vertical" :hideRequiredMark="true">
                         <a-form-item
                             v-bind="validateInfos_password.old_password"
@@ -156,16 +156,16 @@
         </a-col>
     </a-row>
     <a-row>
-        <a-col span="22" offset="1">
+        <a-col :span="22" offset="1">
             <a-divider />
             <a-row :gutter="32">
-                <a-col span="8"
+                <a-col :span="8"
                     ><a-typography-title type="danger" :level="3"
                         >删除账户</a-typography-title
                     >
                     <p>一旦你删除了你的账户，将无法恢复。</p>
                 </a-col>
-                <a-col span="14">
+                <a-col :span="14">
                     <a-form layout="vertical">
                         <a-form-item>
                             <template #help>
@@ -317,6 +317,11 @@ export default defineComponent({
                                 " 发送激活邮件",
                         });
                         state.disable_resend_link = true;
+                    } else {
+                        notification["error"]({
+                            message: "错误",
+                            description: response.data.status.message,
+                        });
                     }
                 })
                 .catch();
@@ -371,7 +376,7 @@ export default defineComponent({
                 {
                     trigger: "blur",
                     max: 16,
-                    message: "用户名长度上限为16位",
+                    message: "用户名长度上限为16字符",
                 },
             ],
             confirm_text: [
@@ -406,7 +411,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16位之间",
+                    message: "密码长度应在8-16字符之间",
                 },
             ],
         });
@@ -421,7 +426,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16位之间",
+                    message: "密码长度应在8-16字符之间",
                 },
             ],
             new_password: [
@@ -433,7 +438,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16位之间",
+                    message: "密码长度应在8-16字符之间",
                 },
             ],
         });
@@ -472,7 +477,7 @@ export default defineComponent({
                 {
                     trigger: "blur",
                     max: 16,
-                    message: "用户名长度上限为16位",
+                    message: "用户名长度上限为16字符",
                 },
             ],
             email: [
@@ -516,7 +521,7 @@ export default defineComponent({
                     min: 1,
                     max: 16,
                     type: "string",
-                    message: "昵称长度应小于16字符",
+                    message: "昵称长度上限为16字符",
                 },
             ],
         });

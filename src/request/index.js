@@ -5,8 +5,9 @@ import { notification } from "ant-design-vue";
 
 // 创建axios实例
 const instance = axios.create({ timeout: 1000 * 6 });
-// 设置post请求头
-instance.defaults.headers.post["Content-Type"] = "application/json";
+// 设置post请求头,utf-8
+instance.defaults.headers.post["Content-Type"] =
+    "application/json;charset=UTF-8";
 // 设置baseUrl
 instance.defaults.baseURL = process.env.VUE_APP_API_BASE_URL;
 
