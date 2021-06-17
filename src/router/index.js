@@ -112,6 +112,17 @@ const routes = [
                 },
             },
             {
+                path: "/edit_chart/:id",
+                component: () => import("@/components/edit_chart"),
+                name: "edit_chart",
+                meta: {
+                    title: "编辑图表",
+                    role: ["user"],
+                    requireAuth: true,
+                    hidden: true,
+                },
+            },
+            {
                 path: "/data_management",
                 component: () => import("@/components/data_management"),
                 name: "data_management",

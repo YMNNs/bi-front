@@ -130,6 +130,7 @@ import { icon_url } from "@/util/iconfont";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 import { delete_chart } from "@/api/post/delete_chart";
 import { notification } from "ant-design-vue";
+import { chart_types } from "@/constant/chart_types";
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url,
@@ -188,47 +189,9 @@ export default defineComponent({
                     state.charts = response.data.data.all_charts.charts;
                     state.charts.forEach((chart) => {
                         chart.loading = true;
-                        switch (chart.type_id) {
-                            // 根据图表类型id设置图标
-                            case 1: {
-                                // 折线图
-                                chart.icon_type = "icon-jibenzhexiantu";
-                                break;
-                            }
-                            case 2: {
-                                // 柱状图
-                                chart.icon_type = "icon-duoxilieezhuzhuangtu";
-                                break;
-                            }
-                            case 3: {
-                                // 条形图
-                                chart.icon_type = "icon-duidietiaoxingtu";
-                                break;
-                            }
-                            case 4: {
-                                // 面积图
-                                chart.icon_type = "icon-duidiemianjitu";
-                                break;
-                            }
-                            case 5: {
-                                // 饼图
-                                chart.icon_type = "icon-bingtu";
-                                break;
-                            }
-                            case 6: {
-                                // 散点图
-                                chart.icon_type = "icon-sandiantu";
-                                break;
-                            }
-                            case 7: {
-                                // 雷达图
-                                chart.icon_type = "icon-leidatu";
-                                break;
-                            }
-                            default: {
-                                chart.icon_type = "icon-zidingyi";
-                            }
-                        }
+                        chart.icon_type = chart_types.find(
+                            (i) => i.type_id === chart.type_id
+                        ).icon_type;
                     });
                     state.chartsDisplay = state.charts;
                     sortByTime();
