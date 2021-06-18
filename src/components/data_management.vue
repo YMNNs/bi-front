@@ -5,8 +5,10 @@
         <a-divider />
         <a-row>
             <a-col :span="24">
+                <!--上方标签-->
                 <a-tabs v-model:activeKey="activeKey">
                     <a-tab-pane key="1" tab="样例">
+                        <!--展示所有数据集信息的列表-->
                         <a-list
                             item-layout="horizontal"
                             :data-source="tables"
@@ -14,9 +16,11 @@
                         >
                             <template #renderItem="{ item }">
                                 <a-list-item>
+                                    <!--每个列表项的描述-->
                                     <a-list-item-meta
                                         :description="item.description"
                                     >
+                                        <!--列表项标题，点击可跳转至数据表详情界面-->
                                         <template #title>
                                             <a
                                                 @click="
@@ -30,6 +34,7 @@
                                                 }}</a-typography-text>
                                             </a>
                                         </template>
+                                        <!--列表项图标-->
                                         <template #avatar>
                                             <a-avatar
                                                 shape="square"
@@ -64,7 +69,7 @@ export default defineComponent({
         DatabaseTwoTone,
     },
     setup() {
-        //模拟调用假接口传入表格数据
+        //模拟调用假接口传入所有数据集信息
         onMounted(() => {
             all_tables().then((response) => {
                 if (response.data.status.code === 0) {

@@ -1,11 +1,13 @@
 <template>
     <div>
-        <!--标题展示该组数据名称-->
+        <!--标题展示该组数据名称,可修改-->
         <a-row type="flex">
             <a-col :span="4">
-                <a-typography-title :level="5" :editable="true">{{
-                    table_name
-                }}</a-typography-title>
+                <a-typography-title
+                    v-model:content="editableStr"
+                    :level="5"
+                    :editable="true"
+                ></a-typography-title>
             </a-col>
         </a-row>
         <!--数据表部分-->
@@ -170,6 +172,7 @@ import {
     toRefs,
     computed,
     ref,
+    watch,
     onMounted,
 } from "vue";
 import {
@@ -182,6 +185,7 @@ import { table_content } from "@/api/post/table_content";
 import { message } from "ant-design-vue";
 import { useRoute } from "vue-router";
 import router from "@/router";
+import { change_table } from "@/api/post/change_table";
 
 export default defineComponent({
     components: {
@@ -297,13 +301,16 @@ export default defineComponent({
             //单元格搜索所用
             searchText: "",
             searchedColumn: "",
+            //修改数据表名所用
+            editableStr: "",
         });
-
         //模拟调用假接口传入表格数据
         const route = useRoute();
         onMounted(() => {
+            //接收路由传入参数（table_id）
             state.table_id = parseInt(route.params.id[0]);
             console.log(state.table_id);
+
             //参数格式不正确
             if (isNaN(state.table_id)) {
                 router.push("/data_management");
@@ -315,6 +322,18 @@ export default defineComponent({
                     state.pagination.total = response.data.data.table.total;
                     state.dataSource = response.data.data.table.dataSource;
                     state.columns = response.data.data.table.columns;
+                    state.editableStr = response.data.data.table.table_name;
+                }
+            });
+        });
+
+        watch(state.editableStr, () => {
+            console.log("editableStr", state.editableStr.value);
+            change_table(state.table_id, state.editableStr).then((response) => {
+                if (response.data.status.code === 0) {
+                    console.log("修改成功");
+                } else {
+                    console.log("修改失败");
                 }
             });
         });

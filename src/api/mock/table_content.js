@@ -4,8 +4,8 @@ Mock.mock(
     process.env.VUE_APP_API_BASE_URL + "data/table_content",
     "post",
     (request) => {
-        const { table, offset } = JSON.parse(request.body);
-        if (table === 1) {
+        const { table_id, offset } = JSON.parse(request.body);
+        if (table_id === 1) {
             if (offset % 2 != 0) {
                 return {
                     status: {
@@ -14,7 +14,7 @@ Mock.mock(
                     },
                     data: {
                         table: {
-                            table_id: table,
+                            table_id: table_id,
                             table_name: "豆瓣电影数据",
                             total: 100,
                             columns: [
@@ -152,7 +152,7 @@ Mock.mock(
                     },
                     data: {
                         table: {
-                            table_id: table,
+                            table_id: table_id,
                             table_name: "豆瓣电影数据",
                             total: 100,
                             columns: [
@@ -292,7 +292,7 @@ Mock.mock(
                     },
                     data: {
                         table: {
-                            table_id: table,
+                            table_id: table_id,
                             table_name: "58租房数据",
                             total: 50,
                             columns: [
@@ -430,7 +430,7 @@ Mock.mock(
                     },
                     data: {
                         table: {
-                            table_id: table,
+                            table_id: table_id,
                             table_name: "58租房数据",
                             total: 50,
                             columns: [
