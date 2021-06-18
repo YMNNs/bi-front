@@ -14,7 +14,8 @@ Mock.mock(
                     },
                     data: {
                         chart: {
-                            type_id: 0,
+                            type_id: 1,
+                            data_id: 1,
                             chart_name: "豆瓣电影数据分析",
                             last_modified_time: 1623916319,
                             options: null,

@@ -131,6 +131,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 import { delete_chart } from "@/api/post/delete_chart";
 import { notification } from "ant-design-vue";
 import { chart_types } from "@/constant/chart_types";
+import { useRouter } from "vue-router";
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url,
@@ -143,6 +144,7 @@ export default defineComponent({
         DeleteOutlined,
     },
     setup() {
+        const router = useRouter();
         const state = reactive({
             quota: 0,
             used: 0,
@@ -160,7 +162,7 @@ export default defineComponent({
         };
 
         const handleEdit = (id) => {
-            console.log("edit" + id);
+            router.push("/edit_chart/" + id);
         };
 
         const handleDelete = (id) => {

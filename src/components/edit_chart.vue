@@ -1,140 +1,283 @@
 <template>
-    <a-layout>
-        <a-layout-sider
-            width="200"
-            style="background: #fff; padding-right: 16px"
-        >
+    <a-page-header @back="$router.go(-1)">
+        <template #title>编辑图表</template>
+    </a-page-header>
+    <a-row :gutter="[16, 16]">
+        <a-col :span="4">
+            <a-typography-title
+                :level="4"
+                v-model:content="chart_name"
+                :editable="true"
+            />
+        </a-col>
+    </a-row>
+    <a-row :gutter="[16, 16]">
+        <a-col :span="4">
             <a-row :gutter="[16, 16]">
                 <a-col :span="24">
-                    <a-typography-title :level="5">{{
-                        chart_name
-                    }}</a-typography-title>
+                    <a-input-search
+                        placeholder="搜索字段"
+                        @search="onSearch_field"
+                        v-model:value="search.field"
+                    />
                 </a-col>
             </a-row>
             <a-row :gutter="[16, 16]">
-                <a-col :span="24">
-                    <a-input-search />
+                <a-col :span="24" style="margin-top: 16px">
+                    <a-card size="small">
+                        <template #title>
+                            维度&nbsp;&nbsp;<a-tag
+                                color="default"
+                                closable
+                                @close="clear_filter_field"
+                                v-if="
+                                    columns.text.length !==
+                                    columns.text_display.length
+                                "
+                                >已过滤
+                            </a-tag></template
+                        >
+                        <a-tree
+                            checkable
+                            v-model:checkedKeys="checkedKeys.text"
+                            :tree-data="columns.text_display"
+                            show-icon
+                            style="margin-left: -16px"
+                        >
+                            <template #icon><FieldStringOutlined /></template>
+                        </a-tree>
+                    </a-card>
                 </a-col>
             </a-row>
-            <a-row :gutter="[16, 16]" style="min-height: 240px">
+            <a-row :gutter="[16, 16]">
+                <a-col :span="24" style="margin-top: 16px">
+                    <a-card size="small">
+                        <template #title>
+                            指标&nbsp;&nbsp;<a-tag
+                                color="default"
+                                closable
+                                @close="clear_filter_field"
+                                v-if="
+                                    columns.number.length !==
+                                    columns.number_display.length
+                                "
+                                >已过滤
+                            </a-tag></template
+                        >
+                        <a-tree
+                            checkable
+                            v-model:checkedKeys="checkedKeys.number"
+                            :tree-data="columns.number_display"
+                            show-icon
+                            style="margin-left: -16px"
+                        >
+                            <template #icon><FieldNumberOutlined /></template>
+                        </a-tree>
+                    </a-card>
+                </a-col>
+            </a-row>
+        </a-col>
+        <a-col :span="6">
+            <a-row :gutter="[16, 16]">
                 <a-col :span="24">
-                    <a-list bordered :data-source="columns_text" size="small">
-                        <template #renderItem="{ item }">
-                            <a-list-item
-                                ><FieldStringOutlined />
-                                {{ item.title }}</a-list-item
+                    <a-input-search
+                        @search="onSearch_chart_type"
+                        v-model:value="search.chart_type"
+                        placeholder="搜索图表类型"
+                    />
+                </a-col>
+            </a-row>
+            <a-row :gutter="[16, 16]">
+                <a-col :span="24" style="margin-top: 16px">
+                    <a-radio-group v-model:value="type_id" style="width: 100%"
+                        ><a-card size="small">
+                            <template #title>
+                                图表类型&nbsp;&nbsp;<a-tag
+                                    color="default"
+                                    closable
+                                    @close="clear_filter_chart_type"
+                                    v-if="
+                                        chart_types.length !==
+                                        chart_types_display.length
+                                    "
+                                    >已过滤
+                                </a-tag></template
                             >
-                        </template>
-                    </a-list>
-                </a-col>
+
+                            <a-card-grid
+                                style="
+                                    width: calc(1 / 3 * 100%);
+                                    text-align: center;
+                                "
+                                v-for="item in chart_types_display"
+                                v-bind:key="item"
+                                ><div class="cover-icon">
+                                    <icon-font :type="item.icon_type" />
+                                </div>
+                                <div style="margin-top: 4px">
+                                    <a-typography-text strong>{{
+                                        item.type_name
+                                    }}</a-typography-text>
+                                </div>
+                                <div style="margin-top: 8px">
+                                    <a-radio
+                                        :value="item.type_id"
+                                        style="margin-left: 8px"
+                                    />
+                                </div>
+                            </a-card-grid>
+                        </a-card> </a-radio-group
+                ></a-col>
             </a-row>
-            <a-row :gutter="[16, 16]" style="min-height: 240px">
+        </a-col>
+        <a-col :span="14">
+            <a-row :gutter="[16, 16]">
                 <a-col :span="24">
-                    <a-list bordered :data-source="columns_number" size="small">
-                        <template #renderItem="{ item }">
-                            <a-list-item
-                                ><FieldNumberOutlined />&nbsp;{{
-                                    item.title
-                                }}</a-list-item
-                            >
-                        </template>
-                    </a-list>
+                    <a-card size="small">
+                        <template #title> 预览 </template>
+                        <graph_1 :data="graph_data" />
+                    </a-card>
                 </a-col>
             </a-row>
-        </a-layout-sider>
-        <a-layout-content>
-            <a-layout>
-                <a-layout-sider width="200" style="background: #fff">
-                    456
-                </a-layout-sider>
-                <a-layout-content>
-                    <div
-                        :style="{
-                            padding: '24px',
-                            background: '#fff',
-                            minHeight: '360px',
-                        }"
-                    ></div>
-                </a-layout-content>
-            </a-layout>
-        </a-layout-content>
-    </a-layout>
+        </a-col>
+    </a-row>
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import { defineComponent, onMounted, reactive, toRefs, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { chart_types } from "@/constant/chart_types";
 import { view_chart } from "@/api/post/view_chart";
 import {
     FieldStringOutlined,
     FieldNumberOutlined,
+    createFromIconfontCN,
 } from "@ant-design/icons-vue";
+import { icon_url } from "@/util/iconfont";
+import graph_1 from "@/components/graph/graph_1";
+import { table_content } from "@/api/post/table_content";
+import { notification } from "ant-design-vue";
+
+const IconFont = createFromIconfontCN({
+    scriptUrl: icon_url,
+});
 
 export default defineComponent({
     components: {
+        IconFont,
         FieldStringOutlined,
         FieldNumberOutlined,
+        graph_1,
     },
     setup() {
         const state = reactive({
+            search: {
+                field: "",
+                chart_type: "",
+            },
             chart_id: NaN,
+            checkedKeys: {
+                number: [],
+                text: [],
+            },
             type_id: null,
-            chart_name: null,
-            columns_text: [
+            data_id: null,
+            chart_name: "豆瓣",
+            chart_types: [],
+            chart_types_display: [],
+            graph_data: [
                 {
-                    title: "电影名称",
-                    dataIndex: "name",
-                    key: "name",
-                    type: "string",
+                    year: "1850",
+                    value: 0,
+                    category: "Liquid fuel",
                 },
                 {
-                    title: "类型",
-                    dataIndex: "type",
-                    key: "type",
-                    type: "string",
-                },
-                {
-                    title: "地区",
-                    dataIndex: "country",
-                    key: "country",
-                    type: "string",
-                },
-                {
-                    title: "上映时间",
-                    dataIndex: "year",
-                    key: "year",
-                    type: "string",
+                    year: "1850",
+                    value: 54,
+                    category: "Solid fuel",
                 },
             ],
-            columns_number: [
-                {
-                    title: "评分",
-                    dataIndex: "rate",
-                    key: "rate",
-                    type: "number",
-                },
-                {
-                    title: "评论数",
-                    dataIndex: "comment",
-                    key: "comment",
-                    type: "number",
-                },
-            ],
+            columns: {
+                number: [],
+                number_display: [],
+                text: [],
+                text_display: [],
+            },
         });
-        // 注入route
+        // 注入路由
         const route = useRoute();
         const router = useRouter();
+
+        const onSearch_field = () => {
+            state.columns.number_display = state.columns.number.filter(
+                (i) => i.title.indexOf(state.search.field) !== -1
+            );
+            state.columns.text_display = state.columns.text.filter(
+                (i) => i.title.indexOf(state.search.field) !== -1
+            );
+        };
+
+        const onSearch_chart_type = () => {
+            state.chart_types_display = state.chart_types.filter(
+                (i) => i.type_name.indexOf(state.search.chart_type) !== -1
+            );
+        };
 
         const update = () => {
             view_chart(state.chart_id).then((response) => {
                 if (response.data.status.code === 0) {
                     state.type_id = response.data.data.chart.type_id;
+                    state.data_id = response.data.data.data_id;
                     state.chart_name = response.data.data.chart.chart_name;
                 } else {
                     // 没有取到图表
                     router.push("/chart_management");
                 }
             });
+
+            table_content(state.data_id, 0, 0).then((response) => {
+                if (response.data.status.code === 0) {
+                    console.log(response.data.data);
+                    state.columns.number = [];
+                    state.columns.number_display = [];
+                    state.columns.text = [];
+                    state.columns.text_display = [];
+                    response.data.data.table.columns.forEach((i) => {
+                        i.slots = {
+                            icon: "icon",
+                        };
+                        if (i.type === "number") {
+                            state.columns.number.push(i);
+                            state.columns.number_display.push(i);
+                            console.log(i.title);
+                        }
+                        if (i.type === "string") {
+                            state.columns.text.push(i);
+                            state.columns.text_display.push(i);
+                            console.log(i.title);
+                        }
+                    });
+                } else {
+                    notification["error"]({
+                        message: "错误",
+                        description: response.data.status.message,
+                    });
+                }
+            });
+        };
+
+        watch(state.checkedKeys.text, () => {
+            // todo 根据图表类型限制勾选列数量，考虑第三个属性“类别”
+        });
+
+        const clear_filter_chart_type = () => {
+            state.search.chart_type = "";
+            onSearch_chart_type();
+        };
+
+        const clear_filter_field = () => {
+            state.search.field = "";
+            onSearch_field();
         };
 
         onMounted(() => {
@@ -144,13 +287,26 @@ export default defineComponent({
             if (isNaN(state.chart_id)) {
                 router.push("/chart_management");
             }
+            state.chart_types = chart_types;
+            state.chart_types_display = state.chart_types;
             update();
         });
+
         return {
             ...toRefs(state),
+            onSearch_field,
+            clear_filter_field,
+            onSearch_chart_type,
+            clear_filter_chart_type,
         };
     },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.cover-icon {
+    font-size: 40px;
+    text-align: center;
+    margin-top: -16px;
+}
+</style>
