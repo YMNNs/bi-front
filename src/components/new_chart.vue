@@ -87,9 +87,9 @@
                                                     align="middle"
                                                 >
                                                     <a-col
-                                                        :flex="1"
+                                                        flex="48px"
                                                         style="
-                                                            font-size: xx-large;
+                                                            font-size: 32px;
                                                             padding-top: 2px;
                                                             padding-bottom: 2px;
                                                         "
@@ -100,7 +100,7 @@
                                                             "
                                                         />
                                                     </a-col>
-                                                    <a-col :flex="15">
+                                                    <a-col flex="auto">
                                                         <a-typography-text
                                                             strong
                                                             >{{

@@ -3,9 +3,10 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import { defineComponent, onMounted, onUpdated, toRefs } from "vue";
-// eslint-disable-next-line no-unused-vars
+/**
+ * 折线图
+ */
+import { defineComponent, onMounted } from "vue";
 import { Line } from "@antv/g2plot";
 
 export default defineComponent({
@@ -16,40 +17,27 @@ export default defineComponent({
         seriesField: String,
     },
     setup(props) {
-        //const { data } = toRefs(props);
         const render = () => {
+            console.log("render");
             const line = new Line("container", {
                 data: props.data,
-                xField: "year",
-                yField: "value",
-                seriesField: "category",
-                xAxis: {
-                    type: "time",
-                },
-                yAxis: {
-                    label: {
-                        // 数值格式化为千分位
-                        formatter: (v) =>
-                            `${v}`.replace(
-                                /\d{1,3}(?=(\d{3})+$)/g,
-                                (s) => `${s},`
-                            ),
-                    },
-                },
+                xField: props.xField,
+                yField: props.yField,
+                seriesField: props.seriesField,
+                xAxis: {},
+                yAxis: {},
             });
 
             line.render();
         };
 
-        onUpdated(() => {
-            render();
-        });
-
         onMounted(() => {
             render();
         });
 
-        return {};
+        return {
+            render,
+        };
     },
 });
 </script>

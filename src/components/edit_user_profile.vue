@@ -192,6 +192,7 @@
                             description="请认真阅读下面的说明，这非常重要。"
                             type="error"
                             show-icon
+                            banner
                         >
                             <template #icon><WarningOutlined /></template>
                         </a-alert>
