@@ -287,15 +287,17 @@ export default defineComponent({
                 onChange: (current) => {
                     state.loading = true;
                     state.pagination.defaultCurrent = current;
-                    table_content(state.table_id, current).then((response) => {
-                        if (response.data.status.code === 0) {
-                            state.dataSource =
-                                response.data.data.table.dataSource;
-                        } else {
-                            message.error(response.data.status.message);
+                    table_content(state.table_id, 10, current).then(
+                        (response) => {
+                            if (response.data.status.code === 0) {
+                                state.dataSource =
+                                    response.data.data.table.dataSource;
+                            } else {
+                                message.error(response.data.status.message);
+                            }
+                            state.loading = false;
                         }
-                        state.loading = false;
-                    });
+                    );
                 },
             },
             //单元格搜索所用
@@ -315,9 +317,8 @@ export default defineComponent({
             if (isNaN(state.table_id)) {
                 router.push("/data_management");
             }
-            table_content(state.table_id).then((response) => {
+            table_content(state.table_id, 10).then((response) => {
                 if (response.data.status.code === 0) {
-                    state.table_id = response.data.data.table.table_id;
                     state.table_name = response.data.data.table.table_name;
                     state.pagination.total = response.data.data.table.total;
                     state.dataSource = response.data.data.table.dataSource;

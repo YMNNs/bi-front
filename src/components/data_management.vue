@@ -2,12 +2,11 @@
     <div>
         <a-page-header title="数据" sub-title="此页面列出了您所有可用的数据集">
         </a-page-header>
-        <a-divider />
         <a-row>
             <a-col :span="24">
                 <!--上方标签-->
                 <a-tabs v-model:activeKey="activeKey">
-                    <a-tab-pane key="1" tab="样例">
+                    <a-tab-pane key="1" tab="所有">
                         <!--展示所有数据集信息的列表-->
                         <a-list
                             item-layout="horizontal"
@@ -49,6 +48,9 @@
                                             </a-avatar>
                                         </template>
                                     </a-list-item-meta>
+                                    <div>
+                                        <a-tag color="blue">样例数据</a-tag>
+                                    </div>
                                 </a-list-item>
                             </template>
                         </a-list>
@@ -62,7 +64,7 @@
 <script>
 import { defineComponent, reactive, toRefs, ref, onMounted } from "vue";
 import { all_tables } from "@/api/post/all_tables";
-import { DatabaseTwoTone } from "@ant-design/icons-vue";
+import { DatabaseTwoTone, CodepenOutlined } from "@ant-design/icons-vue";
 
 export default defineComponent({
     components: {
@@ -85,6 +87,7 @@ export default defineComponent({
         return {
             ...toRefs(state),
             DatabaseTwoTone,
+            CodepenOutlined,
         };
     },
 });

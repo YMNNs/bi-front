@@ -14,7 +14,6 @@ Mock.mock(
                     },
                     data: {
                         table: {
-                            table_id: table_id,
                             table_name: "豆瓣电影数据",
                             total: 100,
                             columns: [
@@ -152,41 +151,8 @@ Mock.mock(
                     },
                     data: {
                         table: {
-                            table_id: table_id,
                             table_name: "豆瓣电影数据",
                             total: 100,
-                            columns: [
-                                {
-                                    title: "电影名称",
-                                    dataIndex: "name",
-                                    key: "name",
-                                },
-                                {
-                                    title: "评分",
-                                    dataIndex: "rate",
-                                    key: "rate",
-                                },
-                                {
-                                    title: "类型",
-                                    dataIndex: "type",
-                                    key: "type",
-                                },
-                                {
-                                    title: "地区",
-                                    dataIndex: "country",
-                                    key: "country",
-                                },
-                                {
-                                    title: "上映时间",
-                                    dataIndex: "year",
-                                    key: "year",
-                                },
-                                {
-                                    title: "评论数",
-                                    dataIndex: "comment",
-                                    key: "comment",
-                                },
-                            ],
                             dataSource: [
                                 {
                                     ranking: "11",
