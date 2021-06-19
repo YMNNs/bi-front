@@ -61,6 +61,31 @@ Date.prototype.Format = function (fmt) {
     return fmt;
 };
 
+/**
+ * 比较两数组元素是否相同
+ * @param array
+ * @returns {boolean}
+ */
+Array.prototype.elementEquals = function (array) {
+    // 长度不等
+    if (this.length !== array.length) {
+        return false;
+    }
+    // 其有我没有
+    this.forEach((i) => {
+        if (array.find((j) => j === i)) {
+            return false;
+        }
+    });
+    // 我有其没有
+    array.forEach((i) => {
+        if (this.find((j) => j === i)) {
+            return false;
+        }
+    });
+    return true;
+};
+
 export function randomString(e) {
     e = e || 32;
     let t = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678",

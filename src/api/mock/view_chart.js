@@ -16,10 +16,13 @@ Mock.mock(
                         chart: {
                             type_id: 1,
                             data_id: 1,
-                            chart_name: "豆瓣电影数据分析",
+                            chart_name: "豆瓣",
                             last_modified_time: 1623916319,
-                            options: null,
-                            data: null,
+                            keys_number: ["rate", "comment"],
+                            keys_text: ["name"],
+                            xField: "type",
+                            yField: "value",
+                            seriesField: "category",
                         },
                     },
                 };
