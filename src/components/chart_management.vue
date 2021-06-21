@@ -23,14 +23,15 @@
         </a-page-header>
         <!--搜索框-->
         <a-divider />
-        <a-row type="flex" justify="end" align="middle" :gutter="16">
+        <a-row type="flex" align="middle" :gutter="16">
             <a-col :span="12">
                 <div style="display: table; vertical-align: middle">
                     <p style="display: table-cell">
                         <a-typography-text strong
                             >当前显示
                             {{ chartsDisplay.length }}
-                            个条目 </a-typography-text
+                            个条目（共
+                            {{ charts.length }} 个） </a-typography-text
                         >&nbsp;
                         <a-tag
                             color="default"
@@ -47,7 +48,6 @@
                     v-model:value="searchQuery"
                     placeholder="搜索"
                     size="large"
-                    :loading="searchLoading"
                     @search="onSearch"
                 />
             </a-col>
@@ -73,7 +73,6 @@
         <a-row>
             <a-col :span="24">
                 <a-list
-                    :loading="listLoading"
                     :grid="{
                         gutter: 16,
                         xs: 1,
@@ -87,7 +86,7 @@
                 >
                     <template #renderItem="{ item }">
                         <a-list-item>
-                            <a-card hoverable :loading="item.loading">
+                            <a-card hoverable>
                                 <template class="ant-card-actions" #actions>
                                     <edit-outlined
                                         key="edit"
@@ -153,8 +152,6 @@ export default defineComponent({
             chartsDisplay: [],
             searchQuery: "",
             filter: "last_update",
-            searchLoading: false,
-            listLoading: false,
         });
 
         const handleClickCard = () => {
@@ -178,10 +175,7 @@ export default defineComponent({
             });
         };
 
-        const loadingTimeout = 500;
-
         const update = () => {
-            state.listLoading = true;
             all_charts().then((response) => {
                 if (response.data.status.code === 0) {
                     // 请求成功
@@ -190,17 +184,14 @@ export default defineComponent({
                     state.available = state.quota - state.used;
                     state.charts = response.data.data.all_charts.charts;
                     state.charts.forEach((chart) => {
-                        chart.loading = true;
-                        chart.icon_type = chart_types.find(
+                        const chart_ref = chart_types.find(
                             (i) => i.type_id === chart.type_id
-                        ).icon_type;
+                        );
+                        chart.icon_type = chart_ref.icon_type;
+                        chart.type_name = chart_ref.type_name;
                     });
                     state.chartsDisplay = state.charts;
                     sortByTime();
-                    state.listLoading = false;
-                    setTimeout(() => {
-                        state.chartsDisplay.forEach((i) => (i.loading = false));
-                    }, loadingTimeout);
                 }
             });
         };
@@ -247,13 +238,11 @@ export default defineComponent({
         };
 
         const onSearch = () => {
-            state.listLoading = true;
             if (state.searchQuery.length === 0) {
                 // 没有搜索内容时恢复原状
                 state.chartsDisplay = state.charts;
                 handleSelectChange();
             }
-            state.searchLoading = true;
             let from;
             // 丢弃先前的搜索结果
             if (state.charts.length !== state.chartsDisplay.length) {
@@ -261,16 +250,10 @@ export default defineComponent({
             } else {
                 from = state.chartsDisplay;
             }
-            from.forEach((i) => (i.loading = true));
             // 按照名称搜索
             state.chartsDisplay = from.filter(
                 (i) => i.name.indexOf(state.searchQuery) !== -1
             );
-            state.listLoading = false;
-            setTimeout(() => {
-                state.searchLoading = false;
-                state.chartsDisplay.forEach((i) => (i.loading = false));
-            }, loadingTimeout);
         };
 
         onMounted(() => {

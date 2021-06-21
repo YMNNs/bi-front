@@ -4,10 +4,10 @@
 
 <script>
 /**
- * 折线图
+ * 面积图
  */
 import { defineComponent, onMounted } from "vue";
-import { Line } from "@antv/g2plot";
+import { Area } from "@antv/g2plot";
 
 export default defineComponent({
     props: {
@@ -18,7 +18,7 @@ export default defineComponent({
     },
     setup(props) {
         const render = () => {
-            const line = new Line("container", {
+            const area = new Area("container", {
                 data: props.data,
                 xField: props.xField,
                 yField: props.yField,
@@ -27,7 +27,7 @@ export default defineComponent({
                 yAxis: {},
             });
 
-            line.render();
+            area.render();
         };
 
         onMounted(() => {

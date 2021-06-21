@@ -98,7 +98,21 @@ instance.interceptors.response.use(
                     case -8: {
                         notification["error"]({
                             message: "错误",
-                            description: "此接口已停用。",
+                            description: "字段值数据类型错误。",
+                        });
+                        break;
+                    }
+                    case -9: {
+                        notification["error"]({
+                            message: "错误",
+                            description: "value格式不正确。",
+                        });
+                        break;
+                    }
+                    case -10: {
+                        notification["error"]({
+                            message: "错误",
+                            description: "未知错误。",
                         });
                         break;
                     }

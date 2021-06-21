@@ -2,7 +2,12 @@
     <a-page-header @back="$router.go(-1)">
         <template #title>编辑图表</template>
         <template #extra>
-            <a-button key="2">重置</a-button>
+            <a-button
+                key="2"
+                @click="onReset"
+                :disabled="change_list.length === 0"
+                >重置</a-button
+            >
             <a-button
                 key="1"
                 type="primary"
@@ -42,7 +47,7 @@
                                     limit.text.max
                                 }}</template
                             >
-                            <template v-else>{{ limit.number.min }}</template>
+                            <template v-else>{{ limit.text.min }}</template>
                             个）&nbsp;&nbsp;<a-tag
                                 color="default"
                                 closable
@@ -189,17 +194,23 @@
                         </a-alert>
                     </div>
                     <a-card size="small" v-if="!error">
-                        <Graph_api
-                            :data="raw_data"
-                            :columns="columns.number"
-                            :number_keys="checkedKeys_number"
-                            :text_keys="checkedKeys_text"
-                            :type_id="graph_options.type_id"
-                            :key="timeStamp"
-                            :x-field="graph_options.xField"
-                            :y-field="graph_options.yField"
-                            :series-field="graph_options.seriesField"
-                        />
+                        <a-spin
+                            :spinning="!ready"
+                            :delay="500"
+                            :indicator="indicator"
+                        >
+                            <Graph_api
+                                :data="raw_data"
+                                :columns="columns.number"
+                                :number_keys="checkedKeys_number"
+                                :text_keys="checkedKeys_text"
+                                :type_id="graph_options.type_id"
+                                :key="timeStamp"
+                                :x-field="graph_options.xField"
+                                :y-field="graph_options.yField"
+                                :series-field="graph_options.seriesField"
+                            />
+                        </a-spin>
                     </a-card>
                 </a-col>
             </a-row>
@@ -208,7 +219,6 @@
 </template>
 
 <script>
-//TODO 修改图表信息并保存、更多图表类型
 import {
     defineComponent,
     onMounted,
@@ -217,6 +227,7 @@ import {
     watch,
     ref,
     computed,
+    h,
 } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { chart_types } from "@/constant/chart_types";
@@ -224,12 +235,14 @@ import { view_chart } from "@/api/post/view_chart";
 import {
     FieldStringOutlined,
     FieldNumberOutlined,
+    LoadingOutlined,
     createFromIconfontCN,
 } from "@ant-design/icons-vue";
 import { icon_url } from "@/util/iconfont";
 import { table_content } from "@/api/post/table_content";
 import { notification } from "ant-design-vue";
 import Graph_api from "@/components/graph/graph_api";
+import { edit_chart } from "@/api/post/edit_chart";
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url,
@@ -245,6 +258,13 @@ export default defineComponent({
     setup() {
         const checkedKeys_number = ref([]);
         const checkedKeys_text = ref([]);
+
+        const indicator = h(LoadingOutlined, {
+            style: {
+                fontSize: "24px",
+            },
+            spin: true,
+        });
 
         const state = reactive({
             timeStamp: NaN,
@@ -325,6 +345,8 @@ export default defineComponent({
         };
 
         const update = () => {
+            state.ready = false;
+            state.chart_types_display = state.chart_types;
             view_chart(state.chart_id)
                 .then((response) => {
                     if (response.data.status.code === 0) {
@@ -339,10 +361,10 @@ export default defineComponent({
                         state.graph_options = JSON.parse(
                             JSON.stringify(state.graph_options_original)
                         );
+                        onTypeInit();
                         console.log(
                             response.data.data.chart.last_modified_time
                         );
-                        onTypeChange();
                     } else {
                         // 没有取到图表
                         router.push("/chart_management");
@@ -373,10 +395,16 @@ export default defineComponent({
                                     (i) => i.type === "string"
                                 );
                             state.columns.text_display = state.columns.text;
-                            checkedKeys_text.value =
-                                state.graph_options_original.keys_text;
-                            checkedKeys_number.value =
-                                state.graph_options_original.keys_number;
+                            checkedKeys_text.value = JSON.parse(
+                                JSON.stringify(
+                                    state.graph_options_original.keys_text
+                                )
+                            );
+                            checkedKeys_number.value = JSON.parse(
+                                JSON.stringify(
+                                    state.graph_options_original.keys_number
+                                )
+                            );
                         } else {
                             notification["error"]({
                                 message: "错误",
@@ -387,7 +415,11 @@ export default defineComponent({
                 });
         };
 
-        watch([checkedKeys_text, checkedKeys_number], () => {
+        watch([checkedKeys_text, checkedKeys_number], () => validate_keys());
+
+        const validate_keys = () => {
+            console.log("验证keys");
+            console.log(state.limit);
             state.problems.text = [];
             state.problems.number = [];
             state.graph_options.keys_number = checkedKeys_number.value;
@@ -413,7 +445,7 @@ export default defineComponent({
             if (!state.error) {
                 draw();
             }
-        });
+        };
 
         const clear_filter_chart_type = () => {
             state.search.chart_type = "";
@@ -426,15 +458,21 @@ export default defineComponent({
         };
 
         const onTypeChange = () => {
+            onTypeInit();
+            validate_keys();
+        };
+
+        const onTypeInit = () => {
             state.limit = state.chart_types.find(
                 (i) => i.type_id === state.graph_options.type_id
             ).limit;
         };
 
         const draw = () => {
-            console.log("重新绘制");
+            console.log("绘制图表");
             // 通过更新key来绘图
             state.timeStamp = new Date().getTime();
+            state.ready = true;
         };
 
         onMounted(() => {
@@ -445,18 +483,11 @@ export default defineComponent({
                 router.push("/chart_management");
             }
             state.chart_types = chart_types;
-            state.chart_types_display = state.chart_types;
             update();
         });
 
         watch(
-            () => {
-                const result = [];
-                Object.keys(state.graph_options).forEach((key) => {
-                    result.push(state.graph_options[key]);
-                });
-                return result;
-            },
+            () => state.graph_options,
             () => {
                 if (state.skip_check) {
                     return;
@@ -467,7 +498,8 @@ export default defineComponent({
                     update_change_list();
                 }, 3000);
                 state.skip_check = true;
-            }
+            },
+            { deep: true }
         );
 
         const update_change_list = () => {
@@ -500,11 +532,27 @@ export default defineComponent({
         };
 
         const onSubmit = () => {
-            //TODO 保存图表
+            if (state.change_list.length > 0) {
+                edit_chart(state.change_list).then((response) => {
+                    if (response.data.status.code === 0) {
+                        notification["success"]({
+                            message: "成功",
+                            description: response.data.status.message,
+                        });
+                    } else {
+                        notification["error"]({
+                            message: "错误",
+                            description: response.data.status.message,
+                        });
+                    }
+                });
+            }
         };
 
         const onReset = () => {
-            //TODO 重置页面
+            update();
+            clear_filter_chart_type();
+            clear_filter_field();
         };
 
         return {
@@ -519,6 +567,7 @@ export default defineComponent({
             onSubmit,
             onReset,
             save_disabled,
+            indicator,
         };
     },
 });

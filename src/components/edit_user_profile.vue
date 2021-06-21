@@ -539,6 +539,9 @@ export default defineComponent({
                         payload.push({ key: key, value: form[key] });
                     }
                 });
+                if (payload.length === 0) {
+                    return;
+                }
                 modify_user_profile(payload)
                     .then((response) => {
                         if (response.data.status.code === 0) {
@@ -547,6 +550,8 @@ export default defineComponent({
                                 message: "成功",
                                 description: "您的个人信息现已更新。",
                             });
+                            // 更新本地用户信息
+                            store.dispatch("UPDATE_USER_INFO");
                         } else {
                             console.log(response.data);
                             notification["error"]({
