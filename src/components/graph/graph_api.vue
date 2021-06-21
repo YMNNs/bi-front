@@ -1,5 +1,3 @@
-<!--YMNNs-->
-<!--图表统一API-->
 <template>
     <component
         :is="graph"
@@ -12,6 +10,9 @@
 </template>
 
 <script>
+/**
+ * 图表统一API
+ */
 import { chart_types } from "@/constant/chart_types";
 import {
     defineComponent,
@@ -52,7 +53,6 @@ export default defineComponent({
             const chart_meta = chart_types.find(
                 (i) => i.type_id === props.type_id
             );
-            // 动态注册组件，访问setup()外面的components
             // 此名称应与components里的属性对应
             state.graph = "graph";
             // 优先使用chart_types中定义的属性
@@ -69,6 +69,7 @@ export default defineComponent({
                 props.number_keys,
                 props.text_keys
             );
+            // 动态注册组件，访问setup()外面的components
             internalInstance.components.graph = defineAsyncComponent(
                 chart_meta.component
             );

@@ -4,10 +4,10 @@
 
 <script>
 /**
- * 折线图
+ * 雷达图
  */
 import { defineComponent, onMounted } from "vue";
-import { Line } from "@antv/g2plot";
+import { Radar } from "@antv/g2plot";
 
 export default defineComponent({
     props: {
@@ -18,16 +18,30 @@ export default defineComponent({
     },
     setup(props) {
         const render = () => {
-            const line = new Line("container", {
+            const radarPlot = new Radar("container", {
                 data: props.data,
                 xField: props.xField,
                 yField: props.yField,
                 seriesField: props.seriesField,
-                xAxis: {},
-                yAxis: {},
+                xAxis: {
+                    line: null,
+                    tickLine: null,
+                    grid: {
+                        line: {
+                            style: {
+                                lineDash: null,
+                            },
+                        },
+                    },
+                },
+                // 开启面积
+                area: {},
+                // 开启辅助点
+                point: {
+                    size: 2,
+                },
             });
-
-            line.render();
+            radarPlot.render();
         };
 
         onMounted(() => {

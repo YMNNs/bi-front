@@ -42,7 +42,27 @@ export const chart_types = [
         description:
             "使用柱形显示维度的数值。横轴显示分类维度，纵轴显示相应的值",
         icon_type: "icon-duoxilieezhuzhuangtu",
-        component: undefined,
+        component: () => import("@/components/graph/column"),
+        yField: "value",
+        seriesField: "category",
+        prepare_data: (data, columns, number_keys, text_keys) => {
+            const result = [];
+            const columns_number = columns.filter((i) => i.type === "number");
+            data.forEach((i) => {
+                number_keys.forEach((number) => {
+                    const item = {};
+                    item["value"] = i[number];
+                    item["category"] = columns_number.find(
+                        (_i) => _i.key === number
+                    ).title;
+                    text_keys.forEach((text) => {
+                        item[text] = i[text];
+                    });
+                    result.push(item);
+                });
+            });
+            return result;
+        },
         limit: {
             number: {
                 max: 5,
@@ -60,7 +80,27 @@ export const chart_types = [
         description:
             "使用柱形显示维度的数值。纵轴显示分类维度，横轴显示相应的值",
         icon_type: "icon-duidietiaoxingtu",
-        component: undefined,
+        component: () => import("@/components/graph/bar"),
+        yField: "value",
+        seriesField: "category",
+        prepare_data: (data, columns, number_keys, text_keys) => {
+            const result = [];
+            const columns_number = columns.filter((i) => i.type === "number");
+            data.forEach((i) => {
+                number_keys.forEach((number) => {
+                    const item = {};
+                    item["value"] = i[number];
+                    item["category"] = columns_number.find(
+                        (_i) => _i.key === number
+                    ).title;
+                    text_keys.forEach((text) => {
+                        item[text] = i[text];
+                    });
+                    result.push(item);
+                });
+            });
+            return result;
+        },
         limit: {
             number: {
                 max: 5,
@@ -78,7 +118,27 @@ export const chart_types = [
         description:
             "使用带填充区域的线段显示数据在一个具有顺序性的维度上的变化",
         icon_type: "icon-duidiemianjitu",
-        component: undefined,
+        component: () => import("@/components/graph/area"),
+        yField: "value",
+        seriesField: "category",
+        prepare_data: (data, columns, number_keys, text_keys) => {
+            const result = [];
+            const columns_number = columns.filter((i) => i.type === "number");
+            data.forEach((i) => {
+                number_keys.forEach((number) => {
+                    const item = {};
+                    item["value"] = i[number];
+                    item["category"] = columns_number.find(
+                        (_i) => _i.key === number
+                    ).title;
+                    text_keys.forEach((text) => {
+                        item[text] = i[text];
+                    });
+                    result.push(item);
+                });
+            });
+            return result;
+        },
         limit: {
             number: {
                 max: 5,
@@ -96,7 +156,23 @@ export const chart_types = [
         description:
             "通过扇形区块的颜色和弧长（角度、面积）来展现数据的分类和占比情况",
         icon_type: "icon-bingtu",
-        component: undefined,
+        component: () => import("@/components/graph/pie"),
+        yField: "value",
+        seriesField: "category",
+        prepare_data: (data, columns, number_keys, text_keys) => {
+            const result = [];
+            data.forEach((i) => {
+                number_keys.forEach((number) => {
+                    const item = {};
+                    item["value"] = i[number];
+                    text_keys.forEach((text) => {
+                        item[text] = i[text];
+                    });
+                    result.push(item);
+                });
+            });
+            return result;
+        },
         limit: {
             number: {
                 max: 1,
@@ -113,7 +189,27 @@ export const chart_types = [
         type_name: "散点图",
         description: "将所有的数据以不同颜色的点的形式展现在平面直角坐标系上",
         icon_type: "icon-sandiantu",
-        component: undefined,
+        component: () => import("@/components/graph/scatter"),
+        yField: "value",
+        seriesField: "category",
+        prepare_data: (data, columns, number_keys, text_keys) => {
+            const result = [];
+            const columns_number = columns.filter((i) => i.type === "number");
+            data.forEach((i) => {
+                number_keys.forEach((number) => {
+                    const item = {};
+                    item["value"] = i[number];
+                    item["category"] = columns_number.find(
+                        (_i) => _i.key === number
+                    ).title;
+                    text_keys.forEach((text) => {
+                        item[text] = i[text];
+                    });
+                    result.push(item);
+                });
+            });
+            return result;
+        },
         limit: {
             number: {
                 max: 2,
@@ -130,7 +226,27 @@ export const chart_types = [
         type_name: "雷达图",
         description: "将不同系列的多个维度的数据量映射到坐标轴上",
         icon_type: "icon-leidatu",
-        component: undefined,
+        component: () => import("@/components/graph/radar"),
+        yField: "value",
+        seriesField: "category",
+        prepare_data: (data, columns, number_keys, text_keys) => {
+            const result = [];
+            const columns_number = columns.filter((i) => i.type === "number");
+            data.forEach((i) => {
+                number_keys.forEach((number) => {
+                    const item = {};
+                    item["value"] = i[number];
+                    item["category"] = columns_number.find(
+                        (_i) => _i.key === number
+                    ).title;
+                    text_keys.forEach((text) => {
+                        item[text] = i[text];
+                    });
+                    result.push(item);
+                });
+            });
+            return result;
+        },
         limit: {
             number: {
                 max: 5,
