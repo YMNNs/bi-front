@@ -164,6 +164,7 @@
                             type="warning"
                             message="图表无法预览"
                             show-icon
+                            banner
                         >
                             <template #description>
                                 <a-typography-paragraph>
@@ -207,7 +208,7 @@
 </template>
 
 <script>
-//TODO 修改图表信息并保存、更多图表类型、抽出数据处理工具类
+//TODO 修改图表信息并保存、更多图表类型
 import {
     defineComponent,
     onMounted,
