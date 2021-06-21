@@ -79,6 +79,17 @@ const routes = [
                 },
             },
             {
+                path: "/new_chart",
+                component: () => import("@/components/new_chart"),
+                name: "new_chart",
+                meta: {
+                    title: "新建图表",
+                    role: ["user"],
+                    requireAuth: true,
+                    hidden: true,
+                },
+            },
+            {
                 path: "/dashboard",
                 component: () => import("@/components/dashboard"),
                 name: "dashboard",
@@ -101,6 +112,17 @@ const routes = [
                 },
             },
             {
+                path: "/edit_chart/:id",
+                component: () => import("@/components/edit_chart"),
+                name: "edit_chart",
+                meta: {
+                    title: "编辑图表",
+                    role: ["user"],
+                    requireAuth: true,
+                    hidden: true,
+                },
+            },
+            {
                 path: "/data_management",
                 component: () => import("@/components/data_management"),
                 name: "data_management",
@@ -109,6 +131,17 @@ const routes = [
                     role: ["user"],
                     requireAuth: true,
                     icon: "icon-data",
+                },
+            },
+            {
+                path: "/data_display/:id",
+                component: () => import("@/components/data_display"),
+                name: "data_display",
+                meta: {
+                    title: "数据展示",
+                    role: ["user"],
+                    requireAuth: true,
+                    hidden: true,
                 },
             },
         ],

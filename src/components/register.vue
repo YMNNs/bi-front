@@ -120,6 +120,11 @@ export default defineComponent({
                 },
                 {
                     trigger: "blur",
+                    max: 16,
+                    message: "用户名长度上限为16字符",
+                },
+                {
+                    trigger: "blur",
                     message: "用户名已被占用",
                     validator: (rule, value) => {
                         return new Promise((resolve, reject) => {
@@ -146,7 +151,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16位之间",
+                    message: "密码长度必须在8-16字符之间",
                 },
             ],
             email: [
@@ -179,10 +184,9 @@ export default defineComponent({
                 {
                     trigger: "blur",
                     required: false,
-                    min: 1,
                     max: 16,
                     type: "string",
-                    message: "昵称长度应小于16字符",
+                    message: "昵称长度上限为16字符",
                 },
             ],
         });

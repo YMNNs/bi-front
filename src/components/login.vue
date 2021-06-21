@@ -5,6 +5,7 @@
             description="您已退出登录，使用下面的表单可以再次登录。"
             type="success"
             show-icon
+            banner
         />
     </div>
     <div class="tip" v-else-if="local_test === 'true'">
@@ -13,6 +14,7 @@
             description="所有后端数据均由 Mock.js 提供，请使用 api/mock/mock_data.js 中提供的用户名和密码登录。"
             type="info"
             show-icon
+            banner
         />
     </div>
     <div style="padding: 15vh">

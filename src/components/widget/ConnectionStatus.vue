@@ -1,10 +1,8 @@
 <template>
     <a-row class="row">
-        <a-col :span="8"></a-col>
-        <a-col :span="8" class="icon">
+        <a-col :span="24" class="icon">
             <DisconnectOutlined />
         </a-col>
-        <a-col :span="8"></a-col>
     </a-row>
 </template>
 <script>

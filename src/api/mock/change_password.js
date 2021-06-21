@@ -14,7 +14,7 @@ Mock.mock(
                     code: 1,
                     message: "旧密码不匹配",
                 },
-                data: {},
+                data: null,
             };
         } else if (new_password.length < 8 || new_password.length > 16) {
             return {
@@ -22,7 +22,7 @@ Mock.mock(
                     code: 3,
                     message: "新密码格式错误",
                 },
-                data: {},
+                data: null,
             };
         } else
             return {
@@ -30,7 +30,7 @@ Mock.mock(
                     code: 0,
                     message: "密码修改成功",
                 },
-                data: {},
+                data: null,
             };
     }
 );
