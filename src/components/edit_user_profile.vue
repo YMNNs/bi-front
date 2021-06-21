@@ -530,19 +530,19 @@ export default defineComponent({
         const onSubmit_profile = () => {
             validate_profile().then(() => {
                 const form = toRaw(modelRef_profile);
-                const payload = [];
+                const user = {};
                 Object.keys(form).forEach((key) => {
                     if (
                         form[key] &&
                         form[key] !== state.original_profile[key]
                     ) {
-                        payload.push({ key: key, value: form[key] });
+                        user[key] = form[key];
                     }
                 });
-                if (payload.length === 0) {
+                if (user.length === 0) {
                     return;
                 }
-                modify_user_profile(payload)
+                modify_user_profile(user)
                     .then((response) => {
                         if (response.data.status.code === 0) {
                             // 修改成功
