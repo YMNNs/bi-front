@@ -21,31 +21,37 @@ Mock.mock(
                                     title: "电影名称",
                                     dataIndex: "name",
                                     key: "name",
+                                    type: "string",
                                 },
                                 {
                                     title: "评分",
                                     dataIndex: "rate",
                                     key: "rate",
+                                    type: "number",
                                 },
                                 {
                                     title: "类型",
                                     dataIndex: "type",
                                     key: "type",
+                                    type: "string",
                                 },
                                 {
                                     title: "地区",
                                     dataIndex: "country",
                                     key: "country",
+                                    type: "string",
                                 },
                                 {
                                     title: "上映时间",
                                     dataIndex: "year",
                                     key: "year",
+                                    type: "string",
                                 },
                                 {
                                     title: "评论数",
                                     dataIndex: "comment",
                                     key: "comment",
+                                    type: "number",
                                 },
                             ],
                             dataSource: [
@@ -153,6 +159,44 @@ Mock.mock(
                         table: {
                             table_name: "豆瓣电影数据",
                             total: 100,
+                            columns: [
+                                {
+                                    title: "电影名称",
+                                    dataIndex: "name",
+                                    key: "name",
+                                    type: "string",
+                                },
+                                {
+                                    title: "评分",
+                                    dataIndex: "rate",
+                                    key: "rate",
+                                    type: "number",
+                                },
+                                {
+                                    title: "类型",
+                                    dataIndex: "type",
+                                    key: "type",
+                                    type: "string",
+                                },
+                                {
+                                    title: "地区",
+                                    dataIndex: "country",
+                                    key: "country",
+                                    type: "string",
+                                },
+                                {
+                                    title: "上映时间",
+                                    dataIndex: "year",
+                                    key: "year",
+                                    type: "string",
+                                },
+                                {
+                                    title: "评论数",
+                                    dataIndex: "comment",
+                                    key: "comment",
+                                    type: "number",
+                                },
+                            ],
                             dataSource: [
                                 {
                                     ranking: "11",
@@ -258,7 +302,6 @@ Mock.mock(
                     },
                     data: {
                         table: {
-                            table_id: table_id,
                             table_name: "58租房数据",
                             total: 50,
                             columns: [
@@ -266,31 +309,37 @@ Mock.mock(
                                     title: "电影名称",
                                     dataIndex: "name",
                                     key: "name",
+                                    type: "string",
                                 },
                                 {
                                     title: "评分",
                                     dataIndex: "rate",
                                     key: "rate",
+                                    type: "number",
                                 },
                                 {
                                     title: "类型",
                                     dataIndex: "type",
                                     key: "type",
+                                    type: "string",
                                 },
                                 {
                                     title: "地区",
                                     dataIndex: "country",
                                     key: "country",
+                                    type: "string",
                                 },
                                 {
                                     title: "上映时间",
                                     dataIndex: "year",
                                     key: "year",
+                                    type: "string",
                                 },
                                 {
                                     title: "评论数",
                                     dataIndex: "comment",
                                     key: "comment",
+                                    type: "number",
                                 },
                             ],
                             dataSource: [
@@ -396,9 +445,46 @@ Mock.mock(
                     },
                     data: {
                         table: {
-                            table_id: table_id,
                             table_name: "58租房数据",
                             total: 50,
+                            columns: [
+                                {
+                                    title: "电影名称",
+                                    dataIndex: "name",
+                                    key: "name",
+                                    type: "string",
+                                },
+                                {
+                                    title: "评分",
+                                    dataIndex: "rate",
+                                    key: "rate",
+                                    type: "number",
+                                },
+                                {
+                                    title: "类型",
+                                    dataIndex: "type",
+                                    key: "type",
+                                    type: "string",
+                                },
+                                {
+                                    title: "地区",
+                                    dataIndex: "country",
+                                    key: "country",
+                                    type: "string",
+                                },
+                                {
+                                    title: "上映时间",
+                                    dataIndex: "year",
+                                    key: "year",
+                                    type: "string",
+                                },
+                                {
+                                    title: "评论数",
+                                    dataIndex: "comment",
+                                    key: "comment",
+                                    type: "number",
+                                },
+                            ],
                             dataSource: [
                                 {
                                     ranking: "11",
