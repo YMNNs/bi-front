@@ -5,11 +5,28 @@
             <a-col :span="4">
                 <a-typography-title
                     v-model:content="editableStr"
-                    :level="5"
+                    :level="4"
                     :editable="true"
                 ></a-typography-title>
             </a-col>
         </a-row>
+        <a-divider />
+        <!--条目数量显示-->
+        <a-row type="flex" align="middle" :gutter="16">
+            <a-col :span="12">
+                <div style="display: table; vertical-align: middle">
+                    <p style="display: table-cell">
+                        <a-typography-text strong
+                            >当前显示
+                            {{ dataSource.length }}
+                            个条目（共
+                            {{ pagination.total }} 个） </a-typography-text
+                        >&nbsp;
+                    </p>
+                </div>
+            </a-col>
+        </a-row>
+        <a-divider />
         <!--数据表部分-->
         <a-row type="flex" justify="space-around" align="middle">
             <a-col :span="24">
@@ -20,108 +37,7 @@
                     :loading="loading"
                     bordered
                 >
-                    <!--自定义筛选功能-->
-                    <template
-                        #filterDropdown="{
-                            setSelectedKeys,
-                            selectedKeys,
-                            confirm,
-                            clearFilters,
-                            column,
-                        }"
-                    >
-                        <div style="padding: 8px">
-                            <a-input
-                                ref="searchInput"
-                                :placeholder="`搜索 ${column.title}`"
-                                :value="selectedKeys[0]"
-                                style="
-                                    width: 188px;
-                                    margin-bottom: 8px;
-                                    display: block;
-                                "
-                                @change="
-                                    (e) =>
-                                        setSelectedKeys(
-                                            e.target.value
-                                                ? [e.target.value]
-                                                : []
-                                        )
-                                "
-                                @pressEnter="
-                                    handleSearch(
-                                        selectedKeys,
-                                        confirm,
-                                        column.dataIndex
-                                    )
-                                "
-                            />
-                            <a-button
-                                type="primary"
-                                size="small"
-                                style="width: 90px; margin-right: 8px"
-                                @click="
-                                    handleSearch(
-                                        selectedKeys,
-                                        confirm,
-                                        column.dataIndex
-                                    )
-                                "
-                            >
-                                <template #icon>
-                                    <SearchOutlined />
-                                </template>
-                                搜索
-                            </a-button>
-                            <a-button
-                                size="small"
-                                style="width: 90px"
-                                @click="handleReset(clearFilters)"
-                            >
-                                重置
-                            </a-button>
-                        </div>
-                    </template>
-                    <template #filterIcon="filtered">
-                        <search-outlined
-                            :style="{ color: filtered ? '#108ee9' : undefined }"
-                        />
-                    </template>
-                    <template #customRender="{ text, column }">
-                        <span
-                            v-if="
-                                searchText &&
-                                searchedColumn === column.dataIndex
-                            "
-                        >
-                            <template
-                                v-for="(fragment, i) in text
-                                    .toString()
-                                    .split(
-                                        new RegExp(
-                                            `(?<=${searchText})|(?=${searchText})`,
-                                            'i'
-                                        )
-                                    )"
-                            >
-                                <mark
-                                    v-if="
-                                        fragment.toLowerCase() ===
-                                        searchText.toLowerCase()
-                                    "
-                                    class="highlight"
-                                    :key="i"
-                                >
-                                    {{ fragment }}
-                                </mark>
-                                <template v-else>{{ fragment }}</template>
-                            </template>
-                        </span>
-                        <template v-else>
-                            {{ text }}
-                        </template>
-                    </template>
-                    <!--单元格编辑功能设置-->
+                    <!--单元格编辑功能设置，暂未使用-->
                     <template #name="{ text, record }">
                         <div class="editable-cell">
                             <div
@@ -149,7 +65,7 @@
                             </div>
                         </div>
                     </template>
-                    <!--删除功能设置-->
+                    <!--删除功能设置，暂未使用-->
                     <template #operation="{ record }">
                         <a-popconfirm
                             v-if="dataSource.length"
@@ -171,25 +87,19 @@ import {
     reactive,
     toRefs,
     computed,
-    ref,
     watch,
     onMounted,
 } from "vue";
-import {
-    CheckOutlined,
-    EditOutlined,
-    SearchOutlined,
-} from "@ant-design/icons-vue";
+import { CheckOutlined, EditOutlined } from "@ant-design/icons-vue";
 import { cloneDeep } from "lodash-es";
 import { table_content } from "@/api/post/table_content";
-import { message } from "ant-design-vue";
+import { notification } from "ant-design-vue";
 import { useRoute } from "vue-router";
 import router from "@/router";
 import { change_table } from "@/api/post/change_table";
 
 export default defineComponent({
     components: {
-        SearchOutlined,
         CheckOutlined,
         EditOutlined,
     },
@@ -285,6 +195,7 @@ export default defineComponent({
                 defaultPageSize: 10,
                 total: 0,
                 onChange: (current) => {
+                    //点击翻页后开始加载
                     state.loading = true;
                     state.pagination.defaultCurrent = current;
                     table_content(state.table_id, 10, current).then(
@@ -293,16 +204,17 @@ export default defineComponent({
                                 state.dataSource =
                                     response.data.data.table.dataSource;
                             } else {
-                                message.error(response.data.status.message);
+                                notification["error"]({
+                                    message: "错误",
+                                    description: response.data.status.message,
+                                });
                             }
+                            //翻页操作完成后关闭加载
                             state.loading = false;
                         }
                     );
                 },
             },
-            //单元格搜索所用
-            searchText: "",
-            searchedColumn: "",
             //修改数据表名所用
             editableStr: "",
         });
@@ -328,6 +240,7 @@ export default defineComponent({
             });
         });
 
+        //修改数据表名
         watch(state.editableStr, () => {
             console.log("editableStr", state.editableStr.value);
             change_table(state.table_id, state.editableStr).then((response) => {
@@ -339,32 +252,19 @@ export default defineComponent({
             });
         });
 
-        const searchInput = ref();
-        //处理自定义筛选
-        const handleSearch = (selectedKeys, confirm, dataIndex) => {
-            confirm();
-            state.searchText = selectedKeys[0];
-            state.searchedColumn = dataIndex;
-        };
-        //处理自定义筛选后重置
-        const handleReset = (clearFilters) => {
-            clearFilters();
-            state.searchText = "";
-        };
-
+        //单元格编辑功能
         //计算数据表存储元素个数
         const count = computed(() => state.dataSource + 1);
         //存储可编辑数据列
         const editableData = reactive({});
-
-        //处理编辑
+        //处理编辑操作
         const edit = (key) => {
             editableData[key] = cloneDeep(
                 state.dataSource.filter((item) => key === item.key)[0]
             );
         };
 
-        //处理保存
+        //保存编辑内容
         const save = (key) => {
             Object.assign(
                 state.dataSource.filter((item) => key === item.key)[0],
@@ -373,7 +273,7 @@ export default defineComponent({
             delete editableData[key];
         };
 
-        //处理删除
+        //处理删除操作
         const onDelete = (key) => {
             state.dataSource = state.dataSource.filter(
                 (item) => item.key !== key
@@ -387,10 +287,7 @@ export default defineComponent({
             count,
             edit,
             save,
-            handleSearch,
-            handleReset,
             searchText: "",
-            searchInput,
             searchedColumn: "",
         };
     },

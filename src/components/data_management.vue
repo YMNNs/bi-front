@@ -2,6 +2,23 @@
     <div>
         <a-page-header title="数据" sub-title="此页面列出了您所有可用的数据集">
         </a-page-header>
+        <a-divider />
+        <!--条目数量显示-->
+        <a-row type="flex" align="middle" :gutter="16">
+            <a-col :span="12">
+                <div style="display: table; vertical-align: middle">
+                    <p style="display: table-cell">
+                        <a-typography-text strong
+                            >当前显示
+                            {{ tables.length }}
+                            个条目（共
+                            {{ tables.length }} 个） </a-typography-text
+                        >&nbsp;
+                    </p>
+                </div>
+            </a-col>
+        </a-row>
+        <a-divider />
         <a-row>
             <a-col :span="24">
                 <!--上方标签-->
@@ -76,11 +93,13 @@ export default defineComponent({
             all_tables().then((response) => {
                 if (response.data.status.code === 0) {
                     state.tables = response.data.data.tables;
+                    state.total = response.data.data.tables.length;
                 }
             });
         });
         const state = reactive({
             tables: [],
+            total: 0,
             activeKey: ref("1"),
         });
 
