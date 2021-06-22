@@ -92,6 +92,7 @@ import { validate_email } from "@/api/post/validate_email";
 import { register } from "@/api/post/register";
 import { useStore } from "vuex";
 import { user_info } from "@/api/post/user_info";
+import { notification } from "ant-design-vue";
 
 export default defineComponent({
     setup() {
@@ -228,6 +229,11 @@ export default defineComponent({
                                 .catch((err) => {
                                     console.log("error", err);
                                 });
+                        } else {
+                            notification["error"]({
+                                message: "错误",
+                                description: response.data.status.message,
+                            });
                         }
                     });
                 })
