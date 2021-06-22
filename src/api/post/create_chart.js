@@ -5,8 +5,5 @@ export function create_chart(data_id, type_id, chart_name) {
         data_id: data_id,
         type_id: type_id,
         chart_name: chart_name,
-        options: null,
-        columns: null,
-        data_index: null,
     });
 }

@@ -528,12 +528,16 @@ export default defineComponent({
                     }
                 }
             });
-            console.log(state.change_list);
         };
 
         const onSubmit = () => {
             if (state.change_list.length > 0) {
-                edit_chart(state.change_list).then((response) => {
+                const chart = {};
+                state.change_list.forEach((i) => {
+                    chart[i.key] = i.value;
+                });
+                console.log(chart);
+                edit_chart(chart).then((response) => {
                     if (response.data.status.code === 0) {
                         notification["success"]({
                             message: "成功",

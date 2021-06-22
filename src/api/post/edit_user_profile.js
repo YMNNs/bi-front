@@ -1,7 +1,7 @@
 import axios from "@/request";
 
-export function modify_user_profile(info) {
+export function edit_user_profile(user) {
     return axios.post("user/modify", {
-        info: info,
+        user: user,
     });
 }
