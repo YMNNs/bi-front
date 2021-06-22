@@ -5,7 +5,7 @@ Mock.mock(
     process.env.VUE_APP_API_BASE_URL + "user/modify",
     "post",
     (request) => {
-        const { user } = JSON.parse(request.body);
+        const user = JSON.parse(request.body);
         const errors = [];
         if (user.nickname) {
             if (user.nickname.length < 3 || user.nickname.length > 16) {
