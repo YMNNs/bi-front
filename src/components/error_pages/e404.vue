@@ -6,7 +6,9 @@
             sub-title="生活总归带点荒谬"
         >
             <template #extra>
-                <a-button type="primary" @click.prevent="$router.push('/')"
+                <a-button
+                    type="primary"
+                    @click.prevent="$router.push('/dashboard')"
                     >找点乐子吧</a-button
                 >
             </template>
