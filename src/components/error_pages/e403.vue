@@ -6,7 +6,9 @@
             sub-title="总有些门是对你关闭的"
         >
             <template #extra>
-                <a-button type="primary" @click.prevent="$router.push('/')"
+                <a-button
+                    type="primary"
+                    @click.prevent="$router.push('/dashboard')"
                     >放轻松</a-button
                 >
             </template>

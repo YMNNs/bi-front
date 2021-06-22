@@ -48,7 +48,10 @@
                         ></a-input>
                     </a-form-item>
                     <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
-                        <a-button type="primary" @click.prevent="onSubmit"
+                        <a-button
+                            type="primary"
+                            @click.prevent="onSubmit"
+                            :loading="buttonLoading"
                             >注册
                         </a-button>
                         <a-button style="margin-left: 10px" @click="resetFields"
@@ -85,14 +88,14 @@
 </template>
 
 <script>
-import { defineComponent, reactive, toRaw, toRefs } from "vue";
+import { defineComponent, reactive, toRaw, toRefs, ref } from "vue";
 import { useForm } from "@ant-design-vue/use";
 import { validate_username } from "@/api/post/validate_username";
 import { validate_email } from "@/api/post/validate_email";
 import { register } from "@/api/post/register";
 import { useStore } from "vuex";
-import { user_info } from "@/api/post/user_info";
 import { notification } from "ant-design-vue";
+import router from "@/router";
 
 export default defineComponent({
     setup() {
@@ -101,6 +104,8 @@ export default defineComponent({
             step: "register",
             subtitle: "请填写表单以注册" + process.env.VUE_APP_TITLE,
         });
+
+        const buttonLoading = ref(false);
 
         // 表单模型
         const modelRef = reactive({
@@ -200,6 +205,9 @@ export default defineComponent({
         const onSubmit = () => {
             validate()
                 .then(() => {
+                    buttonLoading.value = {
+                        delay: 1000,
+                    };
                     const form = toRaw(modelRef);
                     register(
                         form.email,
@@ -210,25 +218,16 @@ export default defineComponent({
                         if (response.data.status.code === 0) {
                             //注册成功
                             store.commit("CLEAR_USER_INFO");
-                            store.commit("CLEAR_TOKEN");
                             store.commit("SET_TOKEN", response.data.data);
                             // 继续获取用户信息
-                            user_info()
-                                .then((response) => {
-                                    console.log(response);
-                                    if (response.data.status.code === 0) {
-                                        // 成功后设置用户信息
-                                        store.commit(
-                                            "SET_USER_INFO",
-                                            response.data.data.user
-                                        );
-                                        // 显示结果页面
-                                        state.step = "done";
-                                    }
-                                })
-                                .catch((err) => {
-                                    console.log("error", err);
+                            setTimeout(() => {
+                                store.dispatch("UPDATE_USER_INFO").then(() => {
+                                    buttonLoading.value = false;
+                                    console.log("已执行更新用户信息");
+                                    console.log(store.state.role);
+                                    router.push("/");
                                 });
+                            }, 500);
                         } else {
                             notification["error"]({
                                 message: "错误",
@@ -255,6 +254,7 @@ export default defineComponent({
             wrapperCol: {
                 span: 14,
             },
+            buttonLoading,
         };
     },
 });
