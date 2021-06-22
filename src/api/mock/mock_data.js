@@ -6,7 +6,7 @@ export const mock_data = {
     user_id: 23445,
     token: "234234234",
     reset_password_token: "567567567",
-    email_verified: false,
+    email_verified: "0",
     activation_token: "987y4928y49",
     tables: [
         {

@@ -333,7 +333,7 @@ export default defineComponent({
                 if (response.data.status.code === 0) {
                     state.status = response.data.data.user.status;
                     state.email_verified =
-                        response.data.data.user.email_verified;
+                        response.data.data.user.emailVerified === "1";
                     state.last_login = new Date(
                         parseInt(response.data.data.user.last_login) * 1000
                     ).toLocaleString();

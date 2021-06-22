@@ -15,7 +15,7 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + "user/info", "post", (request) => {
                 username: mock_data.username,
                 nickname: mock_data.nickname,
                 email: mock_data.email,
-                email_verified: mock_data.email_verified,
+                emailVerified: mock_data.email_verified,
                 status: "enabled",
                 role: "user",
                 last_login: "1623033546",
