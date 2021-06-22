@@ -15,7 +15,7 @@ if (process.env.VUE_APP_MOCK === "true") {
     import("@/api/mock/reset_password");
     import("@/api/mock/validate_reset_password_token");
     import("@/api/mock/login");
-    import("@/api/mock/modify_user_profile");
+    import("@/api/mock/edit_user_profile");
     import("@/api/mock/change_password");
     import("@/api/mock/logout");
     import("@/api/mock/delete_account");

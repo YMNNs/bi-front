@@ -265,7 +265,7 @@ import { defineComponent, onMounted, reactive, toRaw, toRefs } from "vue";
 import { useForm } from "@ant-design-vue/use";
 import { validate_username } from "@/api/post/validate_username";
 import { validate_email } from "@/api/post/validate_email";
-import { modify_user_profile } from "@/api/post/modify_user_profile";
+import { edit_user_profile } from "@/api/post/edit_user_profile";
 import { notification } from "ant-design-vue";
 import { change_password } from "@/api/post/change_password";
 import { logout } from "@/api/post/logout";
@@ -530,19 +530,19 @@ export default defineComponent({
         const onSubmit_profile = () => {
             validate_profile().then(() => {
                 const form = toRaw(modelRef_profile);
-                const payload = [];
+                const user = {};
                 Object.keys(form).forEach((key) => {
                     if (
                         form[key] &&
                         form[key] !== state.original_profile[key]
                     ) {
-                        payload.push({ key: key, value: form[key] });
+                        user[key] = form[key];
                     }
                 });
-                if (payload.length === 0) {
+                if (user.length === 0) {
                     return;
                 }
-                modify_user_profile(payload)
+                edit_user_profile(user)
                     .then((response) => {
                         if (response.data.status.code === 0) {
                             // 修改成功
