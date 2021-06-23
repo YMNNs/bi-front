@@ -2,7 +2,7 @@ export const mock_data = {
     username: "bilyn",
     password: "12345678",
     email: "i@stager.top",
-    nickname: "BILYN",
+    nickname: "本地用户",
     user_id: 23445,
     token: "234234234",
     reset_password_token: "567567567",
