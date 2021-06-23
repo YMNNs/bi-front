@@ -247,12 +247,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.tip {
-    width: 800px;
-    position: absolute;
-    left: 50%;
-    top: 10px;
-    transform: translate(-50%);
-}
-</style>
+<style scoped></style>

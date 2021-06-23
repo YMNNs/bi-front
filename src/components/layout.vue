@@ -67,29 +67,23 @@
                                             <DownOutlined />
                                         </a>
                                         <template #overlay>
-                                            <a-menu>
-                                                <a-menu-item>
+                                            <a-menu
+                                                style="min-width: 150px"
+                                                @click="onMenuClick"
+                                            >
+                                                <a-menu-item key="name">
                                                     登录为
                                                     <strong>{{
                                                         $store.state.username
                                                     }}</strong>
                                                 </a-menu-item>
                                                 <a-menu-divider />
-                                                <a-menu-item>
-                                                    <a
-                                                        @click.prevent="
-                                                            $router.push(
-                                                                '/edit_user_profile'
-                                                            )
-                                                        "
-                                                        >设置</a
-                                                    >
+                                                <a-menu-item key="settings">
+                                                    <strong>设置</strong>
                                                 </a-menu-item>
                                                 <a-menu-divider />
-                                                <a-menu-item>
-                                                    <a @click.prevent="logout">
-                                                        退出登录
-                                                    </a>
+                                                <a-menu-item key="logout">
+                                                    <strong>退出登录</strong>
                                                 </a-menu-item>
                                             </a-menu>
                                         </template>
@@ -145,6 +139,18 @@ export default defineComponent({
             store.dispatch("UPDATE_USER_INFO");
         };
 
+        const onMenuClick = ({ key }) => {
+            switch (key) {
+                case "settings": {
+                    router.push("/edit_user_profile");
+                    break;
+                }
+                case "logout": {
+                    logout();
+                }
+            }
+        };
+
         const logout = () => {
             logout_request()
                 .then((response) => {
@@ -190,6 +196,7 @@ export default defineComponent({
             systemTitle,
             logout,
             updateUserInfo,
+            onMenuClick,
         };
     },
     created() {
