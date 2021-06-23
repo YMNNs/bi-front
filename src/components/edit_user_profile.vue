@@ -391,11 +391,11 @@ export default defineComponent({
                     validator: (rule, value) => {
                         return new Promise((resolve, reject) => {
                             if (value === "删除我的账户") {
-                                console.log("confirm_text成功");
+                                // console.log("confirm_text成功");
                                 state.disable_delete_button = false;
                                 resolve();
                             } else {
-                                console.log("confirm_text失败");
+                                // console.log("confirm_text失败");
                                 state.disable_delete_button = true;
                                 reject("");
                             }
@@ -462,10 +462,10 @@ export default defineComponent({
                                     const { code, message } =
                                         response.data.status;
                                     if (code === 0) {
-                                        console.log("用户名验证成功");
+                                        // console.log("用户名验证成功");
                                         resolve();
                                     } else {
-                                        console.log("用户名验证失败");
+                                        // console.log("用户名验证失败");
                                         reject(message);
                                     }
                                 });
@@ -501,10 +501,10 @@ export default defineComponent({
                                     const { code, message } =
                                         response.data.status;
                                     if (code === 0) {
-                                        console.log("电子邮件验证成功");
+                                        // console.log("电子邮件验证成功");
                                         resolve();
                                     } else {
-                                        console.log("电子邮件验证失败");
+                                        // console.log("电子邮件验证失败");
                                         reject(message);
                                     }
                                 });
@@ -553,7 +553,7 @@ export default defineComponent({
                             // 更新本地用户信息
                             store.dispatch("UPDATE_USER_INFO");
                         } else {
-                            console.log(response.data);
+                            // console.log(response.data);
                             notification["error"]({
                                 message: "您的修改个人信息请求出现错误",
                                 description:
@@ -593,7 +593,7 @@ export default defineComponent({
                                 })
                                 .catch();
                         } else {
-                            console.log(response.data);
+                            // console.log(response.data);
                             notification["error"]({
                                 message: "您的修改密码请求出现错误",
                                 description:

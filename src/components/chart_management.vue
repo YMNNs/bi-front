@@ -224,7 +224,7 @@ export default defineComponent({
         };
 
         const handleSelectChange = () => {
-            console.log(state.filter);
+            // console.log(state.filter);
             switch (state.filter) {
                 case "last_update": {
                     sortByTime();

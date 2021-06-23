@@ -25,9 +25,9 @@ instance.interceptors.request.use(
         if (token) {
             // 判断是否存在token，如果存在的话，则每个http header都加上token
             config.headers.Authorization = token;
-            console.log("添加token" + token);
+            // console.log("添加token" + token);
         }
-        console.log(config);
+        // console.log(config);
         return config;
     },
     (error) => Promise.error(error)
@@ -36,7 +36,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response) => {
         if (response && response.data && response.data.status) {
-            console.log("收到正确响应");
+            // console.log("收到正确响应");
             store.commit("SET_NETWORK_STATUS", true);
             if (response.data.status.code >= 0) {
                 return response;
@@ -122,12 +122,12 @@ instance.interceptors.response.use(
     },
     (error) => {
         if (error.status) {
-            console.log("收到错误响应");
+            // console.log("收到错误响应");
             store.commit("SET_NETWORK_STATUS", true);
             errorHandle(error.status, error.data.status.message);
             return Promise.reject(error);
         } else {
-            console.log("未收到响应");
+            // console.log("未收到响应");
             store.commit("SET_NETWORK_STATUS", false);
             return Promise.reject(error);
         }
