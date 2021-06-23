@@ -47,11 +47,11 @@ export default defineComponent({
 
         onMounted(() => {
             window.addEventListener("offline", () => {
-                console.log("已断网");
+                // console.log("已断网");
                 store.commit("SET_NETWORK_STATUS", false);
             });
             window.addEventListener("online", () => {
-                console.log("网络已连接");
+                // console.log("网络已连接");
                 store.commit("SET_NETWORK_STATUS", true);
             });
         });

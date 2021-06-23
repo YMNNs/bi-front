@@ -21,7 +21,6 @@ job_install_deps:
     - master
   script:
     - npm install
-    - npm run lint
 
 
 # 编译并部署develop

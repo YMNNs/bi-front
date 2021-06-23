@@ -59,7 +59,11 @@
                                             class="ant-dropdown-link"
                                             @click.prevent
                                         >
-                                            {{ nickname }}
+                                            {{
+                                                nickname.length > 0
+                                                    ? nickname
+                                                    : "未设置昵称"
+                                            }}
                                             <DownOutlined />
                                         </a>
                                         <template #overlay>
@@ -116,12 +120,7 @@
 </template>
 <script>
 import { defineComponent, reactive, toRefs } from "vue";
-import {
-    //AlertOutlined,
-    createFromIconfontCN,
-    DownOutlined,
-    //UserOutlined,
-} from "@ant-design/icons-vue";
+import { createFromIconfontCN, DownOutlined } from "@ant-design/icons-vue";
 import "@/util/index";
 import router from "@/router";
 import { useStore } from "vuex";
@@ -135,10 +134,8 @@ const IconFont = createFromIconfontCN({
 
 export default defineComponent({
     components: {
-        //AlertOutlined,
         DownOutlined,
         IconFont,
-        //UserOutlined,
     },
     setup() {
         const store = useStore();
@@ -179,8 +176,8 @@ export default defineComponent({
          * @param openKeys
          */
         const onOpenChange = (openKeys) => {
-            console.log("onOpenChange: ");
-            console.log(openKeys);
+            // console.log("onOpenChange: ");
+            // console.log(openKeys);
             let latestOpenKey = openKeys.find(
                 (key) => state.openKeys.indexOf(key) === -1
             );
@@ -205,10 +202,10 @@ export default defineComponent({
         for (let menuItem of this.menuItems) {
             this.rootSubmenuKeys.push(menuItem.path);
         }
-        console.log("created");
-        console.log(this.rootSubmenuKeys);
-        console.log(this.menuItems);
-        console.log(this.$route.path);
+        // console.log("created");
+        // console.log(this.rootSubmenuKeys);
+        // console.log(this.menuItems);
+        // console.log(this.$route.path);
         for (let menuItem of this.menuItems) {
             if (menuItem.children) {
                 for (let child of menuItem.children) {
@@ -222,15 +219,16 @@ export default defineComponent({
                 break;
             }
         }
-        console.log(this.openKeys);
+        // console.log(this.openKeys);
     },
     methods: {
+        // eslint-disable-next-line no-unused-vars
         handleClick({ item, key, selectedKeys }) {
-            console.log("handleClick");
-            console.log(item);
-            console.log(key);
-            console.log(selectedKeys);
-            console.log(this.$route.path);
+            // console.log("handleClick");
+            // console.log(item);
+            // console.log(key);
+            // console.log(selectedKeys);
+            // console.log(this.$route.path);
             this.$router.push(key);
         },
     },
@@ -273,7 +271,7 @@ export default defineComponent({
                     }
                 }
             }
-            console.log(qualifiedItems);
+            // console.log(qualifiedItems);
             return qualifiedItems;
         },
     },

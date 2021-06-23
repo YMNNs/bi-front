@@ -6,7 +6,9 @@
                 <a-typography-title
                     v-model:content="editableStr"
                     :level="4"
-                    :editable="true"
+                    :editable="{
+                        onEnd: () => updateTableName(),
+                    }"
                 ></a-typography-title>
             </a-col>
         </a-row>
@@ -82,14 +84,7 @@
 </template>
 
 <script>
-import {
-    defineComponent,
-    reactive,
-    toRefs,
-    computed,
-    watch,
-    onMounted,
-} from "vue";
+import { defineComponent, reactive, toRefs, computed, onMounted } from "vue";
 import { CheckOutlined, EditOutlined } from "@ant-design/icons-vue";
 import { cloneDeep } from "lodash-es";
 import { table_content } from "@/api/post/table_content";
@@ -188,6 +183,7 @@ export default defineComponent({
                 // },
             ],
             loading: false,
+            editTableNameAvailable: true,
             pagination: {
                 //分页设置
                 simple: true,
@@ -201,6 +197,11 @@ export default defineComponent({
                     table_content(state.table_id, 10, current).then(
                         (response) => {
                             if (response.data.status.code === 0) {
+                                response.data.data.table.dataSource.forEach(
+                                    (i) => {
+                                        i.key = i.ranking;
+                                    }
+                                );
                                 state.dataSource =
                                     response.data.data.table.dataSource;
                             } else {
@@ -223,14 +224,21 @@ export default defineComponent({
         onMounted(() => {
             //接收路由传入参数（table_id）
             state.table_id = parseInt(route.params.id[0]);
-            console.log(state.table_id);
+            // console.log(state.table_id);
 
             //参数格式不正确
             if (isNaN(state.table_id)) {
                 router.push("/data_management");
             }
+            update();
+        });
+
+        const update = () => {
             table_content(state.table_id, 10).then((response) => {
                 if (response.data.status.code === 0) {
+                    response.data.data.table.dataSource.forEach((i) => {
+                        i.key = i.ranking;
+                    });
                     state.table_name = response.data.data.table.table_name;
                     state.pagination.total = response.data.data.table.total;
                     state.dataSource = response.data.data.table.dataSource;
@@ -238,19 +246,39 @@ export default defineComponent({
                     state.editableStr = response.data.data.table.table_name;
                 }
             });
-        });
+        };
 
         //修改数据表名
-        watch(state.editableStr, () => {
-            console.log("editableStr", state.editableStr.value);
+        // watch(
+        //     () => state.editableStr,
+        //     () => {
+        //         // console.log("editableStr", state.editableStr.value);
+        //         //updateTableName();
+        //     }
+        // );
+
+        const updateTableName = () => {
+            console.log("更改表名");
             change_table(state.table_id, state.editableStr).then((response) => {
                 if (response.data.status.code === 0) {
-                    console.log("修改成功");
+                    state.table_name = JSON.parse(
+                        JSON.stringify(state.editableStr)
+                    );
+                    notification["success"]({
+                        message: "成功",
+                        description: "图表的名称已变更为 " + state.editableStr,
+                    });
                 } else {
-                    console.log("修改失败");
+                    state.editableStr = JSON.parse(
+                        JSON.stringify(state.table_name)
+                    );
+                    notification["error"]({
+                        message: "错误",
+                        description: response.data.status.message,
+                    });
                 }
             });
-        });
+        };
 
         //单元格编辑功能
         //计算数据表存储元素个数
@@ -289,6 +317,7 @@ export default defineComponent({
             save,
             searchText: "",
             searchedColumn: "",
+            updateTableName,
         };
     },
 });
