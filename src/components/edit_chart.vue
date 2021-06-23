@@ -477,7 +477,8 @@ export default defineComponent({
 
         onMounted(() => {
             // 取参数
-            state.chart_id = parseInt(route.params.id[0]);
+            state.chart_id = parseInt(route.params.id);
+            console.log("chart_id ", state.chart_id);
             // 参数格式不正确
             if (isNaN(state.chart_id)) {
                 router.push("/chart_management");

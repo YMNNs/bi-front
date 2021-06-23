@@ -223,7 +223,7 @@ export default defineComponent({
         const route = useRoute();
         onMounted(() => {
             //接收路由传入参数（table_id）
-            state.table_id = parseInt(route.params.id[0]);
+            state.table_id = parseInt(route.params.id);
             // console.log(state.table_id);
 
             //参数格式不正确
