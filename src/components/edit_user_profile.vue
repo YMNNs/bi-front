@@ -448,7 +448,7 @@ export default defineComponent({
             username: [
                 {
                     trigger: "blur",
-                    required: false,
+                    required: true,
                     message: "请输入用户名",
                     type: "string",
                 },
@@ -484,7 +484,7 @@ export default defineComponent({
             email: [
                 {
                     trigger: "blur",
-                    required: false,
+                    required: true,
                     message: "请输入有效的电子邮件地址",
                     type: "email",
                 },
