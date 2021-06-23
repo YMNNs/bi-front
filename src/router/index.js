@@ -177,12 +177,12 @@ router.beforeEach((to, from, next) => {
             next("/login");
         }
         if (!to.meta.role || to.meta.role.isInArray(role)) {
-            console.log("to.meta.role = " + to.meta.role);
-            console.log("role = " + role);
+            // console.log("to.meta.role = " + to.meta.role);
+            // console.log("role = " + role);
             next();
         } else {
-            console.log("to.meta.role = " + to.meta.role);
-            console.log("role = " + role);
+            // console.log("to.meta.role = " + to.meta.role);
+            // console.log("role = " + role);
             // 403时清除登录信息
             if (!store.state.role) {
                 store.dispatch("UPDATE_USER_INFO");

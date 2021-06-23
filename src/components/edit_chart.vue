@@ -351,7 +351,7 @@ export default defineComponent({
                 .then((response) => {
                     if (response.data.status.code === 0) {
                         state.data_id = response.data.data.chart.data_id;
-                        console.log("有图表信息");
+                        // console.log("有图表信息");
                         Object.keys(state.graph_options_original).forEach(
                             (key) => {
                                 state.graph_options_original[key] =
@@ -362,9 +362,9 @@ export default defineComponent({
                             JSON.stringify(state.graph_options_original)
                         );
                         onTypeInit();
-                        console.log(
-                            response.data.data.chart.last_modified_time
-                        );
+                        // console.log(
+                        //     response.data.data.chart.last_modified_time
+                        // );
                     } else {
                         // 没有取到图表
                         router.push("/chart_management");
@@ -373,7 +373,7 @@ export default defineComponent({
                 .then(() => {
                     table_content(state.data_id, -1, 0).then((response) => {
                         if (response.data.status.code === 0) {
-                            console.log("有数据信息");
+                            // console.log("有数据信息");
                             state.columns.number = [];
                             state.columns.number_display = [];
                             state.columns.text = [];
@@ -418,8 +418,8 @@ export default defineComponent({
         watch([checkedKeys_text, checkedKeys_number], () => validate_keys());
 
         const validate_keys = () => {
-            console.log("验证keys");
-            console.log(state.limit);
+            // console.log("验证keys");
+            // console.log(state.limit);
             state.problems.text = [];
             state.problems.number = [];
             state.graph_options.keys_number = checkedKeys_number.value;
@@ -469,7 +469,7 @@ export default defineComponent({
         };
 
         const draw = () => {
-            console.log("绘制图表");
+            // console.log("绘制图表");
             // 通过更新key来绘图
             state.timeStamp = new Date().getTime();
             state.ready = true;
@@ -536,7 +536,7 @@ export default defineComponent({
                 state.change_list.forEach((i) => {
                     chart[i.key] = i.value;
                 });
-                console.log(chart);
+                // console.log(chart);
                 edit_chart(chart).then((response) => {
                     if (response.data.status.code === 0) {
                         notification["success"]({
