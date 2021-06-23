@@ -234,7 +234,7 @@ export default defineComponent({
         });
 
         const update = () => {
-            table_content(state.table_id, 10).then((response) => {
+            table_content(state.table_id, 10, 1).then((response) => {
                 if (response.data.status.code === 0) {
                     response.data.data.table.dataSource.forEach((i) => {
                         i.key = i.ranking;
