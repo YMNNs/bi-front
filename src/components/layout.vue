@@ -59,7 +59,11 @@
                                             class="ant-dropdown-link"
                                             @click.prevent
                                         >
-                                            {{ nickname }}
+                                            {{
+                                                nickname.length > 0
+                                                    ? nickname
+                                                    : "未设置昵称"
+                                            }}
                                             <DownOutlined />
                                         </a>
                                         <template #overlay>
@@ -116,12 +120,7 @@
 </template>
 <script>
 import { defineComponent, reactive, toRefs } from "vue";
-import {
-    //AlertOutlined,
-    createFromIconfontCN,
-    DownOutlined,
-    //UserOutlined,
-} from "@ant-design/icons-vue";
+import { createFromIconfontCN, DownOutlined } from "@ant-design/icons-vue";
 import "@/util/index";
 import router from "@/router";
 import { useStore } from "vuex";
@@ -135,10 +134,8 @@ const IconFont = createFromIconfontCN({
 
 export default defineComponent({
     components: {
-        //AlertOutlined,
         DownOutlined,
         IconFont,
-        //UserOutlined,
     },
     setup() {
         const store = useStore();
