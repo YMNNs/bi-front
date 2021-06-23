@@ -12,7 +12,7 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + "chart/all", "post", () => {
                 charts: [
                     {
                         id: 1,
-                        name: "豆瓣",
+                        chart_name: "豆瓣",
                         type_id: 1,
                         last_modified_time: 1623748364,
                     },
