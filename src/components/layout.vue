@@ -60,8 +60,8 @@
                                             @click.prevent
                                         >
                                             {{
-                                                nickname.length > 0
-                                                    ? nickname
+                                                $store.state.nickname.length > 0
+                                                    ? $store.state.nickname
                                                     : "未设置昵称"
                                             }}
                                             <DownOutlined />
@@ -71,7 +71,7 @@
                                                 <a-menu-item>
                                                     登录为
                                                     <strong>{{
-                                                        username
+                                                        $store.state.username
                                                     }}</strong>
                                                 </a-menu-item>
                                                 <a-menu-divider />
@@ -142,10 +142,7 @@ export default defineComponent({
         const $router = useRouter();
 
         const updateUserInfo = () => {
-            store.dispatch("UPDATE_USER_INFO").then(() => {
-                state.nickname = store.state.nickname;
-                state.username = store.state.username;
-            });
+            store.dispatch("UPDATE_USER_INFO");
         };
 
         const logout = () => {
@@ -168,8 +165,6 @@ export default defineComponent({
             rootSubmenuKeys: [],
             openKeys: [],
             selectedKeys: [],
-            nickname: "",
-            username: "",
         });
         /**
          * 只展开当前父级菜单
