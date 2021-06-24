@@ -354,8 +354,10 @@ export default defineComponent({
                         // console.log("有图表信息");
                         Object.keys(state.graph_options_original).forEach(
                             (key) => {
-                                state.graph_options_original[key] =
-                                    response.data.data.chart[key];
+                                if (response.data.data.chart[key]) {
+                                    state.graph_options_original[key] =
+                                        response.data.data.chart[key];
+                                }
                             }
                         );
                         state.graph_options = JSON.parse(
