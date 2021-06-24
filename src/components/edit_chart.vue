@@ -360,6 +360,14 @@ export default defineComponent({
                                 }
                             }
                         );
+                        if (!state.graph_options.seriesField) {
+                            state.graph_options.seriesField =
+                                state.chart_types.find(
+                                    (i) =>
+                                        i.type_id ===
+                                        state.graph_options_original.type_id
+                                ).seriesField;
+                        }
                         state.graph_options = JSON.parse(
                             JSON.stringify(state.graph_options_original)
                         );
