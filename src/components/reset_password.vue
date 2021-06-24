@@ -29,6 +29,7 @@
                         <a-button
                             type="primary"
                             @click.prevent="onSubmit_request"
+                            :loading="onSubmit_request_loading"
                             >发送重置密码邮件
                         </a-button>
                         <template #help>
@@ -103,7 +104,11 @@
             <!--            等待邮件-->
             <template v-if="step === 'waiting'">
                 <a-result
-                    title="已发送电子邮件"
+                    :title="
+                        '已向 ' +
+                        modelRef_request.email.toLowerCase() +
+                        ' 发送电子邮件'
+                    "
                     sub-title="请尽快前往您的收件箱完成剩余步骤。如果您未收到邮件，请检查垃圾箱或重新请求一封。"
                 >
                     <template #extra>
@@ -118,7 +123,7 @@
                 <a-result
                     status="success"
                     title="您的密码已重置"
-                    sub-title="下次登录时请使用你刚刚设置的密码。"
+                    sub-title="下次登录时请使用您刚刚设置的密码。"
                 >
                     <template #extra>
                         <a-button
@@ -134,7 +139,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive, toRaw, toRefs } from "vue";
+import { defineComponent, onMounted, reactive, ref, toRaw, toRefs } from "vue";
 import { useRoute } from "vue-router";
 import { validate_reset_password_token } from "@/api/post/validate_reset_password_token";
 import { useForm } from "@ant-design-vue/use";
@@ -206,6 +211,8 @@ export default defineComponent({
             ],
             code: 0,
         });
+
+        const onSubmit_request_loading = ref(false);
 
         onMounted(() => {
             if ($route.query.token) {
@@ -280,8 +287,12 @@ export default defineComponent({
         const onSubmit_request = () => {
             validate_request()
                 .then(() => {
+                    onSubmit_request_loading.value = {
+                        delay: 500,
+                    };
                     const form = toRaw(modelRef_request);
                     request_reset_password(form.email).then((response) => {
+                        onSubmit_request_loading.value = false;
                         if (response.data.status.code === 0) {
                             // 请求成功
                             state.step = "waiting";
@@ -328,6 +339,7 @@ export default defineComponent({
             validate_reset,
             onSubmit_reset,
             onSubmit_request,
+            onSubmit_request_loading,
             labelCol: {
                 span: 6,
             },
