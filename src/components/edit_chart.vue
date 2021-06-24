@@ -304,18 +304,18 @@ export default defineComponent({
                 chart_name: "",
                 keys_number: [],
                 keys_text: [],
-                xField: "",
-                yField: "",
-                seriesField: "",
+                xField: null,
+                yField: null,
+                seriesField: null,
             },
             graph_options_original: {
                 type_id: NaN,
                 chart_name: "",
                 keys_number: [],
                 keys_text: [],
-                xField: "",
-                yField: "",
-                seriesField: "",
+                xField: null,
+                yField: null,
+                seriesField: null,
             },
             ready: false,
             change_list: [],
@@ -360,17 +360,11 @@ export default defineComponent({
                                 }
                             }
                         );
-                        if (!state.graph_options.seriesField) {
-                            state.graph_options.seriesField =
-                                state.chart_types.find(
-                                    (i) =>
-                                        i.type_id ===
-                                        state.graph_options_original.type_id
-                                ).seriesField;
-                        }
                         state.graph_options = JSON.parse(
                             JSON.stringify(state.graph_options_original)
                         );
+                        console.log(state.graph_options_original);
+                        console.log(state.graph_options);
                         onTypeInit();
                         // console.log(
                         //     response.data.data.chart.last_modified_time
@@ -548,7 +542,7 @@ export default defineComponent({
                     chart[i.key] = i.value;
                 });
                 // console.log(chart);
-                edit_chart(chart).then((response) => {
+                edit_chart(state.chart_id, chart).then((response) => {
                     if (response.data.status.code === 0) {
                         notification["success"]({
                             message: "成功",
