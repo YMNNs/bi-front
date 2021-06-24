@@ -60,7 +60,7 @@
                                             @click.prevent
                                         >
                                             {{
-                                                $store.state.nickname.length > 0
+                                                $store.state.nickname
                                                     ? $store.state.nickname
                                                     : "未设置昵称"
                                             }}
