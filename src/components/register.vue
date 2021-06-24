@@ -206,7 +206,7 @@ export default defineComponent({
             validate()
                 .then(() => {
                     buttonLoading.value = {
-                        delay: 1000,
+                        delay: 500,
                     };
                     const form = toRaw(modelRef);
                     register(

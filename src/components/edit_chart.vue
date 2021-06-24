@@ -22,8 +22,13 @@
             <a-typography-title
                 :level="4"
                 v-model:content="graph_options.chart_name"
-                :editable="true"
-            />
+                :editable="{
+                    maxlength: 32,
+                }"
+                ><template #editableTooltip
+                    >名称长度上限为 32 字符</template
+                ></a-typography-title
+            >
         </a-col>
     </a-row>
     <a-row :gutter="[16, 16]">
@@ -501,7 +506,7 @@ export default defineComponent({
                 setTimeout(() => {
                     state.skip_check = false;
                     update_change_list();
-                }, 3000);
+                }, 1000);
                 state.skip_check = true;
             },
             { deep: true }

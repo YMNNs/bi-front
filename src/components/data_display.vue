@@ -8,8 +8,13 @@
                     :level="4"
                     :editable="{
                         onEnd: () => updateTableName(),
+                        onCancel: () => updateTableName(),
+                        maxlength: 32,
                     }"
-                ></a-typography-title>
+                    ><template #editableTooltip
+                        >名称长度上限为 32 字符</template
+                    ></a-typography-title
+                >
             </a-col>
         </a-row>
         <a-divider />
