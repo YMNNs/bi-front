@@ -17,7 +17,6 @@ import { chart_types } from "@/constant/chart_types";
 import {
     defineComponent,
     defineAsyncComponent,
-    // eslint-disable-next-line no-unused-vars
     onBeforeMount,
     reactive,
     toRefs,
@@ -77,7 +76,6 @@ export default defineComponent({
                 chart_meta.component
             );
         });
-        // TODO 更多类型图表
         return {
             ...toRefs(state),
         };

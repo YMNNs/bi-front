@@ -29,6 +29,7 @@ if (process.env.VUE_APP_MOCK === "true") {
     import("@/api/mock/view_chart");
     import("@/api/mock/edit_chart");
     import("@/api/mock/view_dashboard");
+    import("@/api/mock/edit_dashboard");
 }
 
 const app = createApp(App);

@@ -19,7 +19,6 @@ export default defineComponent({
     setup(props) {
         // 此处随机生成div-id的原因是同一个页面中出现2个同id图表容器将会陷入渲染死循环
         const id = ref(new Date().getTime().toString() + Math.random());
-        console.log(id.value);
         const render = () => {
             const stackedColumnPlot = new Column(id.value, {
                 data: props.data,
