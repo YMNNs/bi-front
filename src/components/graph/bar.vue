@@ -1,12 +1,12 @@
 <template>
-    <div id="container"></div>
+    <div :id="id"></div>
 </template>
 
 <script>
 /**
  * 条形图
  */
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { Bar } from "@antv/g2plot";
 
 export default defineComponent({
@@ -17,8 +17,10 @@ export default defineComponent({
         seriesField: String,
     },
     setup(props) {
+        // 此处随机生成div-id的原因是同一个页面中出现2个同id图表容器将会陷入渲染死循环
+        const id = ref(new Date().getTime().toString() + Math.random());
         const render = () => {
-            const stackedBarPlot = new Bar("container", {
+            const stackedBarPlot = new Bar(id.value, {
                 data: props.data,
                 isGroup: true,
                 /** 交换x,y的次序*/
@@ -42,6 +44,7 @@ export default defineComponent({
                     ],
                 },
             });
+            console.log("渲染条形图图");
             stackedBarPlot.render();
         };
 
@@ -51,6 +54,7 @@ export default defineComponent({
 
         return {
             render,
+            id,
         };
     },
 });

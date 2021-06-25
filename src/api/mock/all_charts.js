@@ -16,6 +16,12 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + "chart/all", "post", () => {
                         type_id: 1,
                         last_modified_time: 1623748364,
                     },
+                    {
+                        id: 2,
+                        chart_name: "58",
+                        type_id: 2,
+                        last_modified_time: 1623748364,
+                    },
                 ],
             },
         },

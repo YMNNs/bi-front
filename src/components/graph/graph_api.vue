@@ -17,6 +17,7 @@ import { chart_types } from "@/constant/chart_types";
 import {
     defineComponent,
     defineAsyncComponent,
+    // eslint-disable-next-line no-unused-vars
     onBeforeMount,
     reactive,
     toRefs,
@@ -28,15 +29,15 @@ export default defineComponent({
         graph: {},
     },
     props: {
-        data: Object,
-        xField: String,
-        yField: String,
-        seriesField: String,
-        type_id: Number,
-        key: Number,
-        columns: Object,
-        number_keys: Object,
-        text_keys: Object,
+        data: Object, // 数据集
+        xField: String, // 自变量
+        yField: String, // 因变量
+        seriesField: String, // 系列名
+        type_id: Number, // 类型id
+        key: Number, // key更新时图表重新渲染
+        columns: Object, // 所有指标列名
+        number_keys: Object, // 选中的指标列名
+        text_keys: Object, // 选中的维度列名
     },
     setup(props) {
         // 支持访问内部组件实例，用于高阶用法或库的开发。
@@ -47,9 +48,11 @@ export default defineComponent({
             yField: "",
             seriesField: "",
             data: {},
-            key: 0,
+            key: new Date().getTime() + "_",
         });
         onBeforeMount(() => {
+            console.log("初始化图表");
+
             const chart_meta = chart_types.find(
                 (i) => i.type_id === props.type_id
             );
