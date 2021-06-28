@@ -2,7 +2,7 @@
     <div>
         <!--标题展示该组数据名称,可修改-->
         <a-row type="flex">
-            <a-col :span="4">
+            <a-col :span="24">
                 <a-typography-title
                     v-model:content="editableStr"
                     :level="4"

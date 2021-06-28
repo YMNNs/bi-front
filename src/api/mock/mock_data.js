@@ -22,4 +22,18 @@ export const mock_data = {
             description: "展示58同城租房网站的户型等基本信息",
         },
     ],
+    charts: [
+        {
+            id: 1,
+            chart_name: "豆瓣",
+            type_id: 1,
+            last_modified_time: 1623748364,
+        },
+        {
+            id: 2,
+            chart_name: "58",
+            type_id: 2,
+            last_modified_time: 1623748364,
+        },
+    ],
 };

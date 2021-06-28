@@ -1,12 +1,12 @@
 <template>
-    <div id="container"></div>
+    <div :id="id"></div>
 </template>
 
 <script>
 /**
  * 柱形图
  */
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { Column } from "@antv/g2plot";
 
 export default defineComponent({
@@ -17,8 +17,10 @@ export default defineComponent({
         seriesField: String,
     },
     setup(props) {
+        // 此处随机生成div-id的原因是同一个页面中出现2个同id图表容器将会陷入渲染死循环
+        const id = ref(new Date().getTime().toString() + Math.random());
         const render = () => {
-            const stackedColumnPlot = new Column("container", {
+            const stackedColumnPlot = new Column(id.value, {
                 data: props.data,
                 isGroup: true,
                 xField: props.xField,
@@ -42,6 +44,7 @@ export default defineComponent({
                     ],
                 },
             });
+            console.log("渲染柱状图");
             stackedColumnPlot.render();
         };
 
@@ -51,6 +54,7 @@ export default defineComponent({
 
         return {
             render,
+            id,
         };
     },
 });
