@@ -1,11 +1,17 @@
 <template>
     <div>
+        <a-alert
+            message="您的图表限额已经用尽，无法创建新的图表。"
+            banner
+            v-if="available === 0"
+        />
         <a-page-header title="图表" sub-title="此页面列出了您所有的图表">
             <template v-slot:extra>
                 <a-button
                     key="1"
                     type="primary"
                     @click.prevent="$router.push('/new_chart')"
+                    :disabled="available === 0"
                     >新建图表</a-button
                 >
             </template>
