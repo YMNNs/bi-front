@@ -27,7 +27,7 @@ export const mock_data = {
             id: 1,
             chart_name: "豆瓣",
             type_id: 1,
-            last_modified_time: 1623748364,
+            last_modified_time: 1623748361,
         },
         {
             id: 2,
