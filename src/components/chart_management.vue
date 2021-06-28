@@ -151,9 +151,9 @@ export default defineComponent({
     setup() {
         const router = useRouter();
         const state = reactive({
-            quota: 0,
-            used: 0,
-            available: 0,
+            quota: NaN,
+            used: NaN,
+            available: NaN,
             charts: [],
             chartsDisplay: [],
             searchQuery: "",
