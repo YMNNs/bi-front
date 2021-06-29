@@ -217,7 +217,11 @@ export default defineComponent({
         const onSubmit_blank = () => {
             validate_blank().then(() => {
                 const form = toRaw(modelRef_blank);
-                create_chart(form.data_id, form.type_id, form.chart_name)
+                create_chart(
+                    form.data_id,
+                    form.type_id ? form.type_id : 0,
+                    form.chart_name
+                )
                     .then((response) => {
                         if (response.data.status.code === 0) {
                             notification["success"]({
@@ -279,7 +283,7 @@ export default defineComponent({
             ],
             type_id: [
                 {
-                    required: true,
+                    required: false,
                     message: "请选择图表类型",
                 },
             ],

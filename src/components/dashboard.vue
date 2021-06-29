@@ -32,17 +32,8 @@
                 </a-select>
             </a-form-item>
             <a-form-item>
-                <template #help>
-                    <p v-if="modelRef.chart_id && preview_chart.ready">
-                        <br />预览将要添加的仪表。
-                    </p>
-                    <p v-else-if="modelRef.chart_id && !preview_chart.ready">
-                        正在载入预览...
-                    </p>
-                    <p v-else>选择图表后将显示预览。</p>
-                </template>
                 <Graph_api
-                    v-if="modelRef.chart_id && preview_chart.ready"
+                    v-if="modelRef.chart_id && preview_chart.ready === 'true'"
                     :key="new Date().getTime()"
                     :type_id="preview_chart.type_id"
                     :series-field="preview_chart.seriesField"
@@ -53,6 +44,36 @@
                     :data="preview_chart.data"
                     :columns="preview_chart.columns"
                 ></Graph_api>
+                <template #help>
+                    <p
+                        v-if="
+                            modelRef.chart_id && preview_chart.ready === 'true'
+                        "
+                    >
+                        <br />预览将要添加的仪表。
+                    </p>
+                    <p
+                        v-else-if="
+                            modelRef.chart_id && preview_chart.ready === 'false'
+                        "
+                    >
+                        正在载入预览...
+                    </p>
+                    <p
+                        v-else-if="
+                            modelRef.chart_id && preview_chart.ready === 'error'
+                        "
+                    >
+                        此图表不能用于仪表盘。因为其信息不完整。请在<a
+                            @click="
+                                $router.push('/edit_chart/' + modelRef.chart_id)
+                            "
+                        >
+                            此处 </a
+                        >编辑该图表以解决问题。
+                    </p>
+                    <p v-else>选择图表后将显示预览。</p>
+                </template>
             </a-form-item>
         </a-form>
         <div
@@ -69,7 +90,12 @@
             }"
         >
             <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
-            <a-button type="primary" @click="onSubmit">完成</a-button>
+            <a-button
+                type="primary"
+                @click="onSubmit"
+                :disabled="preview_chart.ready !== 'true'"
+                >完成</a-button
+            >
         </div>
     </a-drawer>
     <a-page-header title="仪表盘">
@@ -81,6 +107,7 @@
                 <template #icon>
                     <PlusOutlined />
                 </template>
+                添加
             </a-button>
             <a-button
                 key="3"
@@ -106,12 +133,36 @@
             >
         </template>
     </a-page-header>
+    <template v-if="incomplete > 0 && !edit">
+        <a-alert banner type="warning">
+            <template #message>
+                此页面有 {{ incomplete }} 个图表存在问题。
+            </template>
+            <template #description>
+                <p>
+                    这些图表缺少必要的信息，请前往
+                    <a @click="$router.push('/chart_management')">图表管理</a>
+                    中修复相关错误。
+                </p>
+            </template>
+        </a-alert>
+        <br />
+    </template>
     <a-spin :spinning="!ready" :indicator="indicator">
         <a-list :grid="list_size" :data-source="instruments_display">
             <template #renderItem="{ item }">
                 <a-list-item>
                     <a-card size="small">
                         <template #title
+                            ><a-tooltip
+                                title="此图表不完整。"
+                                color="red"
+                                v-if="item.chart.incomplete"
+                            >
+                                <WarningTwoTone
+                                    twoToneColor="#ff4d4f"
+                                    style="margin-right: 4px"
+                                /> </a-tooltip
                             ><strong>{{
                                 item.chart.chart_name
                             }}</strong></template
@@ -144,6 +195,7 @@
                                 v-if="instruments_display.indexOf(item) !== 0"
                                 @click="moveLeft(item.index)"
                             />
+                            <EditOutlined />
                             <a-popconfirm @confirm="handleDelete(item.index)"
                                 ><template #title>
                                     您可以通过页面上方的
@@ -189,6 +241,8 @@ import {
     LeftOutlined,
     RightOutlined,
     PlusOutlined,
+    WarningTwoTone,
+    EditOutlined,
 } from "@ant-design/icons-vue";
 import Graph_api from "@/components/graph/graph_api";
 import { edit_dashboard } from "@/api/post/edit_dashboard";
@@ -200,10 +254,14 @@ export default defineComponent({
         DeleteOutlined,
         LeftOutlined,
         RightOutlined,
+        // eslint-disable-next-line vue/no-unused-components
         PlusOutlined,
+        WarningTwoTone,
+        EditOutlined,
     },
     setup() {
         const state = reactive({
+            incomplete: 0,
             instruments: [],
             instruments_display: [],
             charts: [],
@@ -251,7 +309,7 @@ export default defineComponent({
             yField: "",
             seriesField: "",
             type_id: NaN,
-            ready: false,
+            ready: "false",
         });
 
         const modelRef = reactive({
@@ -297,6 +355,7 @@ export default defineComponent({
         });
 
         const update = () => {
+            state.incomplete = 0;
             state.ready = false;
             state.edit = false;
             state.edited = false;
@@ -304,6 +363,11 @@ export default defineComponent({
             state.dataSources.length = 0;
             view_dashboard().then(async (response) => {
                 if (response.data.status.code === 0) {
+                    if (!response.data.data) {
+                        // 仪表盘为空
+                        state.ready = true;
+                        return;
+                    }
                     // 请求成功并按照index排序
                     const instruments = response.data.data.instruments.sort(
                         (a, b) => {
@@ -322,6 +386,18 @@ export default defineComponent({
                                 // 请求图表信息成功并加入图表列表
                                 // 添加图表id属性
                                 response.data.data.chart.id = i;
+                                if (
+                                    !response.data.data.chart.keys_number ||
+                                    response.data.data.chart.keys_number
+                                        .length === 0 ||
+                                    !response.data.data.chart.keys_text ||
+                                    response.data.data.chart.keys_text
+                                        .length === 0
+                                ) {
+                                    // 图表不完整
+                                    state.incomplete += 1;
+                                    response.data.data.chart.incomplete = true;
+                                }
                                 state.charts.push(response.data.data.chart);
                             } else {
                                 notification["error"]({
@@ -392,7 +468,7 @@ export default defineComponent({
         };
 
         const load_preview = () => {
-            preview_chart.ready = false;
+            preview_chart.ready = "false";
             preview_chart.columns = [];
             preview_chart.data = null;
             preview_chart.type_id = NaN;
@@ -404,6 +480,20 @@ export default defineComponent({
             // 请求图表
             view_chart(modelRef.chart_id).then((response) => {
                 if (response.data.status.code === 0) {
+                    if (
+                        !response.data.data.chart.keys_number ||
+                        response.data.data.chart.keys_number.length === 0 ||
+                        !response.data.data.chart.keys_text ||
+                        response.data.data.chart.keys_text.length === 0
+                    ) {
+                        //图表不完整
+                        console.log("图表不完整");
+                        console.log(modelRef.chart_id);
+                        console.log(response.data.data.chart.keys_number);
+                        console.log(response.data.data.chart.keys_text);
+                        preview_chart.ready = "error";
+                        return;
+                    }
                     preview_chart.number_keys =
                         response.data.data.chart.keys_number;
                     preview_chart.text_keys =
@@ -420,7 +510,7 @@ export default defineComponent({
                                     _response.data.data.table.dataSource;
                                 preview_chart.columns =
                                     _response.data.data.table.columns;
-                                preview_chart.ready = true;
+                                preview_chart.ready = "true";
                             } else {
                                 notification["error"]({
                                     message: "错误",
