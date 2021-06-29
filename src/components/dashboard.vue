@@ -107,6 +107,7 @@
                 <template #icon>
                     <PlusOutlined />
                 </template>
+                添加
             </a-button>
             <a-button
                 key="3"
@@ -194,6 +195,7 @@
                                 v-if="instruments_display.indexOf(item) !== 0"
                                 @click="moveLeft(item.index)"
                             />
+                            <EditOutlined />
                             <a-popconfirm @confirm="handleDelete(item.index)"
                                 ><template #title>
                                     您可以通过页面上方的
@@ -240,6 +242,7 @@ import {
     RightOutlined,
     PlusOutlined,
     WarningTwoTone,
+    EditOutlined,
 } from "@ant-design/icons-vue";
 import Graph_api from "@/components/graph/graph_api";
 import { edit_dashboard } from "@/api/post/edit_dashboard";
@@ -251,8 +254,10 @@ export default defineComponent({
         DeleteOutlined,
         LeftOutlined,
         RightOutlined,
+        // eslint-disable-next-line vue/no-unused-components
         PlusOutlined,
         WarningTwoTone,
+        EditOutlined,
     },
     setup() {
         const state = reactive({
@@ -382,8 +387,10 @@ export default defineComponent({
                                 // 添加图表id属性
                                 response.data.data.chart.id = i;
                                 if (
+                                    !response.data.data.chart.keys_number ||
                                     response.data.data.chart.keys_number
                                         .length === 0 ||
+                                    !response.data.data.chart.keys_text ||
                                     response.data.data.chart.keys_text
                                         .length === 0
                                 ) {
@@ -474,7 +481,9 @@ export default defineComponent({
             view_chart(modelRef.chart_id).then((response) => {
                 if (response.data.status.code === 0) {
                     if (
+                        !response.data.data.chart.keys_number ||
                         response.data.data.chart.keys_number.length === 0 ||
+                        !response.data.data.chart.keys_text ||
                         response.data.data.chart.keys_text.length === 0
                     ) {
                         //图表不完整
