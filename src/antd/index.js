@@ -28,6 +28,7 @@ import {
     Drawer,
     Statistic,
     Modal,
+    Tooltip,
 } from "ant-design-vue";
 import "ant-design-vue/dist/antd.css";
 
@@ -62,6 +63,7 @@ const components = [
     Drawer,
     Statistic,
     Modal,
+    Tooltip,
 ];
 export function setupAntd(app) {
     components.forEach((i) => {
