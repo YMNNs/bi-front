@@ -41,7 +41,7 @@
                     </a-form-item>
                 </a-form>
             </template>
-            <!--            设置新密码-->
+            <!--设置新密码-->
             <template v-if="step === 'reset'">
                 <a-page-header
                     title="设置新密码"
@@ -78,7 +78,7 @@
                     </a-form-item>
                 </a-form>
             </template>
-            <!--            无效token-->
+            <!--无效token-->
             <template v-if="step === 'error'">
                 <a-result
                     status="error"
@@ -105,15 +105,15 @@
                     </p>
                 </div>
             </template>
-            <!--            等待邮件-->
+            <!--等待邮件-->
             <template v-if="step === 'waiting'">
                 <a-result
-                    :title="
-                        '已向 ' +
+                    title="已发送电子邮件"
+                    :sub-title="
+                        '系统已接受您的重置密码请求，请访问您的电子邮箱（' +
                         modelRef_request.email.toLowerCase() +
-                        ' 发送电子邮件'
+                        '），根据邮件内容提示步骤，重置密码。'
                     "
-                    sub-title="请尽快前往您的收件箱完成剩余步骤。如果您未收到邮件，请检查垃圾箱或重新请求一封。"
                 >
                     <template #extra>
                         <a-button @click="$router.go(-1)" type="primary"
@@ -122,7 +122,7 @@
                     </template>
                 </a-result>
             </template>
-            <!--            成功修改密码-->
+            <!--成功修改密码-->
             <template v-if="step === 'done'">
                 <a-result
                     status="success"
@@ -228,7 +228,8 @@ export default defineComponent({
                             // 令牌有效
                             state.step = "reset";
                             state.reset_password_token = token;
-                            state.subtitle = "请输入新密码以完成重置。";
+                            state.subtitle =
+                                "请输入并提交新的密码，并妥善保管您的新密码。";
                         } else {
                             // 令牌无效
                             state.step = "error";
