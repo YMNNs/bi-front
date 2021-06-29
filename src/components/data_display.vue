@@ -253,15 +253,6 @@ export default defineComponent({
             });
         };
 
-        //修改数据表名
-        // watch(
-        //     () => state.editableStr,
-        //     () => {
-        //         // console.log("editableStr", state.editableStr.value);
-        //         //updateTableName();
-        //     }
-        // );
-
         const updateTableName = () => {
             console.log("更改表名");
             change_table(state.table_id, state.editableStr).then((response) => {
@@ -271,7 +262,8 @@ export default defineComponent({
                     );
                     notification["success"]({
                         message: "成功",
-                        description: "图表的名称已变更为 " + state.editableStr,
+                        description:
+                            "数据表的名称已变更为 " + state.editableStr,
                     });
                 } else {
                     state.editableStr = JSON.parse(
