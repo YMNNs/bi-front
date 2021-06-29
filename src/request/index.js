@@ -112,7 +112,7 @@ instance.interceptors.response.use(
                     case -10: {
                         notification["error"]({
                             message: "错误",
-                            description: "未知错误。",
+                            description: response.data.status.message,
                         });
                         break;
                     }
