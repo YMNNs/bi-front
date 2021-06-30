@@ -22,8 +22,13 @@
             <a-typography-title
                 :level="4"
                 v-model:content="graph_options.chart_name"
-                :editable="true"
-            />
+                :editable="{
+                    maxlength: 32,
+                }"
+                ><template #editableTooltip
+                    >名称长度上限为 32 字符</template
+                ></a-typography-title
+            >
         </a-col>
     </a-row>
     <a-row :gutter="[16, 16]">
@@ -304,18 +309,18 @@ export default defineComponent({
                 chart_name: "",
                 keys_number: [],
                 keys_text: [],
-                xField: "",
-                yField: "",
-                seriesField: "",
+                xField: null,
+                yField: null,
+                seriesField: null,
             },
             graph_options_original: {
                 type_id: NaN,
                 chart_name: "",
                 keys_number: [],
                 keys_text: [],
-                xField: "",
-                yField: "",
-                seriesField: "",
+                xField: null,
+                yField: null,
+                seriesField: null,
             },
             ready: false,
             change_list: [],
@@ -354,13 +359,17 @@ export default defineComponent({
                         // console.log("有图表信息");
                         Object.keys(state.graph_options_original).forEach(
                             (key) => {
-                                state.graph_options_original[key] =
-                                    response.data.data.chart[key];
+                                if (response.data.data.chart[key]) {
+                                    state.graph_options_original[key] =
+                                        response.data.data.chart[key];
+                                }
                             }
                         );
                         state.graph_options = JSON.parse(
                             JSON.stringify(state.graph_options_original)
                         );
+                        console.log(state.graph_options_original);
+                        console.log(state.graph_options);
                         onTypeInit();
                         // console.log(
                         //     response.data.data.chart.last_modified_time
@@ -477,7 +486,8 @@ export default defineComponent({
 
         onMounted(() => {
             // 取参数
-            state.chart_id = parseInt(route.params.id[0]);
+            state.chart_id = parseInt(route.params.id);
+            console.log("chart_id ", state.chart_id);
             // 参数格式不正确
             if (isNaN(state.chart_id)) {
                 router.push("/chart_management");
@@ -496,7 +506,7 @@ export default defineComponent({
                 setTimeout(() => {
                     state.skip_check = false;
                     update_change_list();
-                }, 3000);
+                }, 1000);
                 state.skip_check = true;
             },
             { deep: true }
@@ -537,7 +547,7 @@ export default defineComponent({
                     chart[i.key] = i.value;
                 });
                 // console.log(chart);
-                edit_chart(chart).then((response) => {
+                edit_chart(state.chart_id, chart).then((response) => {
                     if (response.data.status.code === 0) {
                         notification["success"]({
                             message: "成功",

@@ -12,7 +12,7 @@
                 <a-form
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol"
-                    hideRequiredMark="true"
+                    :hideRequiredMark="true"
                 >
                     <a-form-item
                         v-bind="validateInfos_request.email"
@@ -29,6 +29,7 @@
                         <a-button
                             type="primary"
                             @click.prevent="onSubmit_request"
+                            :loading="onSubmit_request_loading"
                             >发送重置密码邮件
                         </a-button>
                         <template #help>
@@ -40,7 +41,7 @@
                     </a-form-item>
                 </a-form>
             </template>
-            <!--            设置新密码-->
+            <!--设置新密码-->
             <template v-if="step === 'reset'">
                 <a-page-header
                     title="设置新密码"
@@ -48,7 +49,11 @@
                     @back="$router.go(-1)"
                 />
                 <br />
-                <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
+                <a-form
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol"
+                    :hideRequiredMark="true"
+                >
                     <a-form-item
                         v-bind="validateInfos_reset.password"
                         label="新密码"
@@ -73,7 +78,7 @@
                     </a-form-item>
                 </a-form>
             </template>
-            <!--            无效token-->
+            <!--无效token-->
             <template v-if="step === 'error'">
                 <a-result
                     status="error"
@@ -100,11 +105,15 @@
                     </p>
                 </div>
             </template>
-            <!--            等待邮件-->
+            <!--等待邮件-->
             <template v-if="step === 'waiting'">
                 <a-result
                     title="已发送电子邮件"
-                    sub-title="请尽快前往您的收件箱完成剩余步骤。如果您未收到邮件，请检查垃圾箱或重新请求一封。"
+                    :sub-title="
+                        '系统已接受您的重置密码请求，请访问您的电子邮箱（' +
+                        modelRef_request.email.toLowerCase() +
+                        '），根据邮件内容提示步骤，重置密码。'
+                    "
                 >
                     <template #extra>
                         <a-button @click="$router.go(-1)" type="primary"
@@ -113,12 +122,12 @@
                     </template>
                 </a-result>
             </template>
-            <!--            成功修改密码-->
+            <!--成功修改密码-->
             <template v-if="step === 'done'">
                 <a-result
                     status="success"
                     title="您的密码已重置"
-                    sub-title="下次登录时请使用你刚刚设置的密码。"
+                    sub-title="下次登录时请使用您刚刚设置的密码。"
                 >
                     <template #extra>
                         <a-button
@@ -134,7 +143,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive, toRaw, toRefs } from "vue";
+import { defineComponent, onMounted, reactive, ref, toRaw, toRefs } from "vue";
 import { useRoute } from "vue-router";
 import { validate_reset_password_token } from "@/api/post/validate_reset_password_token";
 import { useForm } from "@ant-design-vue/use";
@@ -207,6 +216,8 @@ export default defineComponent({
             code: 0,
         });
 
+        const onSubmit_request_loading = ref(false);
+
         onMounted(() => {
             if ($route.query.token) {
                 // 有token，验证
@@ -217,7 +228,8 @@ export default defineComponent({
                             // 令牌有效
                             state.step = "reset";
                             state.reset_password_token = token;
-                            state.subtitle = "请输入新密码以完成重置。";
+                            state.subtitle =
+                                "请输入并提交新的密码，并妥善保管您的新密码。";
                         } else {
                             // 令牌无效
                             state.step = "error";
@@ -280,8 +292,12 @@ export default defineComponent({
         const onSubmit_request = () => {
             validate_request()
                 .then(() => {
+                    onSubmit_request_loading.value = {
+                        delay: 500,
+                    };
                     const form = toRaw(modelRef_request);
                     request_reset_password(form.email).then((response) => {
+                        onSubmit_request_loading.value = false;
                         if (response.data.status.code === 0) {
                             // 请求成功
                             state.step = "waiting";
@@ -328,6 +344,7 @@ export default defineComponent({
             validate_reset,
             onSubmit_reset,
             onSubmit_request,
+            onSubmit_request_loading,
             labelCol: {
                 span: 6,
             },

@@ -2,14 +2,19 @@
     <div>
         <!--标题展示该组数据名称,可修改-->
         <a-row type="flex">
-            <a-col :span="4">
+            <a-col :span="24">
                 <a-typography-title
                     v-model:content="editableStr"
                     :level="4"
                     :editable="{
                         onEnd: () => updateTableName(),
+                        onCancel: () => updateTableName(),
+                        maxlength: 32,
                     }"
-                ></a-typography-title>
+                    ><template #editableTooltip
+                        >名称长度上限为 32 字符</template
+                    ></a-typography-title
+                >
             </a-col>
         </a-row>
         <a-divider />
@@ -223,7 +228,7 @@ export default defineComponent({
         const route = useRoute();
         onMounted(() => {
             //接收路由传入参数（table_id）
-            state.table_id = parseInt(route.params.id[0]);
+            state.table_id = parseInt(route.params.id);
             // console.log(state.table_id);
 
             //参数格式不正确
@@ -234,7 +239,7 @@ export default defineComponent({
         });
 
         const update = () => {
-            table_content(state.table_id, 10).then((response) => {
+            table_content(state.table_id, 10, 1).then((response) => {
                 if (response.data.status.code === 0) {
                     response.data.data.table.dataSource.forEach((i) => {
                         i.key = i.ranking;
@@ -248,15 +253,6 @@ export default defineComponent({
             });
         };
 
-        //修改数据表名
-        // watch(
-        //     () => state.editableStr,
-        //     () => {
-        //         // console.log("editableStr", state.editableStr.value);
-        //         //updateTableName();
-        //     }
-        // );
-
         const updateTableName = () => {
             console.log("更改表名");
             change_table(state.table_id, state.editableStr).then((response) => {
@@ -266,7 +262,8 @@ export default defineComponent({
                     );
                     notification["success"]({
                         message: "成功",
-                        description: "图表的名称已变更为 " + state.editableStr,
+                        description:
+                            "数据表的名称已变更为 " + state.editableStr,
                     });
                 } else {
                     state.editableStr = JSON.parse(

@@ -1,11 +1,17 @@
 <template>
     <div>
+        <a-alert
+            message="您的图表限额已经用尽，无法创建新的图表。"
+            banner
+            v-if="available === 0"
+        />
         <a-page-header title="图表" sub-title="此页面列出了您所有的图表">
             <template v-slot:extra>
                 <a-button
                     key="1"
                     type="primary"
                     @click.prevent="$router.push('/new_chart')"
+                    :disabled="available === 0"
                     >新建图表</a-button
                 >
             </template>
@@ -105,7 +111,7 @@
                                     </div>
                                 </template>
                                 <a-card-meta
-                                    :title="item.name"
+                                    :title="item.chart_name"
                                     @click="handleEdit"
                                 >
                                     <template #description
@@ -145,9 +151,9 @@ export default defineComponent({
     setup() {
         const router = useRouter();
         const state = reactive({
-            quota: 0,
-            used: 0,
-            available: 0,
+            quota: NaN,
+            used: NaN,
+            available: NaN,
             charts: [],
             chartsDisplay: [],
             searchQuery: "",
@@ -190,7 +196,9 @@ export default defineComponent({
                         chart.icon_type = chart_ref.icon_type;
                         chart.type_name = chart_ref.type_name;
                     });
-                    state.chartsDisplay = state.charts;
+                    state.chartsDisplay = JSON.parse(
+                        JSON.stringify(state.charts)
+                    );
                     sortByTime();
                 }
             });
@@ -210,7 +218,7 @@ export default defineComponent({
          */
         const sortByName = () => {
             state.chartsDisplay = state.chartsDisplay.sort((a, b) => {
-                if (a.name > b.name) {
+                if (a.chart_name > b.chart_name) {
                     return 0;
                 } else {
                     return -1;
@@ -252,7 +260,7 @@ export default defineComponent({
             }
             // 按照名称搜索
             state.chartsDisplay = from.filter(
-                (i) => i.name.indexOf(state.searchQuery) !== -1
+                (i) => i.chart_name.indexOf(state.searchQuery) !== -1
             );
         };
 

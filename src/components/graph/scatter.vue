@@ -1,12 +1,12 @@
 <template>
-    <div id="container"></div>
+    <div :id="id"></div>
 </template>
 
 <script>
 /**
  * 散点图
  */
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { Scatter } from "@antv/g2plot";
 
 export default defineComponent({
@@ -17,8 +17,10 @@ export default defineComponent({
         seriesField: String,
     },
     setup(props) {
+        // 此处随机生成div-id的原因是同一个页面中出现2个同id图表容器将会陷入渲染死循环
+        const id = ref(new Date().getTime().toString() + Math.random());
         const render = () => {
-            const scatterPlot = new Scatter("container", {
+            const scatterPlot = new Scatter(id.value, {
                 appendPadding: 10,
                 data: props.data,
                 xField: props.xField,
@@ -35,7 +37,6 @@ export default defineComponent({
                     },
                 },
                 xAxis: {
-                    min: -100,
                     grid: {
                         line: {
                             style: {
@@ -50,6 +51,7 @@ export default defineComponent({
                     },
                 },
             });
+            console.log("渲染散点图");
             scatterPlot.render();
         };
 
@@ -59,6 +61,7 @@ export default defineComponent({
 
         return {
             render,
+            id,
         };
     },
 });

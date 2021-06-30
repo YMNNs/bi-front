@@ -66,6 +66,29 @@
                     </a-form-item>
                 </a-form>
             </template>
+            <!--    注册等待页-->
+            <template v-if="step === 'waiting'">
+                <a-result
+                    status="info"
+                    title="请稍候..."
+                    sub-title="一点点处理工作。"
+                >
+                </a-result>
+            </template>
+            <!--    注册错误页-->
+            <template v-if="step === 'error'">
+                <a-result status="error" title="错误">
+                    <template #subTitle>{{ error }}</template>
+                    <template #extra>
+                        <a-button
+                            key="back"
+                            type="primary"
+                            @click="$router.go(-1)"
+                            >返回
+                        </a-button>
+                    </template>
+                </a-result>
+            </template>
             <!--    注册结果页-->
             <template v-if="step === 'done'">
                 <a-result
@@ -94,8 +117,6 @@ import { validate_username } from "@/api/post/validate_username";
 import { validate_email } from "@/api/post/validate_email";
 import { register } from "@/api/post/register";
 import { useStore } from "vuex";
-import { notification } from "ant-design-vue";
-import router from "@/router";
 
 export default defineComponent({
     setup() {
@@ -103,6 +124,7 @@ export default defineComponent({
         const state = reactive({
             step: "register",
             subtitle: "请填写表单以注册" + process.env.VUE_APP_TITLE,
+            error: "",
         });
 
         const buttonLoading = ref(false);
@@ -206,8 +228,9 @@ export default defineComponent({
             validate()
                 .then(() => {
                     buttonLoading.value = {
-                        delay: 1000,
+                        delay: 500,
                     };
+                    state.step = "waiting";
                     const form = toRaw(modelRef);
                     register(
                         form.email,
@@ -225,14 +248,12 @@ export default defineComponent({
                                     buttonLoading.value = false;
                                     // console.log("已执行更新用户信息");
                                     // console.log(store.state.role);
-                                    router.push("/");
+                                    state.step = "done";
                                 });
                             }, 500);
                         } else {
-                            notification["error"]({
-                                message: "错误",
-                                description: response.data.status.message,
-                            });
+                            state.step = "error";
+                            state.error = response.data.status.message;
                         }
                     });
                 })

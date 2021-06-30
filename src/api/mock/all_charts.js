@@ -1,4 +1,5 @@
 import Mock from "mockjs";
+import { mock_data } from "@/api/mock/mock_data";
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + "chart/all", "post", () => {
     return {
@@ -9,14 +10,7 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + "chart/all", "post", () => {
         data: {
             all_charts: {
                 quota: 10,
-                charts: [
-                    {
-                        id: 1,
-                        name: "豆瓣",
-                        type_id: 1,
-                        last_modified_time: 1623748364,
-                    },
-                ],
+                charts: mock_data.charts,
             },
         },
     };

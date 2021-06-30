@@ -164,7 +164,7 @@ router.beforeEach((to, from, next) => {
     NProgress.start();
     if (to.meta.title) {
         // 在router中设置的页面标题
-        document.title = to.meta.title;
+        document.title = to.meta.title + " > " + process.env.VUE_APP_TITLE;
     }
     const token = store.state.token;
     const role = store.state.role;

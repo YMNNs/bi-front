@@ -15,7 +15,7 @@
                     <p>此信息将显示在您的个人资料中。</p>
                 </a-col>
                 <a-col :span="14"
-                    ><a-form layout="vertical">
+                    ><a-form layout="vertical" :hideRequiredMark="true">
                         <a-form-item v-bind="validateInfos_profile.username">
                             <template #label>
                                 <strong>用户名</strong>
@@ -448,7 +448,7 @@ export default defineComponent({
             username: [
                 {
                     trigger: "blur",
-                    required: false,
+                    required: true,
                     message: "请输入用户名",
                     type: "string",
                 },
@@ -484,7 +484,7 @@ export default defineComponent({
             email: [
                 {
                     trigger: "blur",
-                    required: false,
+                    required: true,
                     message: "请输入有效的电子邮件地址",
                     type: "email",
                 },
