@@ -65,8 +65,11 @@
                                             </a-avatar>
                                         </template>
                                     </a-list-item-meta>
-                                    <div>
+                                    <div v-if="item.editable == true">
                                         <a-tag color="blue">样例数据</a-tag>
+                                    </div>
+                                    <div v-else>
+                                        <a-tag color="red">导入数据</a-tag>
                                     </div>
                                 </a-list-item>
                             </template>
