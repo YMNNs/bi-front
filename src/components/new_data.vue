@@ -54,6 +54,11 @@
                                     <template #label
                                         ><strong>数据名称</strong></template
                                     >
+                                    <template #help>
+                                        <p>
+                                            默认为上传的文件名，您也可以在此处修改。
+                                        </p>
+                                    </template>
                                     <a-input
                                         @blur="
                                             validate_upload('data_name').catch()
@@ -70,6 +75,9 @@
                                     <template #label
                                         ><strong>维度</strong></template
                                     >
+                                    <template #help>
+                                        <p>维度一般指自变量。</p>
+                                    </template>
                                     <a-select
                                         mode="multiple"
                                         v-model:value="
@@ -87,6 +95,9 @@
                                     <template #label
                                         ><strong>指标</strong></template
                                     >
+                                    <template #help>
+                                        <p>指标一般指因变量。</p>
+                                    </template>
                                     <a-select
                                         mode="multiple"
                                         v-model:value="
@@ -204,7 +215,15 @@ export default defineComponent({
                 reader.readAsBinaryString(file);
                 reader.onload = () => {
                     // 判断文件编码
-                    const encoding = jschardet.detect(reader.result);
+                    const encoding = jschardet.detect(
+                        reader.result.slice(
+                            0,
+                            reader.result.length < 100
+                                ? reader.result.length
+                                : 100
+                        )
+                    );
+                    console.log(encoding);
                     reader.readAsText(file, encoding.encoding);
                     reader.onload = () => {
                         const parsed = Papa.parse(reader.result, parseConfig);

@@ -138,11 +138,13 @@
                                     <a-button
                                         type="primary"
                                         @click.prevent="onSubmit_blank"
-                                    />完成
+                                        >完成</a-button
+                                    >
                                     <a-button
                                         style="margin-left: 10px"
                                         @click="$router.go(-1)"
-                                    />取消
+                                        >取消</a-button
+                                    >
                                     <template #help
                                         ><p>
                                             <br />
