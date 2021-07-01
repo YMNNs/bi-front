@@ -270,7 +270,7 @@ export default defineComponent({
                 {
                     trigger: "blur",
                     max: 128,
-                    message: "图表名称长度上限为128字符",
+                    message: "图表名称长度上限为 128 字符",
                 },
             ],
             data_id: [

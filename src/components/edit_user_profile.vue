@@ -370,7 +370,7 @@ export default defineComponent({
                 {
                     trigger: "blur",
                     max: 16,
-                    message: "用户名长度上限为16字符",
+                    message: "用户名长度上限为 16 字符",
                 },
             ],
             confirm_text: [
@@ -405,7 +405,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16字符之间",
+                    message: "密码长度应在 8-16 字符之间",
                 },
             ],
         });
@@ -420,7 +420,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16字符之间",
+                    message: "密码长度应在 8-16 字符之间",
                 },
             ],
             new_password: [
@@ -432,7 +432,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16字符之间",
+                    message: "密码长度应在 8-16 字符之间",
                 },
             ],
         });
@@ -471,7 +471,7 @@ export default defineComponent({
                 {
                     trigger: "blur",
                     max: 16,
-                    message: "用户名长度上限为16字符",
+                    message: "用户名长度上限为 16 字符",
                 },
             ],
             email: [
@@ -515,7 +515,7 @@ export default defineComponent({
                     min: 1,
                     max: 16,
                     type: "string",
-                    message: "昵称长度上限为16字符",
+                    message: "昵称长度上限为 16 字符",
                 },
             ],
         });

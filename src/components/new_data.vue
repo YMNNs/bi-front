@@ -70,6 +70,38 @@
                                     />
                                 </a-form-item>
                                 <a-form-item
+                                    v-bind="validateInfos_upload.description"
+                                >
+                                    <template #label
+                                        ><strong>描述</strong></template
+                                    >
+                                    <template #help>
+                                        <p>
+                                            描述将会显示在<a
+                                                @click="
+                                                    $router.push(
+                                                        '/data_management'
+                                                    )
+                                                "
+                                            >
+                                                数据管理 </a
+                                            >页面的列表中
+                                        </p>
+                                    </template>
+                                    <a-textarea
+                                        @blur="
+                                            validate_upload(
+                                                'description'
+                                            ).catch()
+                                        "
+                                        placeholder="此数据为..."
+                                        v-model:value="
+                                            modelRef_upload.description
+                                        "
+                                        auto-size
+                                    />
+                                </a-form-item>
+                                <a-form-item
                                     v-bind="validateInfos_upload.keys_text"
                                 >
                                     <template #label
@@ -109,6 +141,25 @@
                                         :options="keys_number_options"
                                     />
                                 </a-form-item>
+                                <a-form-item>
+                                    <a-button
+                                        type="primary"
+                                        @click.prevent="onSubmit_upload"
+                                        :loading="submitLoading"
+                                        >完成</a-button
+                                    >
+                                    <a-button
+                                        style="margin-left: 10px"
+                                        @click="$router.go(-1)"
+                                        >取消</a-button
+                                    >
+                                    <template #help
+                                        ><p>
+                                            <br />
+                                            选择<strong>完成</strong>开始编辑图表，选择<strong>取消</strong>返回上一页面。
+                                        </p></template
+                                    >
+                                </a-form-item>
                             </a-form>
                         </div>
                     </a-card>
@@ -119,20 +170,27 @@
 </template>
 
 <script>
-import { defineComponent, reactive, ref, toRefs } from "vue";
+import { defineComponent, reactive, ref, toRaw, toRefs } from "vue";
 import { useForm } from "@ant-design-vue/use";
 import { InboxOutlined } from "@ant-design/icons-vue";
 import Papa from "papaparse";
 import jschardet from "jschardet";
+import { create_data } from "@/api/post/create_data";
+import { notification } from "ant-design-vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
     components: {
         InboxOutlined,
     },
     setup() {
+        const router = useRouter();
+
         const state = reactive({
             tabKey: "upload",
             all_keys_options: [],
+            parsed: {},
+            submitLoading: false,
         });
 
         const limit = {
@@ -154,8 +212,8 @@ export default defineComponent({
 
         const modelRef_upload = reactive({
             fileList: [],
-            parsed: {},
             data_name: "",
+            description: "",
             keys_text: [],
             keys_number: [],
         });
@@ -168,17 +226,26 @@ export default defineComponent({
         const keys_text_options = ref([]);
 
         const handleUploadChange = ({ file, fileList }) => {
+            reset_form();
             let resFileList = [...fileList];
             resFileList = resFileList.slice(-1);
             modelRef_upload.fileList = resFileList;
             if (file.error) {
                 file.status = "error";
+                // 文件错误时清空列名
+                state.all_keys_options.length = 0;
             } else {
                 file.status = "done";
             }
-            if (fileList.length === 0) {
-                // 重置表单
-                reset_form();
+
+            if (modelRef_upload.fileList.length > 0) {
+                // 自动填入文件名
+                modelRef_upload.data_name = file.name.substr(
+                    0,
+                    file.name.length - 4
+                );
+                // 填入备选列名
+                setOptions();
             }
         };
 
@@ -227,7 +294,6 @@ export default defineComponent({
                     reader.readAsText(file, encoding.encoding);
                     reader.onload = () => {
                         const parsed = Papa.parse(reader.result, parseConfig);
-                        console.log(parsed);
                         if (parsed.errors.length > 0) {
                             // 存在错误
                             file.error = true;
@@ -252,15 +318,7 @@ export default defineComponent({
                         parsed.meta.fields.forEach((i) => {
                             state.all_keys_options.push({ value: i });
                         });
-                        // 填入备选列名
-                        setOptions();
-                        // 自动填入文件名
-                        modelRef_upload.data_name = file.name.substr(
-                            0,
-                            file.name.length - 4
-                        );
-                        modelRef_upload.parsed = parsed;
-                        // TODO 按照接口准备上传数据
+                        state.parsed = parsed;
                         file.error = false;
                         resolve();
                     };
@@ -294,7 +352,18 @@ export default defineComponent({
                 },
                 {
                     max: 128,
-                    message: "图表名称长度上限为128字符",
+                    message: "数据名称长度上限为 128 字符",
+                },
+            ],
+            description: [
+                {
+                    trigger: "blur",
+                    required: false,
+                    type: "string",
+                },
+                {
+                    max: 256,
+                    message: "描述长度上限为 256 字符",
                 },
             ],
             keys_text: [
@@ -322,6 +391,61 @@ export default defineComponent({
             validateInfos: validateInfos_upload,
         } = useForm(modelRef_upload, rulesRef_upload);
 
+        const onSubmit_upload = () => {
+            validate_upload().then(() => {
+                state.submitLoading = { delay: 500 };
+                const form = toRaw(modelRef_upload);
+                const keys = form.keys_number.concat(form.keys_text);
+                const data = [];
+                state.parsed.data.forEach((i) => {
+                    const row = {};
+                    keys.forEach((j) => {
+                        row[j] = i[j];
+                    });
+                    data.push(row);
+                });
+                const columns = [];
+                form.keys_number.forEach((i) => {
+                    columns.push({
+                        title: i,
+                        key: i,
+                        dataIndex: i,
+                        type: "number",
+                    });
+                });
+                form.keys_text.forEach((i) => {
+                    columns.push({
+                        title: i,
+                        key: i,
+                        dataIndex: i,
+                        type: "string",
+                    });
+                });
+                create_data(form.data_name, form.description, data, columns)
+                    .then((response) => {
+                        state.submitLoading = false;
+                        if (response.data.status.code === 0) {
+                            notification["success"]({
+                                message: "成功",
+                                description:
+                                    "已上传数据“" + form.data_name + "”。",
+                            });
+                            router.push(
+                                "/data_display/" + response.data.data.id
+                            );
+                        } else {
+                            notification["error"]({
+                                message: "错误",
+                                description: response.data.status.message,
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        state.submitLoading = false;
+                    });
+            });
+        };
+
         return {
             ...toRefs(state),
             tabList,
@@ -337,6 +461,7 @@ export default defineComponent({
             keys_number_options,
             keys_text_options,
             setOptions,
+            onSubmit_upload,
         };
     },
 });

@@ -261,7 +261,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16位之间",
+                    message: "密码长度应在 8-16 字符之间",
                 },
             ],
         });
