@@ -37,8 +37,7 @@
                                         v-model:value="
                                             modelRef_blank.chart_name
                                         "
-                                    >
-                                    </a-input>
+                                    />
                                 </a-form-item>
                                 <a-form-item
                                     v-bind="validateInfos_blank.data_id"
@@ -62,8 +61,7 @@
                                         v-model:value="modelRef_blank.data_id"
                                         :options="data_options"
                                         placeholder="选择一个数据集"
-                                    >
-                                    </a-select>
+                                    />
                                 </a-form-item>
                                 <a-form-item
                                     v-bind="validateInfos_blank.type_id"
@@ -140,13 +138,11 @@
                                     <a-button
                                         type="primary"
                                         @click.prevent="onSubmit_blank"
-                                        >完成
-                                    </a-button>
+                                    />完成
                                     <a-button
                                         style="margin-left: 10px"
                                         @click="$router.go(-1)"
-                                        >取消
-                                    </a-button>
+                                    />取消
                                     <template #help
                                         ><p>
                                             <br />

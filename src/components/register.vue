@@ -20,7 +20,7 @@
                             size="large"
                             style="width: 100%"
                             @blur="validate('email').catch()"
-                        ></a-input>
+                        />
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.username" label="用户名">
                         <a-input
@@ -28,7 +28,7 @@
                             size="large"
                             style="width: 100%"
                             @blur="validate('username').catch()"
-                        ></a-input>
+                        />
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.password" label="密码">
                         <a-input-password
@@ -36,7 +36,7 @@
                             size="large"
                             style="width: 100%"
                             @blur="validate('password').catch()"
-                        ></a-input-password>
+                        />
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.nickname" label="昵称">
                         <a-input
@@ -45,7 +45,7 @@
                             placeholder="可稍后设置"
                             style="width: 100%"
                             @blur="validate('nickname').catch()"
-                        ></a-input>
+                        />
                     </a-form-item>
                     <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
                         <a-button
@@ -72,8 +72,7 @@
                     status="info"
                     title="请稍候..."
                     sub-title="一点点处理工作。"
-                >
-                </a-result>
+                />
             </template>
             <!--    注册错误页-->
             <template v-if="step === 'error'">

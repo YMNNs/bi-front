@@ -6,7 +6,7 @@
         :seriesField="seriesField"
         :data="data"
         :key="key"
-    ></component>
+    />
 </template>
 
 <script>

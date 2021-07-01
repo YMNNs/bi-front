@@ -1,6 +1,14 @@
 <template>
     <div>
         <a-page-header title="数据" sub-title="此页面列出了您所有可用的数据集">
+            <template v-slot:extra>
+                <a-button
+                    key="1"
+                    type="primary"
+                    @click.prevent="$router.push('/new_data')"
+                    >新建数据</a-button
+                >
+            </template>
         </a-page-header>
         <a-divider />
         <!--条目数量显示-->

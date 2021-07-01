@@ -1,19 +1,4 @@
 /**
- * 判断对象是否在某数组中
- * @param obj
- * @returns {boolean}
- */
-Array.prototype.isInArray = function (obj) {
-    let index = this.length;
-    while (index--) {
-        if (this[index] === obj) {
-            return true;
-        }
-    }
-    return false;
-};
-
-/**
  * 带错误处理的解析对象
  * @param o JSON字符串
  * @param k key
@@ -94,3 +79,11 @@ export function randomString(e) {
     for (let i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
     return n;
 }
+
+/**
+ * 判断数组中是否有重复元素
+ * @returns {boolean}
+ */
+Array.prototype.hasDuplicates = function () {
+    return !this.every((i) => this.indexOf(i) === this.lastIndexOf(i));
+};

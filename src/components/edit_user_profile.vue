@@ -59,8 +59,7 @@
                             <a-input
                                 @blur="validate_profile('email').catch()"
                                 v-model:value="modelRef_profile.email"
-                            >
-                            </a-input>
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item v-bind="validateInfos_profile.nickname">
@@ -73,8 +72,7 @@
                             <a-input
                                 @blur="validate_profile('nickname').catch()"
                                 v-model:value="modelRef_profile.nickname"
-                            >
-                            </a-input>
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item>
@@ -121,8 +119,7 @@
                                     validate_password('old_password').catch()
                                 "
                                 v-model:value="modelRef_password.old_password"
-                            >
-                            </a-input-password>
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item
@@ -139,8 +136,7 @@
                                     validate_password('new_password').catch()
                                 "
                                 v-model:value="modelRef_password.new_password"
-                            >
-                            </a-input-password>
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item>
@@ -213,8 +209,7 @@
                                 <a-input
                                     @blur="validate_delete('username').catch()"
                                     v-model:value="modelRef_delete.username"
-                                >
-                                </a-input>
+                                />
                             </a-form-item>
                             <a-form-item
                                 v-bind="validateInfos_delete.confirm_text"
@@ -229,8 +224,7 @@
                                         validate_delete('confirm_text').catch()
                                     "
                                     v-model:value="modelRef_delete.confirm_text"
-                                >
-                                </a-input>
+                                />
                             </a-form-item>
                             <a-form-item v-bind="validateInfos_delete.password">
                                 <template #label>
@@ -239,8 +233,7 @@
                                 <a-input-password
                                     @blur="validate_delete('password').catch()"
                                     v-model:value="modelRef_delete.password"
-                                >
-                                </a-input-password>
+                                />
                             </a-form-item>
                             <a-form-item>
                                 <a-button

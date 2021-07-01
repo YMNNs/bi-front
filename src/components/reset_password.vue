@@ -23,7 +23,7 @@
                             size="large"
                             style="width: 100%"
                             @blur="validate_request('email').catch()"
-                        ></a-input>
+                        />
                     </a-form-item>
                     <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
                         <a-button
@@ -63,7 +63,7 @@
                             size="large"
                             style="width: 100%"
                             @blur="validate_reset('password').catch()"
-                        ></a-input-password>
+                        />
                     </a-form-item>
                     <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
                         <a-button type="primary" @click.prevent="onSubmit_reset"
@@ -84,7 +84,7 @@
                     status="error"
                     title="错误"
                     sub-title="您的重置密码请求不能继续执行。"
-                ></a-result>
+                />
                 <div class="desc">
                     <p style="font-size: 16px">
                         <strong>您需要修复以下问题：</strong>

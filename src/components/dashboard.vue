@@ -28,8 +28,7 @@
                     :options="chart_options"
                     placeholder="选择一个图表"
                     @change="load_preview"
-                >
-                </a-select>
+                />
             </a-form-item>
             <a-form-item>
                 <Graph_api
@@ -43,7 +42,7 @@
                     :number_keys="preview_chart.number_keys"
                     :data="preview_chart.data"
                     :columns="preview_chart.columns"
-                ></Graph_api>
+                />
                 <template #help>
                     <p
                         v-if="

@@ -244,7 +244,7 @@ export default defineComponent({
                     for (let child of route.children) {
                         //二级路由
                         if (
-                            child.meta.role.isInArray(role) &&
+                            child.meta.role.indexOf(role) >= 0 &&
                             !child.meta.hidden
                         ) {
                             //判断权限
@@ -258,7 +258,7 @@ export default defineComponent({
                                 for (let child1 of child.children) {
                                     //三级路由
                                     if (
-                                        child1.meta.role.isInArray(role) &&
+                                        child1.meta.role.indexOf(role) >= 0 &&
                                         !child1.meta.hidden
                                     ) {
                                         //判断权限
