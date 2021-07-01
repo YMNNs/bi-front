@@ -146,10 +146,10 @@
 import { defineComponent, onMounted, reactive, ref, toRaw, toRefs } from "vue";
 import { useRoute } from "vue-router";
 import { validate_reset_password_token } from "@/api/post/validate_reset_password_token";
-import { useForm } from "@ant-design-vue/use";
 import { CloseCircleOutlined } from "@ant-design/icons-vue";
 import { request_reset_password } from "@/api/post/request_reset_password";
 import { reset_password } from "@/api/post/reset_password";
+import { Form } from "ant-design-vue";
 
 export default defineComponent({
     components: {
@@ -281,13 +281,13 @@ export default defineComponent({
             resetFields: resetFields_request,
             validate: validate_request,
             validateInfos: validateInfos_request,
-        } = useForm(modelRef_request, rulesRef_request);
+        } = Form.useForm(modelRef_request, rulesRef_request);
 
         const {
             resetFields: resetFields_reset,
             validate: validate_reset,
             validateInfos: validateInfos_reset,
-        } = useForm(modelRef_reset, rulesRef_reset);
+        } = Form.useForm(modelRef_reset, rulesRef_reset);
 
         const onSubmit_request = () => {
             validate_request()

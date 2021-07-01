@@ -97,11 +97,10 @@ import {
     toRefs,
     watch,
 } from "vue";
-import { useForm } from "@ant-design-vue/use";
 import { login } from "@/api/post/login";
 import { user_info } from "@/api/post/user_info";
 import { useStore } from "vuex";
-import { message } from "ant-design-vue";
+import { Form, message } from "ant-design-vue";
 import { useRoute, useRouter } from "vue-router";
 
 export default defineComponent({
@@ -181,7 +180,7 @@ export default defineComponent({
             ],
         });
 
-        const { resetFields, validate, validateInfos } = useForm(
+        const { resetFields, validate, validateInfos } = Form.useForm(
             modelRef,
             rulesRef
         );

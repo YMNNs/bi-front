@@ -18,13 +18,17 @@
             >
                 <template v-for="item in menuItems" v-bind:key="item.path">
                     <a-menu-item v-if="!item.children" :key="item.path">
-                        <icon-font :type="item.meta.icon" />
+                        <template #icon>
+                            <icon-font :type="item.meta.icon" />
+                        </template>
                         <span>{{ item.meta.title }}</span>
                     </a-menu-item>
                     <a-sub-menu v-if="item.children" :key="item.path">
+                        <template #icon>
+                            <icon-font :type="item.meta.icon" />
+                        </template>
                         <template #title>
                             <span>
-                                <icon-font :type="item.meta.icon" />
                                 <span>{{ item.meta.title }}</span>
                             </span>
                         </template>

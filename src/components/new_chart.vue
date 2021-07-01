@@ -163,13 +163,12 @@
 
 <script>
 import { defineComponent, onMounted, reactive, toRaw, toRefs } from "vue";
-import { useForm } from "@ant-design-vue/use";
 import { all_tables } from "@/api/post/all_tables";
 import { chart_types } from "@/constant/chart_types";
 import { icon_url } from "@/util/iconfont";
 import { createFromIconfontCN } from "@ant-design/icons-vue";
 import { create_chart } from "@/api/post/create_chart";
-import { notification } from "ant-design-vue";
+import { Form, notification } from "ant-design-vue";
 import { useRouter } from "vue-router";
 
 const IconFont = createFromIconfontCN({
@@ -291,7 +290,7 @@ export default defineComponent({
             resetFields: resetFields_blank,
             validate: validate_blank,
             validateInfos: validateInfos_blank,
-        } = useForm(modelRef_blank, rulesRef_blank);
+        } = Form.useForm(modelRef_blank, rulesRef_blank);
 
         const onTabChange = (value) => {
             state.tabKey = value;

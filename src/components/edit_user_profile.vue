@@ -255,11 +255,10 @@
 
 <script>
 import { defineComponent, onMounted, reactive, toRaw, toRefs } from "vue";
-import { useForm } from "@ant-design-vue/use";
 import { validate_username } from "@/api/post/validate_username";
 import { validate_email } from "@/api/post/validate_email";
 import { edit_user_profile } from "@/api/post/edit_user_profile";
-import { notification } from "ant-design-vue";
+import { Form, notification } from "ant-design-vue";
 import { change_password } from "@/api/post/change_password";
 import { logout } from "@/api/post/logout";
 import { useStore } from "vuex";
@@ -635,19 +634,19 @@ export default defineComponent({
             resetFields: resetFields_profile,
             validate: validate_profile,
             validateInfos: validateInfos_profile,
-        } = useForm(modelRef_profile, rulesRef_profile);
+        } = Form.useForm(modelRef_profile, rulesRef_profile);
 
         const {
             resetFields: resetFields_password,
             validate: validate_password,
             validateInfos: validateInfos_password,
-        } = useForm(modelRef_password, rulesRef_password);
+        } = Form.useForm(modelRef_password, rulesRef_password);
 
         const {
             resetFields: resetFields_delete,
             validate: validate_delete,
             validateInfos: validateInfos_delete,
-        } = useForm(modelRef_delete, rulesRef_delete);
+        } = Form.useForm(modelRef_delete, rulesRef_delete);
 
         return {
             ...toRefs(state),

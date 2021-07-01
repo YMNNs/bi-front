@@ -111,11 +111,11 @@
 
 <script>
 import { defineComponent, reactive, toRaw, toRefs, ref } from "vue";
-import { useForm } from "@ant-design-vue/use";
 import { validate_username } from "@/api/post/validate_username";
 import { validate_email } from "@/api/post/validate_email";
 import { register } from "@/api/post/register";
 import { useStore } from "vuex";
+import { Form } from "ant-design-vue";
 
 export default defineComponent({
     setup() {
@@ -218,7 +218,7 @@ export default defineComponent({
             ],
         });
 
-        const { resetFields, validate, validateInfos } = useForm(
+        const { resetFields, validate, validateInfos } = Form.useForm(
             modelRef,
             rulesRef
         );

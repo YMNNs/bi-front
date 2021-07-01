@@ -171,12 +171,11 @@
 
 <script>
 import { defineComponent, reactive, ref, toRaw, toRefs } from "vue";
-import { useForm } from "@ant-design-vue/use";
 import { InboxOutlined } from "@ant-design/icons-vue";
 import Papa from "papaparse";
 import jschardet from "jschardet";
 import { create_data } from "@/api/post/create_data";
-import { notification } from "ant-design-vue";
+import { Form, notification } from "ant-design-vue";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
@@ -389,7 +388,7 @@ export default defineComponent({
             // eslint-disable-next-line no-unused-vars
             validate: validate_upload,
             validateInfos: validateInfos_upload,
-        } = useForm(modelRef_upload, rulesRef_upload);
+        } = Form.useForm(modelRef_upload, rulesRef_upload);
 
         const onSubmit_upload = () => {
             validate_upload().then(() => {

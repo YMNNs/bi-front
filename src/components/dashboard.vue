@@ -231,8 +231,7 @@ import {
 import { create_instrument } from "@/api/post/create_instrument";
 import { view_dashboard } from "@/api/post/view_dashboard";
 import { view_chart } from "@/api/post/view_chart";
-import { notification } from "ant-design-vue";
-import { useForm } from "@ant-design-vue/use";
+import { Form, notification } from "ant-design-vue";
 import { table_content } from "@/api/post/table_content";
 import {
     LoadingOutlined,
@@ -339,7 +338,7 @@ export default defineComponent({
             });
         };
 
-        const { resetFields, validate, validateInfos } = useForm(
+        const { resetFields, validate, validateInfos } = Form.useForm(
             modelRef,
             rulesRef
         );
