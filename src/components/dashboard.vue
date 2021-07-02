@@ -40,21 +40,24 @@
                 />
             </a-form-item>
             <template v-if="purpose === 'edit'">
-                <a-form-item
-                    v-for="item in modelRef.all_keys_text"
-                    v-bind:key="item"
-                >
+                <a-form-item v-bind="validateInfos.selected_keys_text">
                     <template #label>
-                        <strong>筛选维度：</strong>{{ item.label }}
+                        <a-checkbox
+                            v-model:checked="modelRef.selected"
+                            @change="onCheck"
+                        />&nbsp; <strong>筛选维度：</strong
+                        >{{ modelRef.col_name }}
                     </template>
                     <!--禁用原因：v-model不接受换行-->
                     <!-- eslint-disable -->
                     <a-select
                         mode="multiple"
-                        v-model:value="modelRef.selected_keys_text[modelRef.all_keys_text.indexOf(item)]"
+                        v-model:value="modelRef.selected_keys_text"
                         style="width: 100%"
                         placeholder="选择维度"
-                        :options="item.values"
+                        :disabled="!modelRef.selected"
+                        :options="modelRef.all_keys_text"
+                        @change="onSelectChange"
                     />
                     <!-- eslint-enable -->
                 </a-form-item>
@@ -69,7 +72,7 @@
                     :y-field="preview_chart.yField"
                     :text_keys="preview_chart.text_keys"
                     :number_keys="preview_chart.number_keys"
-                    :data="preview_chart.data"
+                    :data="preview_chart.data_display"
                     :columns="preview_chart.columns"
                 />
                 <template #help>
@@ -357,6 +360,7 @@ export default defineComponent({
 
         const preview_chart = reactive({
             data: {},
+            data_display: {},
             columns: [],
             number_keys: [],
             text_keys: [],
@@ -370,9 +374,11 @@ export default defineComponent({
         const modelRef = reactive({
             chart_id: null,
             data_id: null,
+            col_name: "",
             editing_instrument: {},
             selected_keys_text: [],
             all_keys_text: [],
+            selected: true,
         });
 
         const rulesRef = reactive({
@@ -398,11 +404,6 @@ export default defineComponent({
                 }
             });
         };
-
-        const { resetFields, validate, validateInfos } = Form.useForm(
-            modelRef,
-            rulesRef
-        );
 
         const indicator = h(LoadingOutlined, {
             style: {
@@ -598,9 +599,11 @@ export default defineComponent({
                             if (_response.data.status.code === 0) {
                                 preview_chart.data =
                                     _response.data.data.table.dataSource;
+                                preview_chart.data_display = preview_chart.data;
                                 preview_chart.columns =
                                     _response.data.data.table.columns;
                                 preview_chart.ready = "true";
+                                onSelectChange();
                             } else {
                                 notification["error"]({
                                     message: "错误",
@@ -684,31 +687,32 @@ export default defineComponent({
         };
 
         const onSubmit_create = () => {
-            validate().then(() => {
-                const form = toRaw(modelRef);
-                create_instrument(form.chart_id).then((response) => {
-                    if (response.data.status.code === 0) {
-                        update();
-                        onClose();
-                        notification["success"]({
-                            message: "成功",
-                            description: response.data.status.message,
-                        });
-                    } else {
-                        notification["error"]({
-                            message: "错误",
-                            description: response.data.status.message,
-                        });
-                    }
+            Form.useForm(modelRef, rulesRef)
+                .validate()
+                .then(() => {
+                    const form = toRaw(modelRef);
+                    create_instrument(form.chart_id).then((response) => {
+                        if (response.data.status.code === 0) {
+                            update();
+                            onClose();
+                            notification["success"]({
+                                message: "成功",
+                                description: response.data.status.message,
+                            });
+                        } else {
+                            notification["error"]({
+                                message: "错误",
+                                description: response.data.status.message,
+                            });
+                        }
+                    });
                 });
-            });
         };
 
         const showDrawer = (target) => {
             // 打开时重置表单
             resetFields();
             console.log(target);
-            state.visible = true;
             if (target) {
                 // 编辑图表
                 state.purpose = "edit";
@@ -719,72 +723,86 @@ export default defineComponent({
                 modelRef.chart_id = modelRef.editing_instrument.chart.id;
                 // 填入数据id
                 modelRef.data_id = modelRef.editing_instrument.data_id;
-                // 留够填空空间
-                modelRef.selected_keys_text = new Array(
-                    modelRef.editing_instrument.chart.keys_text.length
-                );
-                modelRef.selected_keys_text.fill(
-                    [],
-                    0,
-                    modelRef.selected_keys_text.length - 1
-                );
-                // TODO 从服务器获取已选维度，如果没有即填入全部维度。校验规则为至少选择一个，在@Change时去后端请求新数据，保存时继续使用全量更新接口
-                // 填入可用维度
-                for (const i in modelRef.editing_instrument.chart.keys_text) {
-                    get_data_keys(
-                        modelRef.editing_instrument.chart.data_id,
-                        modelRef.editing_instrument.chart.keys_text[i]
-                    ).then((response) => {
+                // 填入已选择的维度项目
+                modelRef.selected_keys_text =
+                    modelRef.editing_instrument.selected_keys;
+                // 填入复选框
+                modelRef.selected = modelRef.selected_keys_text.length > 0;
+                // 填入列名
+                table_content(modelRef.editing_instrument.data_id, 0, 0).then(
+                    (response) => {
                         if (response.data.status.code === 0) {
-                            modelRef.all_keys_text.push({
-                                key: modelRef.editing_instrument.chart
-                                    .keys_text[i],
-                                label: state.dataSources
-                                    .find(
-                                        (_i) =>
-                                            _i.id ===
-                                            modelRef.editing_instrument.chart
-                                                .data_id
-                                    )
-                                    .columns.find(
-                                        (__i) =>
-                                            __i.key ===
-                                            modelRef.editing_instrument.chart
-                                                .keys_text[i]
-                                    ).title,
-                                values: [],
-                            });
-                            response.data.data.keys.forEach((j) => {
-                                modelRef.all_keys_text
-                                    .find(
-                                        (k) =>
-                                            k.key ===
-                                            modelRef.editing_instrument.chart
-                                                .keys_text[i]
-                                    )
-                                    .values.push({
-                                        label: j,
-                                        value: j,
-                                    });
-                            });
+                            modelRef.col_name =
+                                response.data.data.table.columns.find(
+                                    (i) =>
+                                        i.key ===
+                                        modelRef.editing_instrument.chart
+                                            .keys_text[0]
+                                ).title;
                         }
-                    });
-                }
+                    }
+                );
+                // 填入可用维度项目
+                get_data_keys(
+                    modelRef.editing_instrument.chart.data_id,
+                    modelRef.editing_instrument.chart.keys_text[0]
+                ).then((response) => {
+                    if (response.data.status.code === 0) {
+                        response.data.data.keys.forEach((i) => {
+                            modelRef.all_keys_text.push({ label: i, value: i });
+                        });
+                    }
+                });
+                load_preview();
             } else {
                 // 添加图表
                 state.purpose = "create";
             }
-            load_charts();
-            load_preview();
-            console.log("modelRef");
             console.log(modelRef);
+            load_charts();
+            state.visible = true;
+        };
+
+        const onCheck = () => {
+            if (!modelRef.selected) {
+                // 未选中就清空筛选列
+                modelRef.selected_keys_text.length = 0;
+            } else if (modelRef.selected_keys_text.length === 0) {
+                // 选中时加满
+                modelRef.all_keys_text.forEach((i) =>
+                    modelRef.selected_keys_text.push(i.value)
+                );
+            }
+        };
+
+        const onSelectChange = () => {
+            if (modelRef.selected_keys_text.length === 0) {
+                // 筛选列为空时取消勾选
+                modelRef.selected = false;
+                preview_chart.data_display = preview_chart.data;
+            } else {
+                // 过滤数据
+                preview_chart.data_display = preview_chart.data.filter(
+                    (i) =>
+                        modelRef.selected_keys_text.indexOf(
+                            i[modelRef.editing_instrument.chart.keys_text[0]]
+                        ) >= 0
+                );
+            }
         };
 
         const onClose = () => {
             state.visible = false;
         };
 
-        const onSubmit_edit = () => {};
+        const { resetFields, validate, validateInfos } = Form.useForm(
+            modelRef,
+            rulesRef
+        );
+
+        const onSubmit_edit = () => {
+            console.log(validate());
+        };
 
         return {
             ...toRefs(state),
@@ -796,8 +814,6 @@ export default defineComponent({
             onFinish,
             showDrawer,
             onClose,
-            validateInfos,
-            resetFields,
             modelRef,
             onSubmit_create,
             preview_chart,
@@ -805,6 +821,11 @@ export default defineComponent({
             list_size,
             onSizeChange,
             onSubmit_edit,
+            resetFields,
+            validateInfos,
+            validate,
+            onCheck,
+            onSelectChange,
         };
     },
 });
