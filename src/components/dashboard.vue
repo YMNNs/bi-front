@@ -33,11 +33,32 @@
                 </template>
                 <a-select
                     v-model:value="modelRef.chart_id"
+                    :disabled="purpose === 'edit'"
                     :options="chart_options"
                     placeholder="选择一个图表"
                     @change="load_preview"
                 />
             </a-form-item>
+            <template v-if="purpose === 'edit'">
+                <a-form-item
+                    v-for="item in modelRef.all_keys_text"
+                    v-bind:key="item"
+                >
+                    <template #label>
+                        <strong>筛选维度：</strong>{{ item.label }}
+                    </template>
+                    <!--禁用原因：v-model不接受换行-->
+                    <!-- eslint-disable -->
+                    <a-select
+                        mode="multiple"
+                        v-model:value="modelRef.selected_keys_text[modelRef.all_keys_text.indexOf(item)]"
+                        style="width: 100%"
+                        placeholder="选择维度"
+                        :options="item.values"
+                    />
+                    <!-- eslint-enable -->
+                </a-form-item>
+            </template>
             <a-form-item>
                 <Graph_api
                     v-if="modelRef.chart_id && preview_chart.ready === 'true'"
@@ -289,6 +310,7 @@ import { view_dashboard } from "@/api/post/view_dashboard";
 import { view_chart } from "@/api/post/view_chart";
 import { Form, notification } from "ant-design-vue";
 import { get_dashboard_size } from "@/api/post/get_dashboard_size";
+import { get_data_keys } from "@/api/post/get_data_keys";
 import { change_dashboard_size } from "@/api/post/change_dashboard_size";
 import { table_content } from "@/api/post/table_content";
 import {
@@ -349,6 +371,8 @@ export default defineComponent({
             chart_id: null,
             data_id: null,
             editing_instrument: {},
+            selected_keys_text: [],
+            all_keys_text: [],
         });
 
         const rulesRef = reactive({
@@ -455,7 +479,7 @@ export default defineComponent({
                                     response.data.data.chart.incomplete = true;
                                 }
                                 // 删除图表中的数据id
-                                delete response.data.data.chart.data_id;
+                                // delete response.data.data.chart.data_id;
                                 state.charts.push(response.data.data.chart);
                             } else {
                                 notification["error"]({
@@ -564,6 +588,11 @@ export default defineComponent({
                     preview_chart.yField = response.data.data.chart.yField;
                     preview_chart.seriesField =
                         response.data.data.chart.seriesField;
+                    // 如果有仪表就用仪表的数据id
+                    if (state.purpose === "edit") {
+                        response.data.data.chart.data_id =
+                            modelRef.editing_instrument.data_id;
+                    }
                     table_content(response.data.data.chart.data_id, -1, 0).then(
                         (_response) => {
                             if (_response.data.status.code === 0) {
@@ -679,6 +708,7 @@ export default defineComponent({
             // 打开时重置表单
             resetFields();
             console.log(target);
+            state.visible = true;
             if (target) {
                 // 编辑图表
                 state.purpose = "edit";
@@ -689,15 +719,65 @@ export default defineComponent({
                 modelRef.chart_id = modelRef.editing_instrument.chart.id;
                 // 填入数据id
                 modelRef.data_id = modelRef.editing_instrument.data_id;
-                load_preview();
+                // 留够填空空间
+                modelRef.selected_keys_text = new Array(
+                    modelRef.editing_instrument.chart.keys_text.length
+                );
+                modelRef.selected_keys_text.fill(
+                    [],
+                    0,
+                    modelRef.selected_keys_text.length - 1
+                );
+                // TODO 从服务器获取已选维度，如果没有即填入全部维度。校验规则为至少选择一个，在@Change时去后端请求新数据，保存时继续使用全量更新接口
+                // 填入可用维度
+                for (const i in modelRef.editing_instrument.chart.keys_text) {
+                    get_data_keys(
+                        modelRef.editing_instrument.chart.data_id,
+                        modelRef.editing_instrument.chart.keys_text[i]
+                    ).then((response) => {
+                        if (response.data.status.code === 0) {
+                            modelRef.all_keys_text.push({
+                                key: modelRef.editing_instrument.chart
+                                    .keys_text[i],
+                                label: state.dataSources
+                                    .find(
+                                        (_i) =>
+                                            _i.id ===
+                                            modelRef.editing_instrument.chart
+                                                .data_id
+                                    )
+                                    .columns.find(
+                                        (__i) =>
+                                            __i.key ===
+                                            modelRef.editing_instrument.chart
+                                                .keys_text[i]
+                                    ).title,
+                                values: [],
+                            });
+                            response.data.data.keys.forEach((j) => {
+                                modelRef.all_keys_text
+                                    .find(
+                                        (k) =>
+                                            k.key ===
+                                            modelRef.editing_instrument.chart
+                                                .keys_text[i]
+                                    )
+                                    .values.push({
+                                        label: j,
+                                        value: j,
+                                    });
+                            });
+                        }
+                    });
+                }
             } else {
                 // 添加图表
                 state.purpose = "create";
             }
             load_charts();
+            load_preview();
             console.log("modelRef");
             console.log(modelRef);
-            state.visible = true;
         };
 
         const onClose = () => {
