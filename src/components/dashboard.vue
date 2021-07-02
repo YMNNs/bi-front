@@ -147,8 +147,38 @@
         </a-alert>
         <br />
     </template>
+    <a-divider />
+    <a-row type="flex" align="middle" :gutter="16">
+        <a-col :span="18">
+            <div style="display: table; vertical-align: middle">
+                <p style="display: table-cell">
+                    <a-typography-text strong
+                        >当前显示
+                        {{ instruments_display.length }}
+                        个条目 </a-typography-text
+                    >&nbsp;
+                </p>
+            </div>
+        </a-col>
+        <a-col :span="6">
+            <a-select
+                v-model:value="list_size"
+                style="width: 100%"
+                ref="select"
+                size="large"
+                placeholder="大小"
+                :options="size_options"
+                @change="onSizeChange"
+            />
+        </a-col>
+    </a-row>
+    <a-divider />
+
     <a-spin :spinning="!ready" :indicator="indicator">
-        <a-list :grid="list_size" :data-source="instruments_display">
+        <a-list
+            :grid="{ gutter: 16, column: list_size }"
+            :data-source="instruments_display"
+        >
             <template #renderItem="{ item }">
                 <a-list-item>
                     <a-card size="small">
@@ -232,6 +262,8 @@ import { create_instrument } from "@/api/post/create_instrument";
 import { view_dashboard } from "@/api/post/view_dashboard";
 import { view_chart } from "@/api/post/view_chart";
 import { Form, notification } from "ant-design-vue";
+import { get_dashboard_size } from "@/api/post/get_dashboard_size";
+import { change_dashboard_size } from "@/api/post/change_dashboard_size";
 import { table_content } from "@/api/post/table_content";
 import {
     LoadingOutlined,
@@ -265,38 +297,15 @@ export default defineComponent({
             charts: [],
             dataSources: [],
             chart_options: [],
+
             ready: false,
             edit: false,
             edited: false,
             visible: false,
-            list_size_1: {
-                gutter: 16,
-                xs: 1,
-                sm: 1,
-                md: 1,
-                lg: 1,
-                xl: 1,
-                xxl: 1,
-            },
-            list_size_2: {
-                gutter: 16,
-                xs: 1,
-                sm: 1,
-                md: 2,
-                lg: 2,
-                xl: 2,
-                xxl: 2,
-            },
-            list_size_3: {
-                gutter: 16,
-                xs: 1,
-                sm: 1,
-                md: 2,
-                lg: 2,
-                xl: 2,
-                xxl: 3,
-            },
+            size_options: [],
         });
+
+        const list_size = ref(0);
 
         const preview_chart = reactive({
             data: {},
@@ -343,8 +352,6 @@ export default defineComponent({
             rulesRef
         );
 
-        const list_size = ref();
-
         const indicator = h(LoadingOutlined, {
             style: {
                 fontSize: "24px",
@@ -352,7 +359,30 @@ export default defineComponent({
             spin: true,
         });
 
+        const onSizeChange = (value) => {
+            change_dashboard_size(value).then((response) => {
+                if (response.data.status.code === 0) {
+                    return;
+                } else {
+                    notification["error"]({
+                        message: "错误",
+                        description: response.data.status.message,
+                    });
+                }
+            });
+        };
+
         const update = () => {
+            get_dashboard_size().then((response) => {
+                if (response.data.status.code === 0) {
+                    list_size.value = response.data.data.size;
+                } else {
+                    notification["error"]({
+                        message: "错误",
+                        description: response.data.status.message,
+                    });
+                }
+            });
             state.incomplete = 0;
             state.ready = false;
             state.edit = false;
@@ -452,6 +482,12 @@ export default defineComponent({
         };
 
         onMounted(() => {
+            for (let i = 1; i <= 4; i++) {
+                state.size_options.push({
+                    label: "每行显示 " + i + " 个",
+                    value: i,
+                });
+            }
             update();
         });
 
@@ -462,7 +498,6 @@ export default defineComponent({
             const _index = state.instruments_display.indexOf(i);
             state.instruments_display.splice(_index, 1);
             rearrangeIndex(state.instruments_display);
-            reSize();
         };
 
         const load_preview = () => {
@@ -485,10 +520,6 @@ export default defineComponent({
                         response.data.data.chart.keys_text.length === 0
                     ) {
                         //图表不完整
-                        console.log("图表不完整");
-                        console.log(modelRef.chart_id);
-                        console.log(response.data.data.chart.keys_number);
-                        console.log(response.data.data.chart.keys_text);
                         preview_chart.ready = "error";
                         return;
                     }
@@ -526,16 +557,6 @@ export default defineComponent({
             });
         };
 
-        const reSize = () => {
-            if (state.instruments_display.length === 2) {
-                list_size.value = state.list_size_2;
-            } else if (state.instruments_display.length > 2) {
-                list_size.value = state.list_size_3;
-            } else {
-                list_size.value = state.list_size_1;
-            }
-        };
-
         const moveLeft = (index) => {
             const i = state.instruments_display.find(
                 (_i) => _i.index === index
@@ -560,12 +581,10 @@ export default defineComponent({
             state.instruments_display = JSON.parse(
                 JSON.stringify(state.instruments)
             );
-            reSize();
             assessEdit();
         };
 
         const rearrangeIndex = (array) => {
-            console.log(array);
             array.forEach((i, index) => {
                 i.index = index + 1;
             });
@@ -641,7 +660,6 @@ export default defineComponent({
             handleDelete,
             handleReset,
             onFinish,
-            list_size,
             showDrawer,
             onClose,
             validateInfos,
@@ -650,6 +668,8 @@ export default defineComponent({
             onSubmit,
             preview_chart,
             load_preview,
+            list_size,
+            onSizeChange,
         };
     },
 });
