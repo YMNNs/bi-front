@@ -1,14 +1,22 @@
 <template>
-    <!--    添加仪表的抽屉-->
+    <!--添加和编辑仪表的抽屉-->
     <a-drawer
         :width="720"
         :visible="visible"
         :body-style="{ paddingBottom: '80px' }"
         @close="onClose"
     >
-        <a-typography-title :level="3">添加仪表</a-typography-title>
-        <p>
-            您可以将图表附加在仪表盘中以便随时查看，仪表的内容将随图表同步更新。
+        <a-typography-title :level="3" v-if="purpose === 'create'"
+            >添加仪表</a-typography-title
+        >
+        <a-typography-title :level="3" v-if="purpose === 'edit'"
+            >编辑仪表</a-typography-title
+        >
+        <p v-if="purpose === 'create'">
+            您可以将图表附加在仪表盘中以便随时查看，并为仪表指定专属的数据子集。
+        </p>
+        <p v-if="purpose === 'edit'">
+            正在编辑仪表“{{ modelRef.editing_instrument.chart.chart_name }}”
         </p>
         <a-form layout="vertical">
             <a-form-item v-bind="validateInfos.chart_id">
@@ -49,7 +57,10 @@
                             modelRef.chart_id && preview_chart.ready === 'true'
                         "
                     >
-                        <br />预览将要添加的仪表。
+                        <br />预览将要<template v-if="purpose === 'create'"
+                            >添加</template
+                        ><template v-if="purpose === 'edit'">编辑</template
+                        >的仪表。
                     </p>
                     <p
                         v-else-if="
@@ -91,7 +102,15 @@
             <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
             <a-button
                 type="primary"
-                @click="onSubmit"
+                v-if="purpose === 'create'"
+                @click="onSubmit_create"
+                :disabled="preview_chart.ready !== 'true'"
+                >完成</a-button
+            >
+            <a-button
+                type="primary"
+                v-if="purpose === 'edit'"
+                @click="onSubmit_edit"
                 :disabled="preview_chart.ready !== 'true'"
                 >完成</a-button
             >
@@ -102,7 +121,12 @@
             <a-button key="1" type="primary" v-if="!edit" @click="edit = true"
                 >编辑</a-button
             >
-            <a-button key="2" type="dashed" @click="showDrawer" v-if="edit">
+            <a-button
+                key="2"
+                type="dashed"
+                @click="showDrawer(null)"
+                v-if="edit"
+            >
                 <template #icon>
                     <PlusOutlined />
                 </template>
@@ -200,13 +224,12 @@
                         <Graph_api
                             v-if="ready"
                             :data="
-                                dataSources.find(
-                                    (i) => i.id === item.chart.data_id
-                                ).dataSource
+                                dataSources.find((i) => i.id === item.data_id)
+                                    .dataSource
                             "
                             :columns="
                                 dataSources
-                                    .find((i) => i.id === item.chart.data_id)
+                                    .find((i) => i.id === item.data_id)
                                     .columns.filter((j) => j.type === 'number')
                             "
                             :number_keys="item.chart.keys_number"
@@ -224,7 +247,10 @@
                                 v-if="instruments_display.indexOf(item) !== 0"
                                 @click="moveLeft(item.index)"
                             />
-                            <EditOutlined />
+                            <EditOutlined
+                                key="edit"
+                                @click="showDrawer(item.id)"
+                            />
                             <a-popconfirm @confirm="handleDelete(item.index)"
                                 ><template #title>
                                     您可以通过页面上方的
@@ -297,12 +323,12 @@ export default defineComponent({
             charts: [],
             dataSources: [],
             chart_options: [],
-
             ready: false,
             edit: false,
             edited: false,
             visible: false,
             size_options: [],
+            purpose: "create",
         });
 
         const list_size = ref(0);
@@ -321,6 +347,8 @@ export default defineComponent({
 
         const modelRef = reactive({
             chart_id: null,
+            data_id: null,
+            editing_instrument: {},
         });
 
         const rulesRef = reactive({
@@ -361,8 +389,8 @@ export default defineComponent({
 
         const onSizeChange = (value) => {
             change_dashboard_size(value).then((response) => {
+                // eslint-disable-next-line no-empty
                 if (response.data.status.code === 0) {
-                    return;
                 } else {
                     notification["error"]({
                         message: "错误",
@@ -426,6 +454,8 @@ export default defineComponent({
                                     state.incomplete += 1;
                                     response.data.data.chart.incomplete = true;
                                 }
+                                // 删除图表中的数据id
+                                delete response.data.data.chart.data_id;
                                 state.charts.push(response.data.data.chart);
                             } else {
                                 notification["error"]({
@@ -435,10 +465,10 @@ export default defineComponent({
                             }
                         });
                     }
-                    // 汇总数据id
+                    // 汇总数据id，从仪表中取
                     const data_ids = new Set();
-                    state.charts.forEach((_chart) => {
-                        data_ids.add(_chart.data_id);
+                    instruments.forEach((instrument) => {
+                        data_ids.add(instrument.data_id);
                     });
                     // 请求数据
                     for (const i of data_ids) {
@@ -468,6 +498,8 @@ export default defineComponent({
                     // 设置index
                     rearrangeIndex(instruments);
                     state.instruments = instruments;
+                    console.log("全部仪表信息");
+                    console.log(instruments);
                     // 复制为展示图表
                     handleReset();
                     // 设置尺寸
@@ -602,6 +634,7 @@ export default defineComponent({
         };
 
         const onFinish = () => {
+            // todo 加入数据id
             edit_dashboard(state.instruments_display).then((response) => {
                 if (response.data.status.code === 0) {
                     if (response.data.status.code === 0) {
@@ -621,7 +654,7 @@ export default defineComponent({
             state.edit = false;
         };
 
-        const onSubmit = () => {
+        const onSubmit_create = () => {
             validate().then(() => {
                 const form = toRaw(modelRef);
                 create_instrument(form.chart_id).then((response) => {
@@ -642,15 +675,36 @@ export default defineComponent({
             });
         };
 
-        const showDrawer = () => {
+        const showDrawer = (target) => {
+            // 打开时重置表单
+            resetFields();
+            console.log(target);
+            if (target) {
+                // 编辑图表
+                state.purpose = "edit";
+                // 填入model
+                modelRef.editing_instrument = state.instruments_display.find(
+                    (i) => i.id === target
+                );
+                modelRef.chart_id = modelRef.editing_instrument.chart.id;
+                // 填入数据id
+                modelRef.data_id = modelRef.editing_instrument.data_id;
+                load_preview();
+            } else {
+                // 添加图表
+                state.purpose = "create";
+            }
             load_charts();
+            console.log("modelRef");
+            console.log(modelRef);
             state.visible = true;
         };
 
         const onClose = () => {
-            resetFields();
             state.visible = false;
         };
+
+        const onSubmit_edit = () => {};
 
         return {
             ...toRefs(state),
@@ -665,11 +719,12 @@ export default defineComponent({
             validateInfos,
             resetFields,
             modelRef,
-            onSubmit,
+            onSubmit_create,
             preview_chart,
             load_preview,
             list_size,
             onSizeChange,
+            onSubmit_edit,
         };
     },
 });
