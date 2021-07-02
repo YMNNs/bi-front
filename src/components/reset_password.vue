@@ -23,7 +23,7 @@
                             size="large"
                             style="width: 100%"
                             @blur="validate_request('email').catch()"
-                        ></a-input>
+                        />
                     </a-form-item>
                     <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
                         <a-button
@@ -63,7 +63,7 @@
                             size="large"
                             style="width: 100%"
                             @blur="validate_reset('password').catch()"
-                        ></a-input-password>
+                        />
                     </a-form-item>
                     <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
                         <a-button type="primary" @click.prevent="onSubmit_reset"
@@ -84,7 +84,7 @@
                     status="error"
                     title="错误"
                     sub-title="您的重置密码请求不能继续执行。"
-                ></a-result>
+                />
                 <div class="desc">
                     <p style="font-size: 16px">
                         <strong>您需要修复以下问题：</strong>
@@ -146,10 +146,10 @@
 import { defineComponent, onMounted, reactive, ref, toRaw, toRefs } from "vue";
 import { useRoute } from "vue-router";
 import { validate_reset_password_token } from "@/api/post/validate_reset_password_token";
-import { useForm } from "@ant-design-vue/use";
 import { CloseCircleOutlined } from "@ant-design/icons-vue";
 import { request_reset_password } from "@/api/post/request_reset_password";
 import { reset_password } from "@/api/post/reset_password";
+import { Form } from "ant-design-vue";
 
 export default defineComponent({
     components: {
@@ -261,7 +261,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16位之间",
+                    message: "密码长度应在 8-16 字符之间",
                 },
             ],
         });
@@ -281,13 +281,13 @@ export default defineComponent({
             resetFields: resetFields_request,
             validate: validate_request,
             validateInfos: validateInfos_request,
-        } = useForm(modelRef_request, rulesRef_request);
+        } = Form.useForm(modelRef_request, rulesRef_request);
 
         const {
             resetFields: resetFields_reset,
             validate: validate_reset,
             validateInfos: validateInfos_reset,
-        } = useForm(modelRef_reset, rulesRef_reset);
+        } = Form.useForm(modelRef_reset, rulesRef_reset);
 
         const onSubmit_request = () => {
             validate_request()

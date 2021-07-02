@@ -28,8 +28,7 @@
                     :options="chart_options"
                     placeholder="选择一个图表"
                     @change="load_preview"
-                >
-                </a-select>
+                />
             </a-form-item>
             <a-form-item>
                 <Graph_api
@@ -43,7 +42,7 @@
                     :number_keys="preview_chart.number_keys"
                     :data="preview_chart.data"
                     :columns="preview_chart.columns"
-                ></Graph_api>
+                />
                 <template #help>
                     <p
                         v-if="
@@ -232,8 +231,7 @@ import {
 import { create_instrument } from "@/api/post/create_instrument";
 import { view_dashboard } from "@/api/post/view_dashboard";
 import { view_chart } from "@/api/post/view_chart";
-import { notification } from "ant-design-vue";
-import { useForm } from "@ant-design-vue/use";
+import { Form, notification } from "ant-design-vue";
 import { table_content } from "@/api/post/table_content";
 import {
     LoadingOutlined,
@@ -340,7 +338,7 @@ export default defineComponent({
             });
         };
 
-        const { resetFields, validate, validateInfos } = useForm(
+        const { resetFields, validate, validateInfos } = Form.useForm(
             modelRef,
             rulesRef
         );

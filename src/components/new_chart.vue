@@ -37,8 +37,7 @@
                                         v-model:value="
                                             modelRef_blank.chart_name
                                         "
-                                    >
-                                    </a-input>
+                                    />
                                 </a-form-item>
                                 <a-form-item
                                     v-bind="validateInfos_blank.data_id"
@@ -62,8 +61,7 @@
                                         v-model:value="modelRef_blank.data_id"
                                         :options="data_options"
                                         placeholder="选择一个数据集"
-                                    >
-                                    </a-select>
+                                    />
                                 </a-form-item>
                                 <a-form-item
                                     v-bind="validateInfos_blank.type_id"
@@ -140,13 +138,13 @@
                                     <a-button
                                         type="primary"
                                         @click.prevent="onSubmit_blank"
-                                        >完成
-                                    </a-button>
+                                        >完成</a-button
+                                    >
                                     <a-button
                                         style="margin-left: 10px"
                                         @click="$router.go(-1)"
-                                        >取消
-                                    </a-button>
+                                        >取消</a-button
+                                    >
                                     <template #help
                                         ><p>
                                             <br />
@@ -165,13 +163,12 @@
 
 <script>
 import { defineComponent, onMounted, reactive, toRaw, toRefs } from "vue";
-import { useForm } from "@ant-design-vue/use";
 import { all_tables } from "@/api/post/all_tables";
 import { chart_types } from "@/constant/chart_types";
 import { icon_url } from "@/util/iconfont";
 import { createFromIconfontCN } from "@ant-design/icons-vue";
 import { create_chart } from "@/api/post/create_chart";
-import { notification } from "ant-design-vue";
+import { Form, notification } from "ant-design-vue";
 import { useRouter } from "vue-router";
 
 const IconFont = createFromIconfontCN({
@@ -272,7 +269,7 @@ export default defineComponent({
                 {
                     trigger: "blur",
                     max: 128,
-                    message: "图表名称长度上限为128字符",
+                    message: "图表名称长度上限为 128 字符",
                 },
             ],
             data_id: [
@@ -293,7 +290,7 @@ export default defineComponent({
             resetFields: resetFields_blank,
             validate: validate_blank,
             validateInfos: validateInfos_blank,
-        } = useForm(modelRef_blank, rulesRef_blank);
+        } = Form.useForm(modelRef_blank, rulesRef_blank);
 
         const onTabChange = (value) => {
             state.tabKey = value;

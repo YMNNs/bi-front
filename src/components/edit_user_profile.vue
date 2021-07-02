@@ -59,8 +59,7 @@
                             <a-input
                                 @blur="validate_profile('email').catch()"
                                 v-model:value="modelRef_profile.email"
-                            >
-                            </a-input>
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item v-bind="validateInfos_profile.nickname">
@@ -73,8 +72,7 @@
                             <a-input
                                 @blur="validate_profile('nickname').catch()"
                                 v-model:value="modelRef_profile.nickname"
-                            >
-                            </a-input>
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item>
@@ -121,8 +119,7 @@
                                     validate_password('old_password').catch()
                                 "
                                 v-model:value="modelRef_password.old_password"
-                            >
-                            </a-input-password>
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item
@@ -139,8 +136,7 @@
                                     validate_password('new_password').catch()
                                 "
                                 v-model:value="modelRef_password.new_password"
-                            >
-                            </a-input-password>
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item>
@@ -213,8 +209,7 @@
                                 <a-input
                                     @blur="validate_delete('username').catch()"
                                     v-model:value="modelRef_delete.username"
-                                >
-                                </a-input>
+                                />
                             </a-form-item>
                             <a-form-item
                                 v-bind="validateInfos_delete.confirm_text"
@@ -229,8 +224,7 @@
                                         validate_delete('confirm_text').catch()
                                     "
                                     v-model:value="modelRef_delete.confirm_text"
-                                >
-                                </a-input>
+                                />
                             </a-form-item>
                             <a-form-item v-bind="validateInfos_delete.password">
                                 <template #label>
@@ -239,8 +233,7 @@
                                 <a-input-password
                                     @blur="validate_delete('password').catch()"
                                     v-model:value="modelRef_delete.password"
-                                >
-                                </a-input-password>
+                                />
                             </a-form-item>
                             <a-form-item>
                                 <a-button
@@ -262,11 +255,10 @@
 
 <script>
 import { defineComponent, onMounted, reactive, toRaw, toRefs } from "vue";
-import { useForm } from "@ant-design-vue/use";
 import { validate_username } from "@/api/post/validate_username";
 import { validate_email } from "@/api/post/validate_email";
 import { edit_user_profile } from "@/api/post/edit_user_profile";
-import { notification } from "ant-design-vue";
+import { Form, notification } from "ant-design-vue";
 import { change_password } from "@/api/post/change_password";
 import { logout } from "@/api/post/logout";
 import { useStore } from "vuex";
@@ -377,7 +369,7 @@ export default defineComponent({
                 {
                     trigger: "blur",
                     max: 16,
-                    message: "用户名长度上限为16字符",
+                    message: "用户名长度上限为 16 字符",
                 },
             ],
             confirm_text: [
@@ -412,7 +404,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16字符之间",
+                    message: "密码长度应在 8-16 字符之间",
                 },
             ],
         });
@@ -427,7 +419,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16字符之间",
+                    message: "密码长度应在 8-16 字符之间",
                 },
             ],
             new_password: [
@@ -439,7 +431,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16字符之间",
+                    message: "密码长度应在 8-16 字符之间",
                 },
             ],
         });
@@ -478,7 +470,7 @@ export default defineComponent({
                 {
                     trigger: "blur",
                     max: 16,
-                    message: "用户名长度上限为16字符",
+                    message: "用户名长度上限为 16 字符",
                 },
             ],
             email: [
@@ -522,7 +514,7 @@ export default defineComponent({
                     min: 1,
                     max: 16,
                     type: "string",
-                    message: "昵称长度上限为16字符",
+                    message: "昵称长度上限为 16 字符",
                 },
             ],
         });
@@ -642,19 +634,19 @@ export default defineComponent({
             resetFields: resetFields_profile,
             validate: validate_profile,
             validateInfos: validateInfos_profile,
-        } = useForm(modelRef_profile, rulesRef_profile);
+        } = Form.useForm(modelRef_profile, rulesRef_profile);
 
         const {
             resetFields: resetFields_password,
             validate: validate_password,
             validateInfos: validateInfos_password,
-        } = useForm(modelRef_password, rulesRef_password);
+        } = Form.useForm(modelRef_password, rulesRef_password);
 
         const {
             resetFields: resetFields_delete,
             validate: validate_delete,
             validateInfos: validateInfos_delete,
-        } = useForm(modelRef_delete, rulesRef_delete);
+        } = Form.useForm(modelRef_delete, rulesRef_delete);
 
         return {
             ...toRefs(state),

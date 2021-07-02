@@ -90,6 +90,17 @@ const routes = [
                 },
             },
             {
+                path: "/new_data",
+                component: () => import("@/components/new_data"),
+                name: "new_data",
+                meta: {
+                    title: "新建数据",
+                    role: ["user"],
+                    requireAuth: true,
+                    hidden: true,
+                },
+            },
+            {
                 path: "/dashboard",
                 component: () => import("@/components/dashboard"),
                 name: "dashboard",
@@ -176,7 +187,7 @@ router.beforeEach((to, from, next) => {
             });
             next("/login");
         }
-        if (!to.meta.role || to.meta.role.isInArray(role)) {
+        if (!to.meta.role || to.meta.role.indexOf(role) >= 0) {
             // console.log("to.meta.role = " + to.meta.role);
             // console.log("role = " + role);
             next();

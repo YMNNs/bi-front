@@ -20,7 +20,7 @@
                             size="large"
                             style="width: 100%"
                             @blur="validate('email').catch()"
-                        ></a-input>
+                        />
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.username" label="用户名">
                         <a-input
@@ -28,7 +28,7 @@
                             size="large"
                             style="width: 100%"
                             @blur="validate('username').catch()"
-                        ></a-input>
+                        />
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.password" label="密码">
                         <a-input-password
@@ -36,7 +36,7 @@
                             size="large"
                             style="width: 100%"
                             @blur="validate('password').catch()"
-                        ></a-input-password>
+                        />
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.nickname" label="昵称">
                         <a-input
@@ -45,7 +45,7 @@
                             placeholder="可稍后设置"
                             style="width: 100%"
                             @blur="validate('nickname').catch()"
-                        ></a-input>
+                        />
                     </a-form-item>
                     <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
                         <a-button
@@ -72,8 +72,7 @@
                     status="info"
                     title="请稍候..."
                     sub-title="一点点处理工作。"
-                >
-                </a-result>
+                />
             </template>
             <!--    注册错误页-->
             <template v-if="step === 'error'">
@@ -112,11 +111,11 @@
 
 <script>
 import { defineComponent, reactive, toRaw, toRefs, ref } from "vue";
-import { useForm } from "@ant-design-vue/use";
 import { validate_username } from "@/api/post/validate_username";
 import { validate_email } from "@/api/post/validate_email";
 import { register } from "@/api/post/register";
 import { useStore } from "vuex";
+import { Form } from "ant-design-vue";
 
 export default defineComponent({
     setup() {
@@ -149,7 +148,7 @@ export default defineComponent({
                 {
                     trigger: "blur",
                     max: 16,
-                    message: "用户名长度上限为16字符",
+                    message: "用户名长度上限为 16 字符",
                 },
                 {
                     trigger: "blur",
@@ -179,7 +178,7 @@ export default defineComponent({
                     trigger: "blur",
                     min: 8,
                     max: 16,
-                    message: "密码长度必须在8-16字符之间",
+                    message: "密码长度必须在 8-16 字符之间",
                 },
             ],
             email: [
@@ -214,12 +213,12 @@ export default defineComponent({
                     required: false,
                     max: 16,
                     type: "string",
-                    message: "昵称长度上限为16字符",
+                    message: "昵称长度上限为 16 字符",
                 },
             ],
         });
 
-        const { resetFields, validate, validateInfos } = useForm(
+        const { resetFields, validate, validateInfos } = Form.useForm(
             modelRef,
             rulesRef
         );

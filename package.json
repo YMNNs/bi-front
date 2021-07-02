@@ -13,19 +13,20 @@
         "lint-fix": "vue-cli-service lint --fix"
     },
     "dependencies": {
-        "@ant-design-vue/use": "^0.0.1-alpha.10",
         "@ant-design/colors": "^6.0.0",
         "@ant-design/icons-vue": "^6.0.1",
-        "@antv/g2plot": "^2.3.24",
-        "ant-design-vue": "^2.2.0-beta.3",
-        "core-js": "^3.14.0",
+        "@antv/g2plot": "^2.3.25",
+        "ant-design-vue": "^2.2.0-rc.1",
+        "core-js": "^3.15.2",
         "js-md5": "^0.7.3",
+        "jschardet": "^3.0.0",
         "less": "^3.0.0",
         "less-loader": "^5.0.0",
         "nprogress": "^0.2.0",
+        "papaparse": "^5.3.1",
         "vue": "^3.1.1",
         "vue-request": "^1.2.0",
-        "vue-router": "^4.0.9",
+        "vue-router": "^4.0.10",
         "vuex": "^4.0.2"
     },
     "devDependencies": {
@@ -46,10 +47,10 @@
         "cross-env": "^7.0.3",
         "eslint": "^6.7.2",
         "eslint-plugin-prettier": "^3.3.1",
-        "eslint-plugin-vue": "^7.11.1",
+        "eslint-plugin-vue": "^7.12.1",
         "lodash-es": "^4.17.21",
         "mockjs": "^1.1.0",
-        "prettier": "^2.3.1",
+        "prettier": "^2.3.2",
         "webpack-bundle-analyzer": "^3.9.0"
     }
 }

@@ -18,13 +18,17 @@
             >
                 <template v-for="item in menuItems" v-bind:key="item.path">
                     <a-menu-item v-if="!item.children" :key="item.path">
-                        <icon-font :type="item.meta.icon" />
+                        <template #icon>
+                            <icon-font :type="item.meta.icon" />
+                        </template>
                         <span>{{ item.meta.title }}</span>
                     </a-menu-item>
                     <a-sub-menu v-if="item.children" :key="item.path">
+                        <template #icon>
+                            <icon-font :type="item.meta.icon" />
+                        </template>
                         <template #title>
                             <span>
-                                <icon-font :type="item.meta.icon" />
                                 <span>{{ item.meta.title }}</span>
                             </span>
                         </template>
@@ -244,7 +248,7 @@ export default defineComponent({
                     for (let child of route.children) {
                         //二级路由
                         if (
-                            child.meta.role.isInArray(role) &&
+                            child.meta.role.indexOf(role) >= 0 &&
                             !child.meta.hidden
                         ) {
                             //判断权限
@@ -258,7 +262,7 @@ export default defineComponent({
                                 for (let child1 of child.children) {
                                     //三级路由
                                     if (
-                                        child1.meta.role.isInArray(role) &&
+                                        child1.meta.role.indexOf(role) >= 0 &&
                                         !child1.meta.hidden
                                     ) {
                                         //判断权限

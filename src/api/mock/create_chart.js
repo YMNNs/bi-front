@@ -39,7 +39,7 @@ Mock.mock(
                     message: "生成成功",
                 },
                 data: {
-                    chart_id: "1",
+                    chart_id: 1,
                 },
             };
     }
