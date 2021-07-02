@@ -420,7 +420,7 @@ export default defineComponent({
                         type: "string",
                     });
                 });
-                create_data(form.data_name, form.description, data, columns)
+                create_data(form.data_name, form.description, columns, data)
                     .then((response) => {
                         state.submitLoading = false;
                         if (response.data.status.code === 0) {
