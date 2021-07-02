@@ -111,7 +111,9 @@
                 </div>
             </a-layout-content>
             <a-layout-footer style="text-align: center">
-                ©{{ new Date().getFullYear() }} {{ systemTitle }}
+                ©{{ new Date().getFullYear() }} {{ systemTitle }} 编译时间：{{
+                    buildTime
+                }}
             </a-layout-footer>
         </a-layout>
     </a-layout>
@@ -170,6 +172,8 @@ export default defineComponent({
         };
 
         const systemTitle = process.env.VUE_APP_TITLE;
+        const buildTime = process.env.BUILD_TIME;
+
         const state = reactive({
             collapsed: false,
             rootSubmenuKeys: [],
@@ -201,6 +205,7 @@ export default defineComponent({
             logout,
             updateUserInfo,
             onMenuClick,
+            buildTime,
         };
     },
     created() {
