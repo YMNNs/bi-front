@@ -48,8 +48,6 @@
                         />&nbsp; <strong>筛选维度：</strong
                         >{{ modelRef.col_name }}
                     </template>
-                    <!--禁用原因：v-model不接受换行-->
-                    <!-- eslint-disable -->
                     <a-select
                         mode="multiple"
                         v-model:value="modelRef.selected_keys_text"
@@ -59,7 +57,6 @@
                         :options="modelRef.all_keys_text"
                         @change="onSelectChange"
                     />
-                    <!-- eslint-enable -->
                 </a-form-item>
             </template>
             <a-form-item>
@@ -767,6 +764,8 @@ export default defineComponent({
             if (!modelRef.selected) {
                 // 未选中就清空筛选列
                 modelRef.selected_keys_text.length = 0;
+                // 重置数据
+                preview_chart.data_display = preview_chart.data;
             } else if (modelRef.selected_keys_text.length === 0) {
                 // 选中时加满
                 modelRef.all_keys_text.forEach((i) =>
@@ -779,6 +778,7 @@ export default defineComponent({
             if (modelRef.selected_keys_text.length === 0) {
                 // 筛选列为空时取消勾选
                 modelRef.selected = false;
+                // 重置数据
                 preview_chart.data_display = preview_chart.data;
             } else {
                 // 过滤数据
