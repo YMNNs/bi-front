@@ -21,6 +21,7 @@ import {
     reactive,
     toRefs,
     getCurrentInstance,
+    computed,
 } from "vue";
 
 export default defineComponent({
@@ -65,11 +66,13 @@ export default defineComponent({
             state.seriesField = chart_meta.seriesField
                 ? chart_meta.seriesField
                 : props.seriesField;
-            state.data = chart_meta.prepare_data(
-                props.data,
-                props.columns,
-                props.number_keys,
-                props.text_keys
+            state.data = computed(() =>
+                chart_meta.prepare_data(
+                    props.data,
+                    props.columns,
+                    props.number_keys,
+                    props.text_keys
+                )
             );
             // 动态注册组件，访问setup()外面的components
             internalInstance.components.graph = defineAsyncComponent(
