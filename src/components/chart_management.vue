@@ -150,15 +150,20 @@ export default defineComponent({
     },
     setup() {
         const router = useRouter();
+
+        /* eslint-disable*/
+
         const state = reactive({
-            quota: NaN,
-            used: NaN,
-            available: NaN,
-            charts: [],
-            chartsDisplay: [],
-            searchQuery: "",
-            filter: "last_update",
+            quota: NaN,                     // 图表限额
+            used: NaN,                      // 已用限额
+            available: NaN,                 // 可用数量
+            charts: [],                     // 原始图表
+            chartsDisplay: [],              // 展示图表
+            searchQuery: "",                // 搜索词
+            filter: "last_update",          // 过滤器
         });
+
+        /* eslint-enable*/
 
         const handleClickCard = () => {
             console.log("click");

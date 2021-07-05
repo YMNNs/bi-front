@@ -1,14 +1,22 @@
 <template>
-    <!--    添加仪表的抽屉-->
+    <!--添加和编辑仪表的抽屉-->
     <a-drawer
         :width="720"
         :visible="visible"
         :body-style="{ paddingBottom: '80px' }"
         @close="onClose"
     >
-        <a-typography-title :level="3">添加仪表</a-typography-title>
-        <p>
-            您可以将图表附加在仪表盘中以便随时查看，仪表的内容将随图表同步更新。
+        <a-typography-title :level="3" v-if="purpose === 'create'"
+            >添加仪表</a-typography-title
+        >
+        <a-typography-title :level="3" v-if="purpose === 'edit'"
+            >编辑仪表</a-typography-title
+        >
+        <p v-if="purpose === 'create'">
+            您可以将图表附加在仪表盘中以便随时查看，并为仪表指定专属的数据子集。
+        </p>
+        <p v-if="purpose === 'edit'">
+            正在编辑仪表“{{ modelRef.editing_instrument.chart.chart_name }}”
         </p>
         <a-form layout="vertical">
             <a-form-item v-bind="validateInfos.chart_id">
@@ -25,11 +33,32 @@
                 </template>
                 <a-select
                     v-model:value="modelRef.chart_id"
+                    :disabled="purpose === 'edit'"
                     :options="chart_options"
                     placeholder="选择一个图表"
                     @change="load_preview"
                 />
             </a-form-item>
+            <template v-if="purpose === 'edit'">
+                <a-form-item v-bind="validateInfos.selected_keys_text">
+                    <template #label>
+                        <a-checkbox
+                            v-model:checked="modelRef.selected"
+                            @change="onCheck"
+                        />&nbsp; <strong>筛选维度：</strong
+                        >{{ modelRef.col_name }}
+                    </template>
+                    <a-select
+                        mode="multiple"
+                        v-model:value="modelRef.selected_keys_text"
+                        style="width: 100%"
+                        placeholder="选择维度"
+                        :disabled="!modelRef.selected"
+                        :options="modelRef.all_keys_text"
+                        @change="onSelectChange"
+                    />
+                </a-form-item>
+            </template>
             <a-form-item>
                 <Graph_api
                     v-if="modelRef.chart_id && preview_chart.ready === 'true'"
@@ -40,7 +69,7 @@
                     :y-field="preview_chart.yField"
                     :text_keys="preview_chart.text_keys"
                     :number_keys="preview_chart.number_keys"
-                    :data="preview_chart.data"
+                    :data="preview_chart.data_display"
                     :columns="preview_chart.columns"
                 />
                 <template #help>
@@ -49,7 +78,10 @@
                             modelRef.chart_id && preview_chart.ready === 'true'
                         "
                     >
-                        <br />预览将要添加的仪表。
+                        <br />预览将要<template v-if="purpose === 'create'"
+                            >添加</template
+                        ><template v-if="purpose === 'edit'">编辑</template
+                        >的仪表。
                     </p>
                     <p
                         v-else-if="
@@ -91,7 +123,15 @@
             <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
             <a-button
                 type="primary"
-                @click="onSubmit"
+                v-if="purpose === 'create'"
+                @click="onSubmit_create"
+                :disabled="preview_chart.ready !== 'true'"
+                >完成</a-button
+            >
+            <a-button
+                type="primary"
+                v-if="purpose === 'edit'"
+                @click="onSubmit_edit"
                 :disabled="preview_chart.ready !== 'true'"
                 >完成</a-button
             >
@@ -102,7 +142,12 @@
             <a-button key="1" type="primary" v-if="!edit" @click="edit = true"
                 >编辑</a-button
             >
-            <a-button key="2" type="dashed" @click="showDrawer" v-if="edit">
+            <a-button
+                key="2"
+                type="dashed"
+                @click="showDrawer(null)"
+                v-if="edit"
+            >
                 <template #icon>
                     <PlusOutlined />
                 </template>
@@ -147,8 +192,38 @@
         </a-alert>
         <br />
     </template>
+    <a-divider />
+    <a-row type="flex" align="middle" :gutter="16">
+        <a-col :span="18">
+            <div style="display: table; vertical-align: middle">
+                <p style="display: table-cell">
+                    <a-typography-text strong
+                        >当前显示
+                        {{ instruments_display.length }}
+                        个条目 </a-typography-text
+                    >&nbsp;
+                </p>
+            </div>
+        </a-col>
+        <a-col :span="6">
+            <a-select
+                v-model:value="list_size"
+                style="width: 100%"
+                ref="select"
+                size="large"
+                placeholder="大小"
+                :options="size_options"
+                @change="onSizeChange"
+            />
+        </a-col>
+    </a-row>
+    <a-divider />
+
     <a-spin :spinning="!ready" :indicator="indicator">
-        <a-list :grid="list_size" :data-source="instruments_display">
+        <a-list
+            :grid="{ gutter: 16, column: list_size }"
+            :data-source="instruments_display"
+        >
             <template #renderItem="{ item }">
                 <a-list-item>
                     <a-card size="small">
@@ -170,13 +245,12 @@
                         <Graph_api
                             v-if="ready"
                             :data="
-                                dataSources.find(
-                                    (i) => i.id === item.chart.data_id
-                                ).dataSource
+                                dataSources.find((i) => i.id === item.data_id)
+                                    .dataSource
                             "
                             :columns="
                                 dataSources
-                                    .find((i) => i.id === item.chart.data_id)
+                                    .find((i) => i.id === item.data_id)
                                     .columns.filter((j) => j.type === 'number')
                             "
                             :number_keys="item.chart.keys_number"
@@ -194,7 +268,11 @@
                                 v-if="instruments_display.indexOf(item) !== 0"
                                 @click="moveLeft(item.index)"
                             />
-                            <EditOutlined />
+                            <EditOutlined
+                                key="edit"
+                                v-if="!item.chart.incomplete"
+                                @click="showDrawer(item.id)"
+                            />
                             <a-popconfirm @confirm="handleDelete(item.index)"
                                 ><template #title>
                                     您可以通过页面上方的
@@ -232,6 +310,9 @@ import { create_instrument } from "@/api/post/create_instrument";
 import { view_dashboard } from "@/api/post/view_dashboard";
 import { view_chart } from "@/api/post/view_chart";
 import { Form, notification } from "ant-design-vue";
+import { get_dashboard_size } from "@/api/post/get_dashboard_size";
+import { get_data_keys } from "@/api/post/get_data_keys";
+import { change_dashboard_size } from "@/api/post/change_dashboard_size";
 import { table_content } from "@/api/post/table_content";
 import {
     LoadingOutlined,
@@ -252,67 +333,53 @@ export default defineComponent({
         DeleteOutlined,
         LeftOutlined,
         RightOutlined,
-        // eslint-disable-next-line vue/no-unused-components
         PlusOutlined,
         WarningTwoTone,
         EditOutlined,
     },
     setup() {
+        /* eslint-disable*/
         const state = reactive({
-            incomplete: 0,
-            instruments: [],
-            instruments_display: [],
-            charts: [],
-            dataSources: [],
-            chart_options: [],
-            ready: false,
-            edit: false,
-            edited: false,
-            visible: false,
-            list_size_1: {
-                gutter: 16,
-                xs: 1,
-                sm: 1,
-                md: 1,
-                lg: 1,
-                xl: 1,
-                xxl: 1,
-            },
-            list_size_2: {
-                gutter: 16,
-                xs: 1,
-                sm: 1,
-                md: 2,
-                lg: 2,
-                xl: 2,
-                xxl: 2,
-            },
-            list_size_3: {
-                gutter: 16,
-                xs: 1,
-                sm: 1,
-                md: 2,
-                lg: 2,
-                xl: 2,
-                xxl: 3,
-            },
+            incomplete: 0,                  // 不完整的仪表数量
+            instruments: [],                // 原始仪表
+            instruments_display: [],        // 显示的仪表
+            charts: [],                     // 图表
+            dataSources: [],                // 数据
+            chart_options: [],              // 图表选项
+            ready: false,                   // 仪表可展示状态
+            edit: false,                    // 编辑状态
+            edited: false,                  // 已编辑标识
+            visible: false,                 // 抽屉可见性
+            size_options: [],               // 仪表盘尺寸选项
+            purpose: "create",              // 当前意图
         });
 
         const preview_chart = reactive({
-            data: {},
-            columns: [],
-            number_keys: [],
-            text_keys: [],
-            xField: "",
-            yField: "",
-            seriesField: "",
-            type_id: NaN,
-            ready: "false",
+            data: {},                       // 原始数据
+            data_display: {},               // 展示的数据
+            columns: [],                    // 列信息
+            number_keys: [],                // 指标列名
+            text_keys: [],                  // 维度列名
+            xField: "",                     // 自变量名
+            yField: "",                     // 因变量名
+            seriesField: "",                // 分类名
+            type_id: NaN,                   // 类型id
+            ready: "false",                 // 图表状态
         });
 
         const modelRef = reactive({
-            chart_id: null,
+            chart_id: null,                 // 图表id
+            data_id: null,                  // 数据id
+            col_name: "",                   // 列名
+            editing_instrument: {},         // 正在编辑的仪表
+            selected_keys_text: [],         // 选择的维度值
+            all_keys_text: [],              // 全部可用维度值
+            selected: true,                 // 复选框状态
         });
+
+        /* eslint-enable*/
+
+        const list_size = ref(0);
 
         const rulesRef = reactive({
             chart_id: [
@@ -338,13 +405,6 @@ export default defineComponent({
             });
         };
 
-        const { resetFields, validate, validateInfos } = Form.useForm(
-            modelRef,
-            rulesRef
-        );
-
-        const list_size = ref();
-
         const indicator = h(LoadingOutlined, {
             style: {
                 fontSize: "24px",
@@ -352,7 +412,30 @@ export default defineComponent({
             spin: true,
         });
 
+        const onSizeChange = (value) => {
+            change_dashboard_size(value).then((response) => {
+                // eslint-disable-next-line no-empty
+                if (response.data.status.code === 0) {
+                } else {
+                    notification["error"]({
+                        message: "错误",
+                        description: response.data.status.message,
+                    });
+                }
+            });
+        };
+
         const update = () => {
+            get_dashboard_size().then((response) => {
+                if (response.data.status.code === 0) {
+                    list_size.value = response.data.data.size;
+                } else {
+                    notification["error"]({
+                        message: "错误",
+                        description: response.data.status.message,
+                    });
+                }
+            });
             state.incomplete = 0;
             state.ready = false;
             state.edit = false;
@@ -396,6 +479,8 @@ export default defineComponent({
                                     state.incomplete += 1;
                                     response.data.data.chart.incomplete = true;
                                 }
+                                // 删除图表中的数据id
+                                // delete response.data.data.chart.data_id;
                                 state.charts.push(response.data.data.chart);
                             } else {
                                 notification["error"]({
@@ -405,10 +490,10 @@ export default defineComponent({
                             }
                         });
                     }
-                    // 汇总数据id
+                    // 汇总数据id，从仪表中取
                     const data_ids = new Set();
-                    state.charts.forEach((_chart) => {
-                        data_ids.add(_chart.data_id);
+                    instruments.forEach((instrument) => {
+                        data_ids.add(instrument.data_id);
                     });
                     // 请求数据
                     for (const i of data_ids) {
@@ -434,10 +519,13 @@ export default defineComponent({
                         instrument.chart = state.charts.find(
                             (_chart) => _chart.id === instrument.chart_id
                         );
+                        // 加入用于显示的数据
                     });
                     // 设置index
                     rearrangeIndex(instruments);
                     state.instruments = instruments;
+                    console.log("全部仪表信息");
+                    console.log(instruments);
                     // 复制为展示图表
                     handleReset();
                     // 设置尺寸
@@ -452,6 +540,12 @@ export default defineComponent({
         };
 
         onMounted(() => {
+            for (let i = 1; i <= 4; i++) {
+                state.size_options.push({
+                    label: "每行显示 " + i + " 个",
+                    value: i,
+                });
+            }
             update();
         });
 
@@ -462,7 +556,6 @@ export default defineComponent({
             const _index = state.instruments_display.indexOf(i);
             state.instruments_display.splice(_index, 1);
             rearrangeIndex(state.instruments_display);
-            reSize();
         };
 
         const load_preview = () => {
@@ -485,10 +578,6 @@ export default defineComponent({
                         response.data.data.chart.keys_text.length === 0
                     ) {
                         //图表不完整
-                        console.log("图表不完整");
-                        console.log(modelRef.chart_id);
-                        console.log(response.data.data.chart.keys_number);
-                        console.log(response.data.data.chart.keys_text);
                         preview_chart.ready = "error";
                         return;
                     }
@@ -501,14 +590,21 @@ export default defineComponent({
                     preview_chart.yField = response.data.data.chart.yField;
                     preview_chart.seriesField =
                         response.data.data.chart.seriesField;
+                    // // 如果有仪表就用仪表的数据id
+                    // if (state.purpose === "edit") {
+                    //     response.data.data.chart.data_id =
+                    //         modelRef.editing_instrument.data_id;
+                    // }
                     table_content(response.data.data.chart.data_id, -1, 0).then(
                         (_response) => {
                             if (_response.data.status.code === 0) {
                                 preview_chart.data =
                                     _response.data.data.table.dataSource;
+                                preview_chart.data_display = preview_chart.data;
                                 preview_chart.columns =
                                     _response.data.data.table.columns;
                                 preview_chart.ready = "true";
+                                onSelectChange();
                             } else {
                                 notification["error"]({
                                     message: "错误",
@@ -524,16 +620,6 @@ export default defineComponent({
                     });
                 }
             });
-        };
-
-        const reSize = () => {
-            if (state.instruments_display.length === 2) {
-                list_size.value = state.list_size_2;
-            } else if (state.instruments_display.length > 2) {
-                list_size.value = state.list_size_3;
-            } else {
-                list_size.value = state.list_size_1;
-            }
         };
 
         const moveLeft = (index) => {
@@ -560,12 +646,10 @@ export default defineComponent({
             state.instruments_display = JSON.parse(
                 JSON.stringify(state.instruments)
             );
-            reSize();
             assessEdit();
         };
 
         const rearrangeIndex = (array) => {
-            console.log(array);
             array.forEach((i, index) => {
                 i.index = index + 1;
             });
@@ -602,35 +686,177 @@ export default defineComponent({
             state.edit = false;
         };
 
-        const onSubmit = () => {
-            validate().then(() => {
-                const form = toRaw(modelRef);
-                create_instrument(form.chart_id).then((response) => {
+        const onSubmit_create = () => {
+            Form.useForm(modelRef, rulesRef)
+                .validate()
+                .then(() => {
+                    const form = toRaw(modelRef);
+                    create_instrument(form.chart_id).then((response) => {
+                        if (response.data.status.code === 0) {
+                            update();
+                            onClose();
+                            notification["success"]({
+                                message: "成功",
+                                description: response.data.status.message,
+                            });
+                        } else {
+                            notification["error"]({
+                                message: "错误",
+                                description: response.data.status.message,
+                            });
+                        }
+                    });
+                });
+        };
+
+        const showDrawer = (target) => {
+            // 打开时重置表单
+            // 打开时重置表单
+            resetFields();
+            console.log(target);
+            if (target) {
+                // 编辑图表
+                state.purpose = "edit";
+                // 填入model
+                modelRef.editing_instrument = state.instruments_display.find(
+                    (i) => i.id === target
+                );
+                modelRef.chart_id = modelRef.editing_instrument.chart.id;
+                // 填入数据id
+                modelRef.data_id = modelRef.editing_instrument.chart.data_id;
+                // 填入已选择的维度项目
+                modelRef.selected_keys_text =
+                    modelRef.editing_instrument.selected_keys;
+                // 填入复选框
+                modelRef.selected = modelRef.selected_keys_text.length > 0;
+                // 填入列名
+                table_content(
+                    modelRef.editing_instrument.chart.data_id,
+                    state.dataSources.find(
+                        (i) =>
+                            i.id === modelRef.editing_instrument.chart.data_id
+                    )
+                        ? 0
+                        : -1,
+                    0
+                ).then((response) => {
                     if (response.data.status.code === 0) {
-                        update();
-                        onClose();
-                        notification["success"]({
-                            message: "成功",
-                            description: response.data.status.message,
-                        });
-                    } else {
-                        notification["error"]({
-                            message: "错误",
-                            description: response.data.status.message,
+                        modelRef.col_name =
+                            response.data.data.table.columns.find(
+                                (i) =>
+                                    i.key ===
+                                    modelRef.editing_instrument.chart
+                                        .keys_text[0]
+                            ).title;
+                        if (response.data.data.table.dataSources) {
+                            // 补充到DataSources
+                            state.dataSources.push(response.data.data.table);
+                        }
+                    }
+                });
+                // 填入可用维度项目
+                get_data_keys(
+                    modelRef.editing_instrument.chart.data_id,
+                    modelRef.editing_instrument.chart.keys_text[0]
+                ).then((response) => {
+                    if (response.data.status.code === 0) {
+                        response.data.data.keys.forEach((i) => {
+                            modelRef.all_keys_text.push({ label: i, value: i });
                         });
                     }
                 });
-            });
-        };
-
-        const showDrawer = () => {
+                load_preview();
+            } else {
+                // 添加图表
+                state.purpose = "create";
+            }
+            console.log(modelRef);
             load_charts();
             state.visible = true;
         };
 
+        const onCheck = () => {
+            if (!modelRef.selected) {
+                // 未选中就清空筛选列
+                modelRef.selected_keys_text.length = 0;
+                // 重置数据
+                preview_chart.data_display = preview_chart.data;
+            } else if (modelRef.selected_keys_text.length === 0) {
+                // 选中时加满
+                modelRef.all_keys_text.forEach((i) =>
+                    modelRef.selected_keys_text.push(i.value)
+                );
+            }
+        };
+
+        const onSelectChange = () => {
+            if (modelRef.selected_keys_text.length === 0) {
+                // 筛选列为空时取消勾选
+                modelRef.selected = false;
+                // 重置数据
+                preview_chart.data_display = preview_chart.data;
+            } else {
+                // 过滤数据
+                preview_chart.data_display = preview_chart.data.filter(
+                    (i) =>
+                        modelRef.selected_keys_text.indexOf(
+                            i[modelRef.editing_instrument.chart.keys_text[0]]
+                        ) >= 0
+                );
+            }
+        };
+
         const onClose = () => {
-            resetFields();
             state.visible = false;
+        };
+
+        const { resetFields, validate, validateInfos } = Form.useForm(
+            modelRef,
+            rulesRef
+        );
+
+        const onSubmit_edit = () => {
+            const state_instrument = state.instruments_display.find(
+                (i) => i.id === modelRef.editing_instrument.id
+            );
+            console.log(
+                !state_instrument.selected_keys.elementEquals(
+                    modelRef.selected_keys_text
+                )
+            );
+            if (
+                !state_instrument.selected_keys.elementEquals(
+                    modelRef.selected_keys_text
+                )
+            ) {
+                console.log("图表被修改");
+                // 被修改
+                state_instrument.selected_keys = JSON.parse(
+                    JSON.stringify(modelRef.selected_keys_text)
+                );
+                // 创建新的数据
+                const new_data = JSON.parse(
+                    JSON.stringify(
+                        state.dataSources.find(
+                            (i) => i.id === state_instrument.chart.data_id
+                        )
+                    )
+                );
+                new_data.id = new Date().getTime() * -1;
+                new_data.dataSource = new_data.dataSource.filter((i) =>
+                    state_instrument.selected_keys.length > 0
+                        ? state_instrument.selected_keys.indexOf(
+                              i[state_instrument.chart.keys_text[0]]
+                          ) >= 0
+                        : true
+                );
+                state.dataSources.push(new_data);
+                state_instrument.data_id = new_data.id;
+            }
+            console.log(state.instruments_display);
+            console.log(state.dataSources);
+            assessEdit();
+            onClose();
         };
 
         return {
@@ -641,15 +867,20 @@ export default defineComponent({
             handleDelete,
             handleReset,
             onFinish,
-            list_size,
             showDrawer,
             onClose,
-            validateInfos,
-            resetFields,
             modelRef,
-            onSubmit,
+            onSubmit_create,
             preview_chart,
             load_preview,
+            list_size,
+            onSizeChange,
+            onSubmit_edit,
+            resetFields,
+            validateInfos,
+            validate,
+            onCheck,
+            onSelectChange,
         };
     },
 });

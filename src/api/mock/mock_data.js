@@ -36,4 +36,5 @@ export const mock_data = {
             last_modified_time: 1623748364,
         },
     ],
+    dashboard_size: 2,
 };

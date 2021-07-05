@@ -33,6 +33,9 @@ if (process.env.VUE_APP_MOCK === "true") {
     import("@/api/mock/create_instrument");
     import("@/api/mock/create_data");
     import("@/api/mock/delete_data");
+    import("@/api/mock/get_dashboard_size");
+    import("@/api/mock/change_dashboard_size");
+    import("@/api/mock/get_data_keys");
 }
 
 const app = createApp(App);

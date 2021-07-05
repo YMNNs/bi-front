@@ -8,8 +8,10 @@ export const chart_types = [
         yField: "value",
         seriesField: "category",
         prepare_data: (data, columns, number_keys, text_keys) => {
-            const result = [];
+            const _result = [];
             const columns_number = columns.filter((i) => i.type === "number");
+            const all_category_value = new Set();
+            const all_keys_text_value = new Set();
             data.forEach((i) => {
                 number_keys.forEach((number) => {
                     const item = {};
@@ -17,10 +19,30 @@ export const chart_types = [
                     item["category"] = columns_number.find(
                         (_i) => _i.key === number
                     ).title;
-                    text_keys.forEach((text) => {
-                        item[text] = i[text];
-                    });
-                    result.push(item);
+                    all_category_value.add(item["category"]); // 添加到分类集合
+                    item[text_keys[0]] = i[text_keys[0]]; // 只有一个维度列，简化
+                    all_keys_text_value.add(item[text_keys[0]]); // 添加到维度集合
+                    _result.push(item);
+                });
+            });
+            const result = [];
+            // 先遍历分类
+            all_category_value.forEach((i) => {
+                all_keys_text_value.forEach((j) => {
+                    const _line = _result.filter(
+                        (_res) =>
+                            _res["category"] === i && _res[text_keys[0]] === j
+                    );
+                    const line = {};
+                    line[text_keys[0]] = j;
+                    line["category"] = i;
+                    line["value"] = _line.reduce(
+                        (previousValue, currentValue) => {
+                            return previousValue + currentValue["value"];
+                        },
+                        0
+                    );
+                    result.push(line);
                 });
             });
             return result;
@@ -46,8 +68,10 @@ export const chart_types = [
         yField: "value",
         seriesField: "category",
         prepare_data: (data, columns, number_keys, text_keys) => {
-            const result = [];
+            const _result = [];
             const columns_number = columns.filter((i) => i.type === "number");
+            const all_category_value = new Set();
+            const all_keys_text_value = new Set();
             data.forEach((i) => {
                 number_keys.forEach((number) => {
                     const item = {};
@@ -55,10 +79,30 @@ export const chart_types = [
                     item["category"] = columns_number.find(
                         (_i) => _i.key === number
                     ).title;
-                    text_keys.forEach((text) => {
-                        item[text] = i[text];
-                    });
-                    result.push(item);
+                    all_category_value.add(item["category"]); // 添加到分类集合
+                    item[text_keys[0]] = i[text_keys[0]]; // 只有一个维度列，简化
+                    all_keys_text_value.add(item[text_keys[0]]); // 添加到维度集合
+                    _result.push(item);
+                });
+            });
+            const result = [];
+            // 先遍历分类
+            all_category_value.forEach((i) => {
+                all_keys_text_value.forEach((j) => {
+                    const _line = _result.filter(
+                        (_res) =>
+                            _res["category"] === i && _res[text_keys[0]] === j
+                    );
+                    const line = {};
+                    line[text_keys[0]] = j;
+                    line["category"] = i;
+                    line["value"] = _line.reduce(
+                        (previousValue, currentValue) => {
+                            return previousValue + currentValue["value"];
+                        },
+                        0
+                    );
+                    result.push(line);
                 });
             });
             return result;
@@ -84,8 +128,10 @@ export const chart_types = [
         yField: "value",
         seriesField: "category",
         prepare_data: (data, columns, number_keys, text_keys) => {
-            const result = [];
+            const _result = [];
             const columns_number = columns.filter((i) => i.type === "number");
+            const all_category_value = new Set();
+            const all_keys_text_value = new Set();
             data.forEach((i) => {
                 number_keys.forEach((number) => {
                     const item = {};
@@ -93,10 +139,30 @@ export const chart_types = [
                     item["category"] = columns_number.find(
                         (_i) => _i.key === number
                     ).title;
-                    text_keys.forEach((text) => {
-                        item[text] = i[text];
-                    });
-                    result.push(item);
+                    all_category_value.add(item["category"]); // 添加到分类集合
+                    item[text_keys[0]] = i[text_keys[0]]; // 只有一个维度列，简化
+                    all_keys_text_value.add(item[text_keys[0]]); // 添加到维度集合
+                    _result.push(item);
+                });
+            });
+            const result = [];
+            // 先遍历分类
+            all_category_value.forEach((i) => {
+                all_keys_text_value.forEach((j) => {
+                    const _line = _result.filter(
+                        (_res) =>
+                            _res["category"] === i && _res[text_keys[0]] === j
+                    );
+                    const line = {};
+                    line[text_keys[0]] = j;
+                    line["category"] = i;
+                    line["value"] = _line.reduce(
+                        (previousValue, currentValue) => {
+                            return previousValue + currentValue["value"];
+                        },
+                        0
+                    );
+                    result.push(line);
                 });
             });
             return result;
@@ -122,8 +188,10 @@ export const chart_types = [
         yField: "value",
         seriesField: "category",
         prepare_data: (data, columns, number_keys, text_keys) => {
-            const result = [];
+            const _result = [];
             const columns_number = columns.filter((i) => i.type === "number");
+            const all_category_value = new Set();
+            const all_keys_text_value = new Set();
             data.forEach((i) => {
                 number_keys.forEach((number) => {
                     const item = {};
@@ -131,10 +199,30 @@ export const chart_types = [
                     item["category"] = columns_number.find(
                         (_i) => _i.key === number
                     ).title;
-                    text_keys.forEach((text) => {
-                        item[text] = i[text];
-                    });
-                    result.push(item);
+                    all_category_value.add(item["category"]); // 添加到分类集合
+                    item[text_keys[0]] = i[text_keys[0]]; // 只有一个维度列，简化
+                    all_keys_text_value.add(item[text_keys[0]]); // 添加到维度集合
+                    _result.push(item);
+                });
+            });
+            const result = [];
+            // 先遍历分类
+            all_category_value.forEach((i) => {
+                all_keys_text_value.forEach((j) => {
+                    const _line = _result.filter(
+                        (_res) =>
+                            _res["category"] === i && _res[text_keys[0]] === j
+                    );
+                    const line = {};
+                    line[text_keys[0]] = j;
+                    line["category"] = i;
+                    line["value"] = _line.reduce(
+                        (previousValue, currentValue) => {
+                            return previousValue + currentValue["value"];
+                        },
+                        0
+                    );
+                    result.push(line);
                 });
             });
             return result;
@@ -160,15 +248,41 @@ export const chart_types = [
         yField: "value",
         seriesField: "category",
         prepare_data: (data, columns, number_keys, text_keys) => {
-            const result = [];
+            const _result = [];
+            const columns_number = columns.filter((i) => i.type === "number");
+            const all_category_value = new Set();
+            const all_keys_text_value = new Set();
             data.forEach((i) => {
                 number_keys.forEach((number) => {
                     const item = {};
                     item["value"] = i[number];
-                    text_keys.forEach((text) => {
-                        item[text] = i[text];
-                    });
-                    result.push(item);
+                    item["category"] = columns_number.find(
+                        (_i) => _i.key === number
+                    ).title;
+                    all_category_value.add(item["category"]); // 添加到分类集合
+                    item[text_keys[0]] = i[text_keys[0]]; // 只有一个维度列，简化
+                    all_keys_text_value.add(item[text_keys[0]]); // 添加到维度集合
+                    _result.push(item);
+                });
+            });
+            const result = [];
+            // 先遍历分类
+            all_category_value.forEach((i) => {
+                all_keys_text_value.forEach((j) => {
+                    const _line = _result.filter(
+                        (_res) =>
+                            _res["category"] === i && _res[text_keys[0]] === j
+                    );
+                    const line = {};
+                    line[text_keys[0]] = j;
+                    line["category"] = i;
+                    line["value"] = _line.reduce(
+                        (previousValue, currentValue) => {
+                            return previousValue + currentValue["value"];
+                        },
+                        0
+                    );
+                    result.push(line);
                 });
             });
             return result;
@@ -193,8 +307,10 @@ export const chart_types = [
         yField: "value",
         seriesField: "category",
         prepare_data: (data, columns, number_keys, text_keys) => {
-            const result = [];
+            const _result = [];
             const columns_number = columns.filter((i) => i.type === "number");
+            const all_category_value = new Set();
+            const all_keys_text_value = new Set();
             data.forEach((i) => {
                 number_keys.forEach((number) => {
                     const item = {};
@@ -202,10 +318,30 @@ export const chart_types = [
                     item["category"] = columns_number.find(
                         (_i) => _i.key === number
                     ).title;
-                    text_keys.forEach((text) => {
-                        item[text] = i[text];
-                    });
-                    result.push(item);
+                    all_category_value.add(item["category"]); // 添加到分类集合
+                    item[text_keys[0]] = i[text_keys[0]]; // 只有一个维度列，简化
+                    all_keys_text_value.add(item[text_keys[0]]); // 添加到维度集合
+                    _result.push(item);
+                });
+            });
+            const result = [];
+            // 先遍历分类
+            all_category_value.forEach((i) => {
+                all_keys_text_value.forEach((j) => {
+                    const _line = _result.filter(
+                        (_res) =>
+                            _res["category"] === i && _res[text_keys[0]] === j
+                    );
+                    const line = {};
+                    line[text_keys[0]] = j;
+                    line["category"] = i;
+                    line["value"] = _line.reduce(
+                        (previousValue, currentValue) => {
+                            return previousValue + currentValue["value"];
+                        },
+                        0
+                    );
+                    result.push(line);
                 });
             });
             return result;
@@ -230,8 +366,10 @@ export const chart_types = [
         yField: "value",
         seriesField: "category",
         prepare_data: (data, columns, number_keys, text_keys) => {
-            const result = [];
+            const _result = [];
             const columns_number = columns.filter((i) => i.type === "number");
+            const all_category_value = new Set();
+            const all_keys_text_value = new Set();
             data.forEach((i) => {
                 number_keys.forEach((number) => {
                     const item = {};
@@ -239,10 +377,30 @@ export const chart_types = [
                     item["category"] = columns_number.find(
                         (_i) => _i.key === number
                     ).title;
-                    text_keys.forEach((text) => {
-                        item[text] = i[text];
-                    });
-                    result.push(item);
+                    all_category_value.add(item["category"]); // 添加到分类集合
+                    item[text_keys[0]] = i[text_keys[0]]; // 只有一个维度列，简化
+                    all_keys_text_value.add(item[text_keys[0]]); // 添加到维度集合
+                    _result.push(item);
+                });
+            });
+            const result = [];
+            // 先遍历分类
+            all_category_value.forEach((i) => {
+                all_keys_text_value.forEach((j) => {
+                    const _line = _result.filter(
+                        (_res) =>
+                            _res["category"] === i && _res[text_keys[0]] === j
+                    );
+                    const line = {};
+                    line[text_keys[0]] = j;
+                    line["category"] = i;
+                    line["value"] = _line.reduce(
+                        (previousValue, currentValue) => {
+                            return previousValue + currentValue["value"];
+                        },
+                        0
+                    );
+                    result.push(line);
                 });
             });
             return result;
