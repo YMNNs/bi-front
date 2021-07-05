@@ -270,6 +270,7 @@
                             />
                             <EditOutlined
                                 key="edit"
+                                v-if="!item.chart.incomplete"
                                 @click="showDrawer(item.id)"
                             />
                             <a-popconfirm @confirm="handleDelete(item.index)"
@@ -337,43 +338,46 @@ export default defineComponent({
         EditOutlined,
     },
     setup() {
+        /* eslint-disable*/
         const state = reactive({
-            incomplete: 0,
-            instruments: [],
-            instruments_display: [],
-            charts: [],
-            dataSources: [],
-            chart_options: [],
-            ready: false,
-            edit: false,
-            edited: false,
-            visible: false,
-            size_options: [],
-            purpose: "create",
+            incomplete: 0,                  // 不完整的仪表数量
+            instruments: [],                // 原始仪表
+            instruments_display: [],        // 显示的仪表
+            charts: [],                     // 图表
+            dataSources: [],                // 数据
+            chart_options: [],              // 图表选项
+            ready: false,                   // 仪表可展示状态
+            edit: false,                    // 编辑状态
+            edited: false,                  // 已编辑标识
+            visible: false,                 // 抽屉可见性
+            size_options: [],               // 仪表盘尺寸选项
+            purpose: "create",              // 当前意图
         });
 
         const preview_chart = reactive({
-            data: {},
-            data_display: {},
-            columns: [],
-            number_keys: [],
-            text_keys: [],
-            xField: "",
-            yField: "",
-            seriesField: "",
-            type_id: NaN,
-            ready: "false",
+            data: {},                       // 原始数据
+            data_display: {},               // 展示的数据
+            columns: [],                    // 列信息
+            number_keys: [],                // 指标列名
+            text_keys: [],                  // 维度列名
+            xField: "",                     // 自变量名
+            yField: "",                     // 因变量名
+            seriesField: "",                // 分类名
+            type_id: NaN,                   // 类型id
+            ready: "false",                 // 图表状态
         });
 
         const modelRef = reactive({
-            chart_id: null,
-            data_id: null,
-            col_name: "",
-            editing_instrument: {},
-            selected_keys_text: [],
-            all_keys_text: [],
-            selected: true,
+            chart_id: null,                 // 图表id
+            data_id: null,                  // 数据id
+            col_name: "",                   // 列名
+            editing_instrument: {},         // 正在编辑的仪表
+            selected_keys_text: [],         // 选择的维度值
+            all_keys_text: [],              // 全部可用维度值
+            selected: true,                 // 复选框状态
         });
+
+        /* eslint-enable*/
 
         const list_size = ref(0);
 
