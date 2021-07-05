@@ -1,8 +1,8 @@
 import Mock from "mockjs";
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + "data/keys", "post", (request) => {
-    const { id, key_text } = JSON.parse(request.body);
-    if (id === 2 && key_text === "direction") {
+    const { id, keyText } = JSON.parse(request.body);
+    if (id === 2 && keyText === "direction") {
         return {
             status: {
                 code: 0,

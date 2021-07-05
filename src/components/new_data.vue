@@ -177,6 +177,7 @@ import jschardet from "jschardet";
 import { create_data } from "@/api/post/create_data";
 import { Form, notification } from "ant-design-vue";
 import { useRouter } from "vue-router";
+import { update_data } from "@/api/post/update_data";
 
 export default defineComponent({
     components: {
@@ -420,17 +421,32 @@ export default defineComponent({
                         type: "string",
                     });
                 });
-                create_data(form.data_name, form.description, columns, data)
+                create_data(form.data_name, form.description, columns)
                     .then((response) => {
                         state.submitLoading = false;
                         if (response.data.status.code === 0) {
-                            notification["success"]({
-                                message: "成功",
-                                description:
-                                    "已上传数据“" + form.data_name + "”。",
-                            });
-                            router.push(
-                                "/data_display/" + response.data.data.id
+                            update_data(response.data.data.id, data).then(
+                                (_response) => {
+                                    if (_response.data.status.code === 0) {
+                                        notification["success"]({
+                                            message: "成功",
+                                            description:
+                                                "已创建数据集“" +
+                                                form.data_name +
+                                                "”",
+                                        });
+                                        router.push(
+                                            "/data_display/" +
+                                                response.data.data.id
+                                        );
+                                    } else {
+                                        notification["error"]({
+                                            message: "错误",
+                                            description:
+                                                response.data.status.message,
+                                        });
+                                    }
+                                }
                             );
                         } else {
                             notification["error"]({

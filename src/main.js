@@ -36,6 +36,7 @@ if (process.env.VUE_APP_MOCK === "true") {
     import("@/api/mock/get_dashboard_size");
     import("@/api/mock/change_dashboard_size");
     import("@/api/mock/get_data_keys");
+    import("@/api/mock/update_data");
 }
 
 const app = createApp(App);
