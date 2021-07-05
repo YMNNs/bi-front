@@ -332,7 +332,6 @@ export default defineComponent({
         DeleteOutlined,
         LeftOutlined,
         RightOutlined,
-        // eslint-disable-next-line vue/no-unused-components
         PlusOutlined,
         WarningTwoTone,
         EditOutlined,
@@ -352,8 +351,6 @@ export default defineComponent({
             size_options: [],
             purpose: "create",
         });
-
-        const list_size = ref(0);
 
         const preview_chart = reactive({
             data: {},
@@ -377,6 +374,8 @@ export default defineComponent({
             all_keys_text: [],
             selected: true,
         });
+
+        const list_size = ref(0);
 
         const rulesRef = reactive({
             chart_id: [
@@ -516,6 +515,7 @@ export default defineComponent({
                         instrument.chart = state.charts.find(
                             (_chart) => _chart.id === instrument.chart_id
                         );
+                        // 加入用于显示的数据
                     });
                     // 设置index
                     rearrangeIndex(instruments);
@@ -586,11 +586,11 @@ export default defineComponent({
                     preview_chart.yField = response.data.data.chart.yField;
                     preview_chart.seriesField =
                         response.data.data.chart.seriesField;
-                    // 如果有仪表就用仪表的数据id
-                    if (state.purpose === "edit") {
-                        response.data.data.chart.data_id =
-                            modelRef.editing_instrument.data_id;
-                    }
+                    // // 如果有仪表就用仪表的数据id
+                    // if (state.purpose === "edit") {
+                    //     response.data.data.chart.data_id =
+                    //         modelRef.editing_instrument.data_id;
+                    // }
                     table_content(response.data.data.chart.data_id, -1, 0).then(
                         (_response) => {
                             if (_response.data.status.code === 0) {
@@ -663,7 +663,6 @@ export default defineComponent({
         };
 
         const onFinish = () => {
-            // todo 加入数据id
             edit_dashboard(state.instruments_display).then((response) => {
                 if (response.data.status.code === 0) {
                     if (response.data.status.code === 0) {
@@ -708,6 +707,7 @@ export default defineComponent({
 
         const showDrawer = (target) => {
             // 打开时重置表单
+            // 打开时重置表单
             resetFields();
             console.log(target);
             if (target) {
@@ -719,26 +719,37 @@ export default defineComponent({
                 );
                 modelRef.chart_id = modelRef.editing_instrument.chart.id;
                 // 填入数据id
-                modelRef.data_id = modelRef.editing_instrument.data_id;
+                modelRef.data_id = modelRef.editing_instrument.chart.data_id;
                 // 填入已选择的维度项目
                 modelRef.selected_keys_text =
                     modelRef.editing_instrument.selected_keys;
                 // 填入复选框
                 modelRef.selected = modelRef.selected_keys_text.length > 0;
                 // 填入列名
-                table_content(modelRef.editing_instrument.data_id, 0, 0).then(
-                    (response) => {
-                        if (response.data.status.code === 0) {
-                            modelRef.col_name =
-                                response.data.data.table.columns.find(
-                                    (i) =>
-                                        i.key ===
-                                        modelRef.editing_instrument.chart
-                                            .keys_text[0]
-                                ).title;
+                table_content(
+                    modelRef.editing_instrument.chart.data_id,
+                    state.dataSources.find(
+                        (i) =>
+                            i.id === modelRef.editing_instrument.chart.data_id
+                    )
+                        ? 0
+                        : -1,
+                    0
+                ).then((response) => {
+                    if (response.data.status.code === 0) {
+                        modelRef.col_name =
+                            response.data.data.table.columns.find(
+                                (i) =>
+                                    i.key ===
+                                    modelRef.editing_instrument.chart
+                                        .keys_text[0]
+                            ).title;
+                        if (response.data.data.table.dataSources) {
+                            // 补充到DataSources
+                            state.dataSources.push(response.data.data.table);
                         }
                     }
-                );
+                });
                 // 填入可用维度项目
                 get_data_keys(
                     modelRef.editing_instrument.chart.data_id,
@@ -801,7 +812,47 @@ export default defineComponent({
         );
 
         const onSubmit_edit = () => {
-            console.log(validate());
+            const state_instrument = state.instruments_display.find(
+                (i) => i.id === modelRef.editing_instrument.id
+            );
+            console.log(
+                !state_instrument.selected_keys.elementEquals(
+                    modelRef.selected_keys_text
+                )
+            );
+            if (
+                !state_instrument.selected_keys.elementEquals(
+                    modelRef.selected_keys_text
+                )
+            ) {
+                console.log("图表被修改");
+                // 被修改
+                state_instrument.selected_keys = JSON.parse(
+                    JSON.stringify(modelRef.selected_keys_text)
+                );
+                // 创建新的数据
+                const new_data = JSON.parse(
+                    JSON.stringify(
+                        state.dataSources.find(
+                            (i) => i.id === state_instrument.chart.data_id
+                        )
+                    )
+                );
+                new_data.id = new Date().getTime() * -1;
+                new_data.dataSource = new_data.dataSource.filter((i) =>
+                    state_instrument.selected_keys.length > 0
+                        ? state_instrument.selected_keys.indexOf(
+                              i[state_instrument.chart.keys_text[0]]
+                          ) >= 0
+                        : true
+                );
+                state.dataSources.push(new_data);
+                state_instrument.data_id = new_data.id;
+            }
+            console.log(state.instruments_display);
+            console.log(state.dataSources);
+            assessEdit();
+            onClose();
         };
 
         return {
