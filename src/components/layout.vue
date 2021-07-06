@@ -127,6 +127,7 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { logout as logout_request } from "@/api/post/logout";
 import { icon_url } from "@/util/iconfont";
+import { cloneDeep } from "lodash-es";
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url, //图标,随时更新
@@ -257,7 +258,7 @@ export default defineComponent({
                             !child.meta.hidden
                         ) {
                             //判断权限
-                            let node = JSON.parse(JSON.stringify(child));
+                            let node = cloneDeep(child);
                             if (node.children) {
                                 node.children = []; //清空临时三级路由
                             }
@@ -271,9 +272,7 @@ export default defineComponent({
                                         !child1.meta.hidden
                                     ) {
                                         //判断权限
-                                        node.children.push(
-                                            JSON.parse(JSON.stringify(child1))
-                                        ); //添加临时三级路由
+                                        node.children.push(cloneDeep(child1)); //添加临时三级路由
                                     }
                                 }
                                 qualifiedItems.push(node);

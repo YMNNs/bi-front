@@ -326,6 +326,7 @@ import {
 import Graph_api from "@/components/graph/graph_api";
 import { edit_dashboard } from "@/api/post/edit_dashboard";
 import { all_charts } from "@/api/post/all_charts";
+import { cloneDeep } from "lodash-es";
 
 export default defineComponent({
     components: {
@@ -645,9 +646,7 @@ export default defineComponent({
         };
 
         const handleReset = () => {
-            state.instruments_display = JSON.parse(
-                JSON.stringify(state.instruments)
-            );
+            state.instruments_display = cloneDeep(state.instruments);
             assessEdit();
         };
 
@@ -669,9 +668,7 @@ export default defineComponent({
         };
 
         const onFinish = () => {
-            const request_data = JSON.parse(
-                JSON.stringify(state.instruments_display)
-            );
+            const request_data = cloneDeep(state.instruments_display);
             // 将select_keys格式化为字符串
             request_data.forEach((i) => {
                 i.selected_keys = JSON.stringify(i.selected_keys);
@@ -840,15 +837,13 @@ export default defineComponent({
             ) {
                 console.log("图表被修改");
                 // 被修改
-                state_instrument.selected_keys = JSON.parse(
-                    JSON.stringify(modelRef.selected_keys_text)
+                state_instrument.selected_keys = cloneDeep(
+                    modelRef.selected_keys_text
                 );
                 // 创建新的数据
-                const new_data = JSON.parse(
-                    JSON.stringify(
-                        state.dataSources.find(
-                            (i) => i.id === state_instrument.chart.data_id
-                        )
+                const new_data = cloneDeep(
+                    state.dataSources.find(
+                        (i) => i.id === state_instrument.chart.data_id
                     )
                 );
                 new_data.id = new Date().getTime() * -1;

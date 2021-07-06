@@ -257,18 +257,14 @@ export default defineComponent({
             console.log("更改表名");
             change_table(state.table_id, state.editableStr).then((response) => {
                 if (response.data.status.code === 0) {
-                    state.table_name = JSON.parse(
-                        JSON.stringify(state.editableStr)
-                    );
+                    state.table_name = cloneDeep(state.editableStr);
                     notification["success"]({
                         message: "成功",
                         description:
                             "数据表的名称已变更为 " + state.editableStr,
                     });
                 } else {
-                    state.editableStr = JSON.parse(
-                        JSON.stringify(state.table_name)
-                    );
+                    state.editableStr = cloneDeep(state.table_name);
                     notification["error"]({
                         message: "错误",
                         description: response.data.status.message,
