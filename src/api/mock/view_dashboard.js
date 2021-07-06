@@ -13,6 +13,7 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + "dashboard/view", "post", () => {
                     index: 0,
                     chart_id: 2,
                     data_id: 2,
+                    // eslint-disable-next-line
                     selected_keys: "[\"南\"]",
                 },
                 {
