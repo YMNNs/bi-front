@@ -141,23 +141,21 @@ export default defineComponent({
         const loadTables = () => {
             all_tables().then((response) => {
                 if (response.data.status.code === 0) {
-                    state.data_options = []
-                    response.data.data.tables.forEach((i) => {
-                        state.data_options.push({ value: i.id, label: i.name })
+                    state.data_options = response.data.data.tables.map((i) => {
+                        return { value: i.id, label: i.name }
                     })
                 }
             })
         }
 
         const load_chart_type_options = () => {
-            state.chart_type_options = []
-            chart_types.forEach((i) => {
-                state.chart_type_options.push({
+            state.chart_type_options = chart_types.map((i) => {
+                return {
                     value: i.type_id,
                     label: i.type_name,
                     description: i.description,
                     icon_type: i.icon_type,
-                })
+                }
             })
         }
 
