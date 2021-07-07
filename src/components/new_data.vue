@@ -393,7 +393,7 @@ export default defineComponent({
 
         const onSubmit_upload = () => {
             validate_upload().then(() => {
-                state.submitLoading = { delay: 500 };
+                state.submitLoading = { delay: 100 };
                 const form = toRaw(modelRef_upload);
                 const keys = form.keys_number.concat(form.keys_text);
                 const data = [];
@@ -423,10 +423,10 @@ export default defineComponent({
                 });
                 create_data(form.data_name, form.description, columns)
                     .then((response) => {
-                        state.submitLoading = false;
                         if (response.data.status.code === 0) {
                             update_data(response.data.data.id, data).then(
                                 (_response) => {
+                                    state.submitLoading = false;
                                     if (_response.data.status.code === 0) {
                                         notification["success"]({
                                             message: "成功",
