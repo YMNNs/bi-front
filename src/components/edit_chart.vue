@@ -201,18 +201,19 @@ export default defineComponent({
             spin: true,
         })
 
+        // prettier-ignore
         const state = reactive({
-            timeStamp: NaN,
-            error: true,
-            problems: {
+            timeStamp: NaN,                 // 时间戳
+            error: true,                    // 图表无法显示的状态
+            problems: {                     // 图表存在的问题
                 number: ['指标选择过少'],
                 text: ['维度选择过少'],
             },
-            search: {
+            search: {                       // 搜索框
                 field: '',
                 chart_type: '',
             },
-            limit: {
+            limit: {                        // 列数量限制
                 number: {
                     max: 0,
                     min: 0,
@@ -222,19 +223,19 @@ export default defineComponent({
                     min: 0,
                 },
             },
-            raw_data: [],
-            chart_id: NaN,
-            data_id: NaN,
-            chart_types: [],
-            chart_types_display: [],
-            graph_data: [],
-            columns: {
+            raw_data: [],                   // 原始数据
+            chart_id: NaN,                  // 图表id
+            data_id: NaN,                   // 数据id
+            chart_types: [],                // 图表类型列表
+            chart_types_display: [],        // 显示的图表类型列表
+            graph_data: [],                 // 图表数据
+            columns: {                      // 列名
                 number: [],
                 number_display: [],
                 text: [],
                 text_display: [],
             },
-            graph_options: {
+            graph_options: {                // 图表参数
                 type_id: NaN,
                 chart_name: '',
                 keys_number: [],
@@ -243,7 +244,7 @@ export default defineComponent({
                 yField: null,
                 seriesField: null,
             },
-            graph_options_original: {
+            graph_options_original: {       // 原始图表参数
                 type_id: NaN,
                 chart_name: '',
                 keys_number: [],
@@ -252,10 +253,11 @@ export default defineComponent({
                 yField: null,
                 seriesField: null,
             },
-            ready: false,
-            change_list: [],
-            skip_check: false,
+            ready: false,                   // 图表加载完毕状态
+            change_list: [],                // 变更列表
+            skip_check: false,              // 跳过变更检查
         })
+
         // 注入路由
         const route = useRoute()
         const router = useRouter()

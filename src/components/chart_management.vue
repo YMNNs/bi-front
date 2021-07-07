@@ -129,19 +129,16 @@ export default defineComponent({
     setup() {
         const router = useRouter()
 
-        /* eslint-disable*/
-
+        // prettier-ignore
         const state = reactive({
             quota: NaN,                     // 图表限额
             used: NaN,                      // 已用限额
             available: NaN,                 // 可用数量
             charts: [],                     // 原始图表
             chartsDisplay: [],              // 展示图表
-            searchQuery: "",                // 搜索词
-            filter: "last_update",          // 过滤器
-        });
-
-        /* eslint-enable*/
+            searchQuery: '',                // 搜索词
+            filter: 'last_update',          // 过滤器
+        })
 
         const handleClickCard = () => {
             console.log('click')

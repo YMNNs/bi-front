@@ -229,15 +229,16 @@ export default defineComponent({
 
         const app_title = process.env.VUE_APP_TITLE
 
+        // prettier-ignore
         const state = reactive({
-            modal_visible: false,
-            modal_confirmLoading: false,
-            email_verified: false,
-            status: '',
-            last_login: '',
-            disable_delete_button: true,
-            disable_resend_link: false,
-            original_profile: {
+            modal_visible: false,           // 对话框可见状态
+            modal_confirmLoading: false,    // 对话框按钮加载状态
+            email_verified: false,          // 电子邮件地址验证状态
+            status: '',                     // 用户状态
+            last_login: '',                 // 上次登录时间
+            disable_delete_button: true,    // 禁用删除按钮状态
+            disable_resend_link: false,     // 禁用发送电子邮件按钮状态
+            original_profile: {             // 原始用户信息
                 id: 0,
                 username: '',
                 nickname: '',

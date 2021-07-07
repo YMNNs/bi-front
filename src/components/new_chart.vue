@@ -131,10 +131,11 @@ export default defineComponent({
     setup() {
         const router = useRouter()
 
+        // prettier-ignore
         const state = reactive({
-            tabKey: 'blank',
-            data_options: [],
-            chart_type_options: [],
+            tabKey: 'blank',            // 当前标签页
+            data_options: [],           // 数据集选项
+            chart_type_options: [],     // 图表类型选项
         })
 
         const loadTables = () => {

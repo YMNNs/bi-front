@@ -92,10 +92,12 @@ import { Form } from 'ant-design-vue'
 export default defineComponent({
     setup() {
         const store = useStore()
+
+        // prettier-ignore
         const state = reactive({
-            step: 'register',
-            subtitle: '请填写表单以注册' + process.env.VUE_APP_TITLE,
-            error: '',
+            step: 'register',                                           // 当前步骤
+            subtitle: '请填写表单以注册' + process.env.VUE_APP_TITLE,      // 副标题
+            error: '',                                                  // 当前错误
         })
 
         const buttonLoading = ref(false)

@@ -132,11 +132,12 @@ export default defineComponent({
     setup() {
         const router = useRouter()
 
+        // prettier-ignore
         const state = reactive({
-            tabKey: 'upload',
-            all_keys_options: [],
-            parsed: {},
-            submitLoading: false,
+            tabKey: 'upload',           // 标签页
+            all_keys_options: [],       // 所有列名选项
+            parsed: {},                 // 已读取的数据
+            submitLoading: false,       // 提交按钮加载状态
         })
 
         const limit = {
