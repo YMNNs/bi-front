@@ -298,14 +298,13 @@ export default defineComponent({
         })
 
         const load_charts = () => {
-            state.chart_options.length = 0
             all_charts().then((response) => {
                 if (response.data.status.code === 0) {
-                    response.data.data.all_charts.charts.forEach((i) => {
-                        state.chart_options.push({
+                    state.chart_options = response.data.data.all_charts.charts.map((i) => {
+                        return {
                             value: i.id,
                             label: i.chart_name,
-                        })
+                        }
                     })
                 }
             })
@@ -636,8 +635,8 @@ export default defineComponent({
                     modelRef.editing_instrument.chart.keys_text[0]
                 ).then((response) => {
                     if (response.data.status.code === 0) {
-                        response.data.data.keys.forEach((i) => {
-                            modelRef.all_keys_text.push({ label: i, value: i })
+                        modelRef.all_keys_text = response.data.data.keys.map((i) => {
+                            return { label: i, value: i }
                         })
                     }
                 })
@@ -659,7 +658,9 @@ export default defineComponent({
                 preview_chart.data_display = preview_chart.data
             } else if (modelRef.selected_keys_text.length === 0) {
                 // 选中时加满
-                modelRef.all_keys_text.forEach((i) => modelRef.selected_keys_text.push(i.value))
+                modelRef.selected_keys_text = modelRef.all_keys_text.map((i) => {
+                    return i.value
+                })
             }
         }
 
