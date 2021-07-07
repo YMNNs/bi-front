@@ -2,11 +2,7 @@
     <a-layout style="min-height: 100vh">
         <a-layout-sider v-model:collapsed="collapsed" collapsible>
             <div class="logo">
-                <img
-                    src="../assets/bi_logo_white.svg"
-                    alt="BILYN"
-                    style="max-height: 32px"
-                />
+                <img src="../assets/bi_logo_white.svg" alt="BILYN" style="max-height: 32px" />
             </div>
             <a-menu
                 :openKeys="openKeys"
@@ -32,10 +28,7 @@
                                 <span>{{ item.meta.title }}</span>
                             </span>
                         </template>
-                        <template
-                            v-for="child in item.children"
-                            v-bind:key="child.path"
-                        >
+                        <template v-for="child in item.children" v-bind:key="child.path">
                             <a-menu-item>
                                 {{ child.meta.title }}
                             </a-menu-item>
@@ -51,35 +44,19 @@
                         <div id="sys_title">{{ systemTitle }}</div>
                     </a-col>
                     <a-col :span="12">
-                        <a-row
-                            type="flex"
-                            justify="end"
-                            style="margin-right: 16px"
-                        >
+                        <a-row type="flex" justify="end" style="margin-right: 16px">
                             <a-col :span="24">
                                 <div id="drop_down">
                                     <a-dropdown>
-                                        <a
-                                            class="ant-dropdown-link"
-                                            @click.prevent
-                                        >
-                                            {{
-                                                $store.state.nickname
-                                                    ? $store.state.nickname
-                                                    : "未设置昵称"
-                                            }}
+                                        <a class="ant-dropdown-link" @click.prevent>
+                                            {{ $store.state.nickname ? $store.state.nickname : '未设置昵称' }}
                                             <DownOutlined />
                                         </a>
                                         <template #overlay>
-                                            <a-menu
-                                                style="min-width: 150px"
-                                                @click="onMenuClick"
-                                            >
+                                            <a-menu style="min-width: 150px" @click="onMenuClick">
                                                 <a-menu-item key="name">
                                                     登录为
-                                                    <strong>{{
-                                                        $store.state.username
-                                                    }}</strong>
+                                                    <strong>{{ $store.state.username }}</strong>
                                                 </a-menu-item>
                                                 <a-menu-divider />
                                                 <a-menu-item key="settings">
@@ -111,27 +88,25 @@
                 </div>
             </a-layout-content>
             <a-layout-footer style="text-align: center">
-                ©{{ new Date().getFullYear() }} {{ systemTitle }} 编译时间：{{
-                    buildTime
-                }}
+                ©{{ new Date().getFullYear() }} {{ systemTitle }} 编译时间：{{ buildTime }}
             </a-layout-footer>
         </a-layout>
     </a-layout>
 </template>
 <script>
-import { defineComponent, reactive, toRefs } from "vue";
-import { createFromIconfontCN, DownOutlined } from "@ant-design/icons-vue";
-import "@/util/index";
-import router from "@/router";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
-import { logout as logout_request } from "@/api/post/logout";
-import { icon_url } from "@/util/iconfont";
-import { cloneDeep } from "lodash-es";
+import { defineComponent, reactive, toRefs } from 'vue'
+import { createFromIconfontCN, DownOutlined } from '@ant-design/icons-vue'
+import '@/util/index'
+import router from '@/router'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { logout as logout_request } from '@/api/post/logout'
+import { icon_url } from '@/util/iconfont'
+import { cloneDeep } from 'lodash-es'
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url, //图标,随时更新
-});
+})
 
 export default defineComponent({
     components: {
@@ -139,48 +114,48 @@ export default defineComponent({
         IconFont,
     },
     setup() {
-        const store = useStore();
-        const $router = useRouter();
+        const store = useStore()
+        const $router = useRouter()
 
         const updateUserInfo = () => {
-            store.dispatch("UPDATE_USER_INFO");
-        };
+            store.dispatch('UPDATE_USER_INFO')
+        }
 
         const onMenuClick = ({ key }) => {
             switch (key) {
-                case "settings": {
-                    router.push("/edit_user_profile");
-                    break;
+                case 'settings': {
+                    router.push('/edit_user_profile')
+                    break
                 }
-                case "logout": {
-                    logout();
+                case 'logout': {
+                    logout()
                 }
             }
-        };
+        }
 
         const logout = () => {
             logout_request()
                 .then((response) => {
                     if (response.data) {
                         //退出成功
-                        store.commit("SET_LOGOUT", true);
-                        store.commit("CLEAR_USER_INFO");
-                        store.commit("CLEAR_TOKEN");
-                        $router.push("/login");
+                        store.commit('SET_LOGOUT', true)
+                        store.commit('CLEAR_USER_INFO')
+                        store.commit('CLEAR_TOKEN')
+                        $router.push('/login')
                     }
                 })
-                .catch();
-        };
+                .catch()
+        }
 
-        const systemTitle = process.env.VUE_APP_TITLE;
-        const buildTime = process.env.BUILD_TIME;
+        const systemTitle = process.env.VUE_APP_TITLE
+        const buildTime = process.env.BUILD_TIME
 
         const state = reactive({
             collapsed: false,
             rootSubmenuKeys: [],
             openKeys: [],
             selectedKeys: [],
-        });
+        })
         /**
          * 只展开当前父级菜单
          * @param openKeys
@@ -188,16 +163,14 @@ export default defineComponent({
         const onOpenChange = (openKeys) => {
             // console.log("onOpenChange: ");
             // console.log(openKeys);
-            let latestOpenKey = openKeys.find(
-                (key) => state.openKeys.indexOf(key) === -1
-            );
+            let latestOpenKey = openKeys.find((key) => state.openKeys.indexOf(key) === -1)
 
             if (state.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
-                state.openKeys = openKeys;
+                state.openKeys = openKeys
             } else {
-                state.openKeys = latestOpenKey ? [latestOpenKey] : [];
+                state.openKeys = latestOpenKey ? [latestOpenKey] : []
             }
-        };
+        }
 
         return {
             ...toRefs(state),
@@ -207,12 +180,12 @@ export default defineComponent({
             updateUserInfo,
             onMenuClick,
             buildTime,
-        };
+        }
     },
     created() {
-        this.updateUserInfo();
+        this.updateUserInfo()
         for (let menuItem of this.menuItems) {
-            this.rootSubmenuKeys.push(menuItem.path);
+            this.rootSubmenuKeys.push(menuItem.path)
         }
         // console.log("created");
         // console.log(this.rootSubmenuKeys);
@@ -222,13 +195,13 @@ export default defineComponent({
             if (menuItem.children) {
                 for (let child of menuItem.children) {
                     if (this.$route.path === child.path) {
-                        this.openKeys = [menuItem.path];
-                        break;
+                        this.openKeys = [menuItem.path]
+                        break
                     }
                 }
             } else if (this.$route.path === menuItem.path) {
-                this.openKeys = [menuItem.path];
-                break;
+                this.openKeys = [menuItem.path]
+                break
             }
         }
         // console.log(this.openKeys);
@@ -241,51 +214,45 @@ export default defineComponent({
             // console.log(key);
             // console.log(selectedKeys);
             // console.log(this.$route.path);
-            this.$router.push(key);
+            this.$router.push(key)
         },
     },
     computed: {
         menuItems: () => {
-            const role = useStore().state.role;
-            let qualifiedItems = [];
+            const role = useStore().state.role
+            let qualifiedItems = []
             for (let route of router.options.routes) {
                 //一级路由
-                if (route.name === "layout") {
+                if (route.name === 'layout') {
                     for (let child of route.children) {
                         //二级路由
-                        if (
-                            child.meta.role.indexOf(role) >= 0 &&
-                            !child.meta.hidden
-                        ) {
+                        if (child.meta.role.indexOf(role) >= 0 && !child.meta.hidden) {
                             //判断权限
-                            let node = cloneDeep(child);
+                            let node = cloneDeep(child)
                             if (node.children) {
-                                node.children = []; //清空临时三级路由
+                                node.children = [] //清空临时三级路由
                             }
                             if (!child.children) {
-                                qualifiedItems.push(node);
+                                qualifiedItems.push(node)
                             } else {
                                 for (let child1 of child.children) {
                                     //三级路由
-                                    if (
-                                        child1.meta.role.indexOf(role) >= 0 &&
-                                        !child1.meta.hidden
-                                    ) {
+                                    if (child1.meta.role.indexOf(role) >= 0 && !child1.meta.hidden) {
                                         //判断权限
-                                        node.children.push(cloneDeep(child1)); //添加临时三级路由
+                                        node.children.push(cloneDeep(child1)) //添加临时三级路由
                                     }
                                 }
-                                qualifiedItems.push(node);
+                                qualifiedItems.push(node)
                             }
                         }
                     }
                 }
             }
             // console.log(qualifiedItems);
-            return qualifiedItems;
+            return qualifiedItems
         },
     },
-});
+})
 </script>
 <style>
 #components-layout-demo-side .logo {
@@ -314,7 +281,7 @@ export default defineComponent({
     font-size: large;
 }
 
-[data-theme="dark"] {
+[data-theme='dark'] {
     background: #141414;
 }
 </style>

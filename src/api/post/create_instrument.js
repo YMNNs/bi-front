@@ -1,7 +1,7 @@
-import axios from "@/request";
+import axios from '@/request'
 
 export function create_instrument(chart_id) {
-    return axios.post("dashboard/add", {
+    return axios.post('dashboard/add', {
         chart_id: chart_id,
-    });
+    })
 }

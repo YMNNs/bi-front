@@ -6,14 +6,14 @@
     </a-row>
 </template>
 <script>
-import { defineComponent } from "vue";
-import { DisconnectOutlined } from "@ant-design/icons-vue";
+import { defineComponent } from 'vue'
+import { DisconnectOutlined } from '@ant-design/icons-vue'
 
 export default defineComponent({
     components: {
         DisconnectOutlined,
     },
-});
+})
 </script>
 <style scoped>
 .row {

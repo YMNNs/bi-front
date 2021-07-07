@@ -11,9 +11,7 @@
                         onCancel: resetTableName,
                         maxlength: 128,
                     }"
-                    ><template #editableTooltip
-                        >名称长度上限为 128 字符</template
-                    ></a-typography-title
+                    ><template #editableTooltip>名称长度上限为 128 字符</template></a-typography-title
                 >
             </a-col>
         </a-row>
@@ -47,38 +45,23 @@
                     <!--单元格编辑功能设置，暂未使用-->
                     <template #name="{ text, record }">
                         <div class="editable-cell">
-                            <div
-                                v-if="editableData[record.key]"
-                                class="editable-cell-input-wrapper"
-                            >
+                            <div v-if="editableData[record.key]" class="editable-cell-input-wrapper">
                                 <!--编辑单元格时默认显示原内容-->
                                 <a-input
-                                    v-model:value="
-                                        editableData[record.key].comment
-                                    "
+                                    v-model:value="editableData[record.key].comment"
                                     @pressEnter="save(record.key)"
                                 />
-                                <check-outlined
-                                    class="editable-cell-icon-check"
-                                    @click="save(record.key)"
-                                />
+                                <check-outlined class="editable-cell-icon-check" @click="save(record.key)" />
                             </div>
                             <div v-else class="editable-cell-text-wrapper">
-                                {{ text || " " }}
-                                <edit-outlined
-                                    class="editable-cell-icon"
-                                    @click="edit(record.key)"
-                                />
+                                {{ text || ' ' }}
+                                <edit-outlined class="editable-cell-icon" @click="edit(record.key)" />
                             </div>
                         </div>
                     </template>
                     <!--删除功能设置，暂未使用-->
                     <template #operation="{ record }">
-                        <a-popconfirm
-                            v-if="dataSource.length"
-                            title="确定要删除吗？"
-                            @confirm="onDelete(record.key)"
-                        >
+                        <a-popconfirm v-if="dataSource.length" title="确定要删除吗？" @confirm="onDelete(record.key)">
                             <a>删除</a>
                         </a-popconfirm>
                     </template>
@@ -89,14 +72,14 @@
 </template>
 
 <script>
-import { defineComponent, reactive, toRefs, computed, onMounted } from "vue";
-import { CheckOutlined, EditOutlined } from "@ant-design/icons-vue";
-import { cloneDeep, throttle } from "lodash-es";
-import { table_content } from "@/api/post/table_content";
-import { notification } from "ant-design-vue";
-import { useRoute } from "vue-router";
-import router from "@/router";
-import { change_table } from "@/api/post/change_table";
+import { defineComponent, reactive, toRefs, computed, onMounted } from 'vue'
+import { CheckOutlined, EditOutlined } from '@ant-design/icons-vue'
+import { cloneDeep, throttle } from 'lodash-es'
+import { table_content } from '@/api/post/table_content'
+import { notification } from 'ant-design-vue'
+import { useRoute } from 'vue-router'
+import router from '@/router'
+import { change_table } from '@/api/post/change_table'
 
 export default defineComponent({
     components: {
@@ -106,7 +89,7 @@ export default defineComponent({
     setup() {
         const state = reactive({
             table_id: -1,
-            table_name: "",
+            table_name: '',
             dataSource: [],
             columns: [
                 // 带查找与编辑功能的列，目前未解决如何与所传数据对应
@@ -197,96 +180,87 @@ export default defineComponent({
                 total: 0,
                 onChange: (current) => {
                     //点击翻页后开始加载
-                    state.loading = true;
-                    state.pagination.defaultCurrent = current;
-                    table_content(state.table_id, 10, current).then(
-                        (response) => {
-                            if (response.data.status.code === 0) {
-                                response.data.data.table.dataSource.forEach(
-                                    (i) => {
-                                        i.key = i.ranking;
-                                    }
-                                );
-                                state.dataSource =
-                                    response.data.data.table.dataSource;
-                            } else {
-                                notification["error"]({
-                                    message: "错误",
-                                    description: response.data.status.message,
-                                });
-                            }
-                            //翻页操作完成后关闭加载
-                            state.loading = false;
+                    state.loading = true
+                    state.pagination.defaultCurrent = current
+                    table_content(state.table_id, 10, current).then((response) => {
+                        if (response.data.status.code === 0) {
+                            response.data.data.table.dataSource.forEach((i) => {
+                                i.key = i.ranking
+                            })
+                            state.dataSource = response.data.data.table.dataSource
+                        } else {
+                            notification['error']({
+                                message: '错误',
+                                description: response.data.status.message,
+                            })
                         }
-                    );
+                        //翻页操作完成后关闭加载
+                        state.loading = false
+                    })
                 },
             },
             //修改数据表名所用
-            editableStr: "",
-        });
+            editableStr: '',
+        })
         //模拟调用假接口传入表格数据
-        const route = useRoute();
+        const route = useRoute()
         onMounted(() => {
             //接收路由传入参数（table_id）
-            state.table_id = parseInt(route.params.id);
+            state.table_id = parseInt(route.params.id)
             // console.log(state.table_id);
 
             //参数格式不正确
             if (isNaN(state.table_id)) {
-                router.push("/data_management");
+                router.push('/data_management')
             }
-            update();
-        });
+            update()
+        })
 
         const update = () => {
             table_content(state.table_id, 10, 1).then((response) => {
                 if (response.data.status.code === 0) {
                     response.data.data.table.dataSource.forEach((i) => {
-                        i.key = i.ranking;
-                    });
-                    state.table_name = response.data.data.table.table_name;
-                    state.pagination.total = response.data.data.table.total;
-                    state.dataSource = response.data.data.table.dataSource;
-                    state.columns = response.data.data.table.columns;
-                    state.editableStr = response.data.data.table.table_name;
+                        i.key = i.ranking
+                    })
+                    state.table_name = response.data.data.table.table_name
+                    state.pagination.total = response.data.data.table.total
+                    state.dataSource = response.data.data.table.dataSource
+                    state.columns = response.data.data.table.columns
+                    state.editableStr = response.data.data.table.table_name
                 }
-            });
-        };
+            })
+        }
 
         const resetTableName = () => {
-            console.log("重置表名");
-            state.editableStr = cloneDeep(state.table_name);
-            update();
-        };
+            console.log('重置表名')
+            state.editableStr = cloneDeep(state.table_name)
+            update()
+        }
 
         const updateTableName = throttle(
             () => {
                 if (state.table_name !== state.editableStr) {
                     if (state.editableStr.length === 0) {
-                        resetTableName();
-                        return;
+                        resetTableName()
+                        return
                     }
-                    console.log("更改表名");
-                    change_table(state.table_id, state.editableStr).then(
-                        (response) => {
-                            if (response.data.status.code === 0) {
-                                state.table_name = cloneDeep(state.editableStr);
-                                notification["success"]({
-                                    message: "成功",
-                                    description:
-                                        "数据表的名称已变更为 " +
-                                        state.editableStr,
-                                });
-                                update();
-                            } else {
-                                state.editableStr = cloneDeep(state.table_name);
-                                notification["error"]({
-                                    message: "错误",
-                                    description: response.data.status.message,
-                                });
-                            }
+                    console.log('更改表名')
+                    change_table(state.table_id, state.editableStr).then((response) => {
+                        if (response.data.status.code === 0) {
+                            state.table_name = cloneDeep(state.editableStr)
+                            notification['success']({
+                                message: '成功',
+                                description: '数据表的名称已变更为 ' + state.editableStr,
+                            })
+                            update()
+                        } else {
+                            state.editableStr = cloneDeep(state.table_name)
+                            notification['error']({
+                                message: '错误',
+                                description: response.data.status.message,
+                            })
                         }
-                    );
+                    })
                 }
             },
             1000,
@@ -294,35 +268,28 @@ export default defineComponent({
                 leading: true,
                 trailing: false,
             }
-        );
+        )
 
         //单元格编辑功能
         //计算数据表存储元素个数
-        const count = computed(() => state.dataSource + 1);
+        const count = computed(() => state.dataSource + 1)
         //存储可编辑数据列
-        const editableData = reactive({});
+        const editableData = reactive({})
         //处理编辑操作
         const edit = (key) => {
-            editableData[key] = cloneDeep(
-                state.dataSource.filter((item) => key === item.key)[0]
-            );
-        };
+            editableData[key] = cloneDeep(state.dataSource.filter((item) => key === item.key)[0])
+        }
 
         //保存编辑内容
         const save = (key) => {
-            Object.assign(
-                state.dataSource.filter((item) => key === item.key)[0],
-                editableData[key]
-            );
-            delete editableData[key];
-        };
+            Object.assign(state.dataSource.filter((item) => key === item.key)[0], editableData[key])
+            delete editableData[key]
+        }
 
         //处理删除操作
         const onDelete = (key) => {
-            state.dataSource = state.dataSource.filter(
-                (item) => item.key !== key
-            );
-        };
+            state.dataSource = state.dataSource.filter((item) => item.key !== key)
+        }
 
         return {
             ...toRefs(state),
@@ -331,13 +298,13 @@ export default defineComponent({
             count,
             edit,
             save,
-            searchText: "",
-            searchedColumn: "",
+            searchText: '',
+            searchedColumn: '',
             updateTableName,
             resetTableName,
-        };
+        }
     },
-});
+})
 </script>
 
 <style lang="less">

@@ -7,10 +7,10 @@
  */
 export function parseOrNull(o, k) {
     try {
-        if (!k) return JSON.parse(o);
-        else return JSON.parse(o)[k];
+        if (!k) return JSON.parse(o)
+        else return JSON.parse(o)[k]
     } catch (e) {
-        return undefined;
+        return undefined
     }
 }
 
@@ -22,30 +22,30 @@ export function parseOrNull(o, k) {
 Array.prototype.elementEquals = function (array) {
     // 长度不等
     if (this.length !== array.length) {
-        return false;
+        return false
     }
     // 其有我没有
     for (const i of this) {
         if (array.indexOf(i) < 0) {
-            return false;
+            return false
         }
     }
     // 我有其没有
     for (const i of array) {
         if (this.indexOf(i) < 0) {
-            return false;
+            return false
         }
     }
-    return true;
-};
+    return true
+}
 
 export function randomString(e) {
-    e = e || 32;
-    let t = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678",
+    e = e || 32
+    let t = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678',
         a = t.length,
-        n = "";
-    for (let i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
-    return n;
+        n = ''
+    for (let i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a))
+    return n
 }
 
 /**
@@ -53,5 +53,5 @@ export function randomString(e) {
  * @returns {boolean}
  */
 Array.prototype.hasDuplicates = function () {
-    return !this.every((i) => this.indexOf(i) === this.lastIndexOf(i));
-};
+    return !this.every((i) => this.indexOf(i) === this.lastIndexOf(i))
+}

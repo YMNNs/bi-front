@@ -30,8 +30,8 @@ import {
     Modal,
     Tooltip,
     Upload,
-} from "ant-design-vue";
-import "ant-design-vue/dist/antd.css";
+} from 'ant-design-vue'
+import 'ant-design-vue/dist/antd.css'
 
 // 保持此列表与上面的import一致
 const components = [
@@ -66,9 +66,9 @@ const components = [
     Modal,
     Tooltip,
     Upload,
-];
+]
 export function setupAntd(app) {
     components.forEach((i) => {
-        app.use(i);
-    });
+        app.use(i)
+    })
 }

@@ -6,8 +6,8 @@
 /**
  * 散点图
  */
-import { defineComponent, onMounted, ref } from "vue";
-import { Scatter } from "@antv/g2plot";
+import { defineComponent, onMounted, ref } from 'vue'
+import { Scatter } from '@antv/g2plot'
 
 export default defineComponent({
     props: {
@@ -18,21 +18,21 @@ export default defineComponent({
     },
     setup(props) {
         // 此处随机生成div-id的原因是同一个页面中出现2个同id图表容器将会陷入渲染死循环
-        const id = ref(new Date().getTime().toString() + Math.random());
+        const id = ref(new Date().getTime().toString() + Math.random())
         const render = () => {
             const scatterPlot = new Scatter(id.value, {
                 appendPadding: 10,
                 data: props.data,
                 xField: props.xField,
                 yField: props.yField,
-                shape: "circle",
+                shape: 'circle',
                 colorField: props.seriesField,
                 size: 4,
                 yAxis: {
                     nice: true,
                     line: {
                         style: {
-                            stroke: "#aaa",
+                            stroke: '#aaa',
                         },
                     },
                 },
@@ -40,31 +40,31 @@ export default defineComponent({
                     grid: {
                         line: {
                             style: {
-                                stroke: "#eee",
+                                stroke: '#eee',
                             },
                         },
                     },
                     line: {
                         style: {
-                            stroke: "#aaa",
+                            stroke: '#aaa',
                         },
                     },
                 },
-            });
-            console.log("渲染散点图");
-            scatterPlot.render();
-        };
+            })
+            console.log('渲染散点图')
+            scatterPlot.render()
+        }
 
         onMounted(() => {
-            render();
-        });
+            render()
+        })
 
         return {
             render,
             id,
-        };
+        }
     },
-});
+})
 </script>
 
 <style scoped></style>
