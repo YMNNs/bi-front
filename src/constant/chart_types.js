@@ -8,6 +8,7 @@ export const chart_types = [
         yField: 'value',
         seriesField: 'category',
         prepare_data: (data, columns, number_keys, text_keys) => {
+            console.log('计算图表数据')
             const _result = []
             const columns_number = columns.filter((i) => i.type === 'number')
             const all_category_value = new Set()
@@ -59,6 +60,7 @@ export const chart_types = [
         yField: 'value',
         seriesField: 'category',
         prepare_data: (data, columns, number_keys, text_keys) => {
+            console.log('计算图表数据')
             const _result = []
             const columns_number = columns.filter((i) => i.type === 'number')
             const all_category_value = new Set()
@@ -110,6 +112,7 @@ export const chart_types = [
         yField: 'value',
         seriesField: 'category',
         prepare_data: (data, columns, number_keys, text_keys) => {
+            console.log('计算图表数据')
             const _result = []
             const columns_number = columns.filter((i) => i.type === 'number')
             const all_category_value = new Set()
@@ -161,6 +164,7 @@ export const chart_types = [
         yField: 'value',
         seriesField: 'category',
         prepare_data: (data, columns, number_keys, text_keys) => {
+            console.log('计算图表数据')
             const _result = []
             const columns_number = columns.filter((i) => i.type === 'number')
             const all_category_value = new Set()
@@ -212,6 +216,7 @@ export const chart_types = [
         yField: 'value',
         seriesField: 'category',
         prepare_data: (data, columns, number_keys, text_keys) => {
+            console.log('计算图表数据')
             const _result = []
             const columns_number = columns.filter((i) => i.type === 'number')
             const all_category_value = new Set()
@@ -263,6 +268,7 @@ export const chart_types = [
         yField: 'value',
         seriesField: 'category',
         prepare_data: (data, columns, number_keys, text_keys) => {
+            console.log('计算图表数据')
             const _result = []
             const columns_number = columns.filter((i) => i.type === 'number')
             const all_category_value = new Set()
@@ -314,6 +320,7 @@ export const chart_types = [
         yField: 'value',
         seriesField: 'category',
         prepare_data: (data, columns, number_keys, text_keys) => {
+            console.log('计算图表数据')
             const _result = []
             const columns_number = columns.filter((i) => i.type === 'number')
             const all_category_value = new Set()

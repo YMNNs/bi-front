@@ -155,7 +155,7 @@
     <a-divider />
 
     <a-spin :spinning="!ready" :indicator="indicator">
-        <a-list :grid="{ gutter: 16, column: list_size }" :data-source="instruments_display">
+        <a-list :grid="{ gutter: 16, column: list_size }" :data-source="instruments_display" v-if="ready">
             <template #renderItem="{ item }">
                 <a-list-item>
                     <a-card size="small">
@@ -166,7 +166,7 @@
                         >
 
                         <Graph_api
-                            v-if="ready"
+                            :key="new Date().getTime()"
                             :data="dataSources.find((i) => i.id === item.data_id).dataSource"
                             :columns="
                                 dataSources
@@ -176,7 +176,6 @@
                             :number_keys="item.chart.keys_number"
                             :text_keys="item.chart.keys_text"
                             :type_id="item.chart.type_id"
-                            :key="new Date().getTime()"
                             :x-field="item.chart.xField"
                             :y-field="item.chart.yField"
                             :series-field="item.chart.seriesField"
@@ -331,6 +330,12 @@ export default defineComponent({
         }
 
         const update = () => {
+            state.incomplete = 0
+            state.ready = false
+            state.edit = false
+            state.edited = false
+            state.charts.length = 0
+            state.dataSources.length = 0
             get_dashboard_size().then((response) => {
                 if (response.data.status.code === 0) {
                     list_size.value = response.data.data.size
@@ -341,16 +346,11 @@ export default defineComponent({
                     })
                 }
             })
-            state.incomplete = 0
-            state.ready = false
-            state.edit = false
-            state.edited = false
-            state.charts.length = 0
-            state.dataSources.length = 0
             view_dashboard().then(async (response) => {
                 if (response.data.status.code === 0) {
                     if (!response.data.data) {
                         // 仪表盘为空
+                        console.log('无仪表')
                         state.ready = true
                         return
                     }
@@ -428,6 +428,7 @@ export default defineComponent({
                     // 复制为展示图表
                     handleReset()
                     // 设置尺寸
+                    console.log('仪表准备完成')
                     state.ready = true
                 } else {
                     notification['error']({
