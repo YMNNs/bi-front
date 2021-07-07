@@ -12,28 +12,18 @@
                 @click="handleClick"
                 @openChange="onOpenChange"
             >
-                <template v-for="item in menuItems" v-bind:key="item.path">
-                    <a-menu-item v-if="!item.children" :key="item.path">
-                        <template #icon>
-                            <icon-font :type="item.meta.icon" />
-                        </template>
-                        <span>{{ item.meta.title }}</span>
-                    </a-menu-item>
-                    <a-sub-menu v-if="item.children" :key="item.path">
-                        <template #icon>
-                            <icon-font :type="item.meta.icon" />
-                        </template>
-                        <template #title>
-                            <span>
-                                <span>{{ item.meta.title }}</span>
-                            </span>
-                        </template>
-                        <template v-for="child in item.children" v-bind:key="child.path">
-                            <a-menu-item>
-                                {{ child.meta.title }}
-                            </a-menu-item>
-                        </template>
-                    </a-sub-menu>
+                <template v-for="item in menuList" :key="item.path">
+                    <template v-if="!item.children">
+                        <a-menu-item :key="item.path">
+                            <template #icon>
+                                <icon-font :type="item.meta.icon" />
+                            </template>
+                            {{ item.meta.title }}
+                        </a-menu-item>
+                    </template>
+                    <template v-else>
+                        <sub-menu :menu-info="item" :key="item.path" />
+                    </template>
                 </template>
             </a-menu>
         </a-layout-sider>
@@ -94,28 +84,91 @@
     </a-layout>
 </template>
 <script>
-import { defineComponent, reactive, toRefs } from 'vue'
+import { defineComponent, onMounted, reactive, toRefs } from 'vue'
 import { createFromIconfontCN, DownOutlined } from '@ant-design/icons-vue'
-import '@/util/index'
-import router from '@/router'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { logout as logout_request } from '@/api/post/logout'
 import { icon_url } from '@/util/iconfont'
-import { cloneDeep } from 'lodash-es'
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url, //图标,随时更新
 })
 
+/**
+ * 从路由表递归生成目录
+ * @type {{template: string, components: {IconFont: FunctionalComponent<IconFontProps>}, name: string, props: {menuInfo: {default: (function(): {}), type: ObjectConstructor}}}}
+ */
+const SubMenu = {
+    name: 'SubMenu',
+    props: {
+        menuInfo: {
+            type: Object,
+            default: () => ({}),
+        },
+    },
+    template: `
+        <template>
+        <template
+            v-if='menuInfo.children.filter(i=>!i.meta.hidden&&i.meta.role.indexOf($store.state.role)>=0).length>0'>
+            <a-sub-menu :key='menuInfo.path'>
+                <template #icon>
+                    <icon-font :type='menuInfo.meta.icon' />
+                </template>
+                <template #title>{{ menuInfo.meta.title }}</template>
+
+                <template
+                    v-for='item in menuInfo.children.filter(i=>!i.meta.hidden&&i.meta.role.indexOf($store.state.role)>=0)'
+                    :key='item.path'>
+                    <template v-if='!item.children'>
+                        <a-menu-item :key='item.path'>
+                            <template #icon>
+                                <icon-font :type='item.meta.icon' />
+                            </template>
+                            {{ item.meta.title }}
+                        </a-menu-item>
+                    </template>
+                    <template v-else>
+                        <sub-menu :menu-info='item' :key='item.path' />
+                    </template>
+
+                </template>
+            </a-sub-menu>
+        </template>
+        <template v-else>
+            <a-menu-item :key='menuInfo.path'>
+                <template #icon>
+                    <icon-font :type='menuInfo.meta.icon' />
+                </template>
+                {{ menuInfo.meta.title }}
+            </a-menu-item>
+        </template>
+        </template>
+    `,
+    components: {
+        IconFont,
+    },
+}
+
 export default defineComponent({
     components: {
         DownOutlined,
         IconFont,
+        'sub-menu': SubMenu,
     },
     setup() {
         const store = useStore()
-        const $router = useRouter()
+        const router = useRouter()
+
+        onMounted(() => {
+            updateUserInfo()
+            state.menuList = router.options.routes
+                .find((i) => i.name === 'layout')
+                .children.filter((i) => !i.meta.hidden && i.meta.role.indexOf(store.state.role) >= 0)
+            state.rootSubmenuKeys = state.menuList.map((i) => {
+                return i.path
+            })
+        })
 
         const updateUserInfo = () => {
             store.dispatch('UPDATE_USER_INFO')
@@ -141,7 +194,7 @@ export default defineComponent({
                         store.commit('SET_LOGOUT', true)
                         store.commit('CLEAR_USER_INFO')
                         store.commit('CLEAR_TOKEN')
-                        $router.push('/login')
+                        router.push('/login')
                     }
                 })
                 .catch()
@@ -155,15 +208,11 @@ export default defineComponent({
             rootSubmenuKeys: [],
             openKeys: [],
             selectedKeys: [],
+            menuList: [],
         })
-        /**
-         * 只展开当前父级菜单
-         * @param openKeys
-         */
+
         const onOpenChange = (openKeys) => {
-            // console.log("onOpenChange: ");
-            // console.log(openKeys);
-            let latestOpenKey = openKeys.find((key) => state.openKeys.indexOf(key) === -1)
+            const latestOpenKey = openKeys.find((key) => state.openKeys.indexOf(key) === -1)
 
             if (state.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
                 state.openKeys = openKeys
@@ -172,85 +221,20 @@ export default defineComponent({
             }
         }
 
+        const handleClick = ({ key }) => {
+            router.push(key)
+        }
+
         return {
             ...toRefs(state),
-            onOpenChange,
             systemTitle,
             logout,
             updateUserInfo,
             onMenuClick,
             buildTime,
+            onOpenChange,
+            handleClick,
         }
-    },
-    created() {
-        this.updateUserInfo()
-        for (let menuItem of this.menuItems) {
-            this.rootSubmenuKeys.push(menuItem.path)
-        }
-        // console.log("created");
-        // console.log(this.rootSubmenuKeys);
-        // console.log(this.menuItems);
-        // console.log(this.$route.path);
-        for (let menuItem of this.menuItems) {
-            if (menuItem.children) {
-                for (let child of menuItem.children) {
-                    if (this.$route.path === child.path) {
-                        this.openKeys = [menuItem.path]
-                        break
-                    }
-                }
-            } else if (this.$route.path === menuItem.path) {
-                this.openKeys = [menuItem.path]
-                break
-            }
-        }
-        // console.log(this.openKeys);
-    },
-    methods: {
-        // eslint-disable-next-line no-unused-vars
-        handleClick({ item, key, selectedKeys }) {
-            // console.log("handleClick");
-            // console.log(item);
-            // console.log(key);
-            // console.log(selectedKeys);
-            // console.log(this.$route.path);
-            this.$router.push(key)
-        },
-    },
-    computed: {
-        menuItems: () => {
-            const role = useStore().state.role
-            let qualifiedItems = []
-            for (let route of router.options.routes) {
-                //一级路由
-                if (route.name === 'layout') {
-                    for (let child of route.children) {
-                        //二级路由
-                        if (child.meta.role.indexOf(role) >= 0 && !child.meta.hidden) {
-                            //判断权限
-                            let node = cloneDeep(child)
-                            if (node.children) {
-                                node.children = [] //清空临时三级路由
-                            }
-                            if (!child.children) {
-                                qualifiedItems.push(node)
-                            } else {
-                                for (let child1 of child.children) {
-                                    //三级路由
-                                    if (child1.meta.role.indexOf(role) >= 0 && !child1.meta.hidden) {
-                                        //判断权限
-                                        node.children.push(cloneDeep(child1)) //添加临时三级路由
-                                    }
-                                }
-                                qualifiedItems.push(node)
-                            }
-                        }
-                    }
-                }
-            }
-            // console.log(qualifiedItems);
-            return qualifiedItems
-        },
     },
 })
 </script>
@@ -279,9 +263,5 @@ export default defineComponent({
     text-align: center;
     color: white;
     font-size: large;
-}
-
-[data-theme='dark'] {
-    background: #141414;
 }
 </style>

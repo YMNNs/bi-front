@@ -686,7 +686,6 @@ export default defineComponent({
 
         const onSubmit_edit = () => {
             const state_instrument = state.instruments_display.find((i) => i.id === modelRef.editing_instrument.id)
-            console.log(!state_instrument.selected_keys.elementEquals(modelRef.selected_keys_text))
             if (!state_instrument.selected_keys.elementEquals(modelRef.selected_keys_text)) {
                 console.log('图表被修改')
                 // 被修改

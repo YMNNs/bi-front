@@ -20,23 +20,10 @@ export function parseOrNull(o, k) {
  * @returns {boolean}
  */
 Array.prototype.elementEquals = function (array) {
-    // 长度不等
-    if (this.length !== array.length) {
-        return false
-    }
-    // 其有我没有
-    for (const i of this) {
-        if (array.indexOf(i) < 0) {
-            return false
-        }
-    }
-    // 我有其没有
-    for (const i of array) {
-        if (this.indexOf(i) < 0) {
-            return false
-        }
-    }
-    return true
+    return (
+        this.length !== array.length &&
+        this.every((i) => array.indexOf(i) >= 0 && array.every((i) => this.indexOf(i) >= 0))
+    )
 }
 
 export function randomString(e) {
@@ -46,12 +33,4 @@ export function randomString(e) {
         n = ''
     for (let i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a))
     return n
-}
-
-/**
- * 判断数组中是否有重复元素
- * @returns {boolean}
- */
-Array.prototype.hasDuplicates = function () {
-    return !this.every((i) => this.indexOf(i) === this.lastIndexOf(i))
 }

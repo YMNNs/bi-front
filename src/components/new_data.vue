@@ -119,7 +119,7 @@ import { defineComponent, reactive, ref, toRaw, toRefs } from 'vue'
 import { InboxOutlined } from '@ant-design/icons-vue'
 import Papa from 'papaparse'
 import jschardet from 'jschardet'
-import { pick } from 'lodash-es'
+import { pick, uniq } from 'lodash-es'
 import { create_data } from '@/api/post/create_data'
 import { Form, notification } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
@@ -247,7 +247,7 @@ export default defineComponent({
                             resolve()
                             return
                         }
-                        if (parsed.meta.fields.hasDuplicates()) {
+                        if (parsed.meta.fields.length !== uniq(parsed.meta.fields.length)) {
                             file.response = '该文件存在重复列名'
                             file.error = true
                             resolve()
