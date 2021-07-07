@@ -7,9 +7,7 @@
             :sub-title="$route.query.token"
             v-if="step === 'error'"
             ><template #extra>
-                <a-button @click.prevent="$router.push('/')" type="primary"
-                    >返回控制台</a-button
-                >
+                <a-button @click.prevent="$router.push('/')" type="primary">返回控制台</a-button>
             </template>
         </a-result>
         <a-result
@@ -18,53 +16,51 @@
             v-if="step === 'success'"
             sub-title="您提供的邮箱现已可用于登录和重置密码。"
             ><template #extra>
-                <a-button @click.prevent="$router.push('/')" type="primary"
-                    >返回控制台</a-button
-                >
+                <a-button @click.prevent="$router.push('/')" type="primary">返回控制台</a-button>
             </template>
         </a-result>
     </div>
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive, toRefs } from "vue";
-import { useRoute } from "vue-router";
-import { activate_email } from "@/api/post/activate_email";
+import { defineComponent, onMounted, reactive, toRefs } from 'vue'
+import { useRoute } from 'vue-router'
+import { activate_email } from '@/api/post/activate_email'
 export default defineComponent({
     setup() {
         {
             const state = reactive({
-                step: "waiting",
-            });
-            const $route = useRoute();
+                step: 'waiting',
+            })
+            const $route = useRoute()
 
             onMounted(() => {
                 if ($route.query.token) {
                     // 有token，验证
-                    state.step = "waiting";
-                    const token = $route.query.token;
+                    state.step = 'waiting'
+                    const token = $route.query.token
                     // console.log(token);
                     activate_email(token)
                         .then((response) => {
                             // console.log(response);
                             if (response.data.status.code === 0) {
-                                state.step = "success";
+                                state.step = 'success'
                             } else {
-                                state.step = "error";
+                                state.step = 'error'
                             }
                         })
-                        .catch();
+                        .catch()
                 } else {
                     // 无token，错误
-                    state.step = "error";
+                    state.step = 'error'
                 }
-            });
+            })
             return {
                 ...toRefs(state),
-            };
+            }
         }
     },
-});
+})
 </script>
 
 <style scoped></style>
