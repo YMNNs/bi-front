@@ -7,12 +7,12 @@
                     v-model:content="editableStr"
                     :level="4"
                     :editable="{
-                        onEnd: () => updateTableName(),
-                        onCancel: () => updateTableName(),
-                        maxlength: 32,
+                        onEnd: updateTableName,
+                        onCancel: resetTableName,
+                        maxlength: 128,
                     }"
                     ><template #editableTooltip
-                        >名称长度上限为 32 字符</template
+                        >名称长度上限为 128 字符</template
                     ></a-typography-title
                 >
             </a-col>
@@ -91,7 +91,7 @@
 <script>
 import { defineComponent, reactive, toRefs, computed, onMounted } from "vue";
 import { CheckOutlined, EditOutlined } from "@ant-design/icons-vue";
-import { cloneDeep } from "lodash-es";
+import { cloneDeep, throttle } from "lodash-es";
 import { table_content } from "@/api/post/table_content";
 import { notification } from "ant-design-vue";
 import { useRoute } from "vue-router";
@@ -253,29 +253,48 @@ export default defineComponent({
             });
         };
 
-        const updateTableName = () => {
-            console.log("更改表名");
-            change_table(state.table_id, state.editableStr).then((response) => {
-                if (response.data.status.code === 0) {
-                    state.table_name = JSON.parse(
-                        JSON.stringify(state.editableStr)
-                    );
-                    notification["success"]({
-                        message: "成功",
-                        description:
-                            "数据表的名称已变更为 " + state.editableStr,
-                    });
-                } else {
-                    state.editableStr = JSON.parse(
-                        JSON.stringify(state.table_name)
-                    );
-                    notification["error"]({
-                        message: "错误",
-                        description: response.data.status.message,
-                    });
-                }
-            });
+        const resetTableName = () => {
+            console.log("重置表名");
+            state.editableStr = cloneDeep(state.table_name);
+            update();
         };
+
+        const updateTableName = throttle(
+            () => {
+                if (state.table_name !== state.editableStr) {
+                    if (state.editableStr.length === 0) {
+                        resetTableName();
+                        return;
+                    }
+                    console.log("更改表名");
+                    change_table(state.table_id, state.editableStr).then(
+                        (response) => {
+                            if (response.data.status.code === 0) {
+                                state.table_name = cloneDeep(state.editableStr);
+                                notification["success"]({
+                                    message: "成功",
+                                    description:
+                                        "数据表的名称已变更为 " +
+                                        state.editableStr,
+                                });
+                                update();
+                            } else {
+                                state.editableStr = cloneDeep(state.table_name);
+                                notification["error"]({
+                                    message: "错误",
+                                    description: response.data.status.message,
+                                });
+                            }
+                        }
+                    );
+                }
+            },
+            1000,
+            {
+                leading: true,
+                trailing: false,
+            }
+        );
 
         //单元格编辑功能
         //计算数据表存储元素个数
@@ -315,6 +334,7 @@ export default defineComponent({
             searchText: "",
             searchedColumn: "",
             updateTableName,
+            resetTableName,
         };
     },
 });

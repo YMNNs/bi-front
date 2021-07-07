@@ -30,6 +30,9 @@ module.exports = {
                 math: "always",
             },
         ],
+        "vue/script-setup-uses-vars": 0,
+        "no-var": 2,
+        eqeqeq: 2,
     },
     overrides: [
         {

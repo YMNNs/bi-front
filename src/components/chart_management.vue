@@ -137,6 +137,7 @@ import { delete_chart } from "@/api/post/delete_chart";
 import { notification } from "ant-design-vue";
 import { chart_types } from "@/constant/chart_types";
 import { useRouter } from "vue-router";
+import { cloneDeep } from "lodash-es";
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url,
@@ -201,9 +202,7 @@ export default defineComponent({
                         chart.icon_type = chart_ref.icon_type;
                         chart.type_name = chart_ref.type_name;
                     });
-                    state.chartsDisplay = JSON.parse(
-                        JSON.stringify(state.charts)
-                    );
+                    state.chartsDisplay = cloneDeep(state.charts);
                     sortByTime();
                 }
             });

@@ -248,6 +248,7 @@ import { table_content } from "@/api/post/table_content";
 import { notification } from "ant-design-vue";
 import Graph_api from "@/components/graph/graph_api";
 import { edit_chart } from "@/api/post/edit_chart";
+import { cloneDeep } from "lodash-es";
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url,
@@ -365,8 +366,8 @@ export default defineComponent({
                                 }
                             }
                         );
-                        state.graph_options = JSON.parse(
-                            JSON.stringify(state.graph_options_original)
+                        state.graph_options = cloneDeep(
+                            state.graph_options_original
                         );
                         console.log(state.graph_options_original);
                         console.log(state.graph_options);
@@ -404,15 +405,12 @@ export default defineComponent({
                                     (i) => i.type === "string"
                                 );
                             state.columns.text_display = state.columns.text;
-                            checkedKeys_text.value = JSON.parse(
-                                JSON.stringify(
-                                    state.graph_options_original.keys_text
-                                )
+                            checkedKeys_text.value = cloneDeep(
+                                state.graph_options_original.keys_text
                             );
-                            checkedKeys_number.value = JSON.parse(
-                                JSON.stringify(
-                                    state.graph_options_original.keys_number
-                                )
+
+                            checkedKeys_number.value = cloneDeep(
+                                state.graph_options_original.keys_number
                             );
                         } else {
                             notification["error"]({
