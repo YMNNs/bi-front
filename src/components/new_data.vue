@@ -174,6 +174,7 @@ import { defineComponent, reactive, ref, toRaw, toRefs } from "vue";
 import { InboxOutlined } from "@ant-design/icons-vue";
 import Papa from "papaparse";
 import jschardet from "jschardet";
+import { pick } from "lodash-es";
 import { create_data } from "@/api/post/create_data";
 import { Form, notification } from "ant-design-vue";
 import { useRouter } from "vue-router";
@@ -314,9 +315,8 @@ export default defineComponent({
                             resolve();
                             return;
                         }
-                        state.all_keys_options.length = 0;
-                        parsed.meta.fields.forEach((i) => {
-                            state.all_keys_options.push({ value: i });
+                        state.all_keys_options = parsed.meta.fields.map((i) => {
+                            return { value: i };
                         });
                         state.parsed = parsed;
                         file.error = false;
@@ -386,7 +386,6 @@ export default defineComponent({
 
         const {
             resetFields: resetFields_upload,
-            // eslint-disable-next-line no-unused-vars
             validate: validate_upload,
             validateInfos: validateInfos_upload,
         } = Form.useForm(modelRef_upload, rulesRef_upload);
@@ -396,31 +395,30 @@ export default defineComponent({
                 state.submitLoading = { delay: 100 };
                 const form = toRaw(modelRef_upload);
                 const keys = form.keys_number.concat(form.keys_text);
-                const data = [];
-                state.parsed.data.forEach((i) => {
-                    const row = {};
-                    keys.forEach((j) => {
-                        row[j] = i[j];
-                    });
-                    data.push(row);
+                // 筛选需要的列
+                const data = state.parsed.data.map((i) => {
+                    return pick(i, keys);
                 });
-                const columns = [];
-                form.keys_number.forEach((i) => {
-                    columns.push({
-                        title: i,
-                        key: i,
-                        dataIndex: i,
-                        type: "number",
-                    });
-                });
-                form.keys_text.forEach((i) => {
-                    columns.push({
-                        title: i,
-                        key: i,
-                        dataIndex: i,
-                        type: "string",
-                    });
-                });
+                // 写入列信息
+                const columns = form.keys_number
+                    .map((i) => {
+                        return {
+                            title: i,
+                            key: i,
+                            dataIndex: i,
+                            type: "number",
+                        };
+                    })
+                    .concat(
+                        form.keys_text.map((j) => {
+                            return {
+                                title: j,
+                                key: j,
+                                dataIndex: j,
+                                type: "string",
+                            };
+                        })
+                    );
                 create_data(form.data_name, form.description, columns)
                     .then((response) => {
                         if (response.data.status.code === 0) {

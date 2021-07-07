@@ -170,7 +170,7 @@
                                     在删除账户之前，我们需要确认您对账户的所有权。
                                 </p>
                             </template>
-                            <a-button type="danger" @click.prevent="showModal"
+                            <a-button danger @click.prevent="showModal"
                                 >删除账户</a-button
                             >
                         </a-form-item>
@@ -194,9 +194,9 @@
                         </a-alert>
                         <br />
                         <p>
-                            我们将<strong>立即删除你所有的数据和图表</strong>，以及个人信息。
+                            我们将<strong>立即删除您所有的数据、图表、仪表盘</strong>，以及个人信息。
                         </p>
-                        <p>你的用户名将对{{ app_title }}上的所有人开放。</p>
+                        <p>您的用户名将对{{ app_title }}上的所有人开放。</p>
                         <p>
                             欲了解更多帮助，请阅读我们的文章“删除您的用户帐户”。
                         </p>
@@ -237,7 +237,7 @@
                             </a-form-item>
                             <a-form-item>
                                 <a-button
-                                    type="danger"
+                                    danger
                                     :disabled="disable_delete_button"
                                     ghost
                                     block
@@ -267,6 +267,7 @@ import { user_info } from "@/api/post/user_info";
 import { WarningOutlined } from "@ant-design/icons-vue";
 import { delete_account } from "@/api/post/delete_account";
 import { resend_activation_email } from "@/api/post/resend_activation_email";
+import { assign, assignWith } from "lodash-es";
 
 export default defineComponent({
     components: {
@@ -321,6 +322,13 @@ export default defineComponent({
         };
 
         onMounted(() => {
+            update();
+        });
+
+        const update = () => {
+            resetFields_delete();
+            resetFields_profile();
+            resetFields_password();
             user_info().then((response) => {
                 if (response.data.status.code === 0) {
                     state.status = response.data.data.user.status;
@@ -329,16 +337,11 @@ export default defineComponent({
                     state.last_login = new Date(
                         parseInt(response.data.data.user.last_login) * 1000
                     ).toLocaleString();
-                    Object.keys(state.original_profile).forEach((key) => {
-                        state.original_profile[key] =
-                            response.data.data.user[key];
-                    });
-                    Object.keys(modelRef_profile).forEach((key) => {
-                        modelRef_profile[key] = state.original_profile[key];
-                    });
+                    assign(state.original_profile, response.data.data.user);
+                    assign(modelRef_profile, state.original_profile);
                 }
             });
-        });
+        };
 
         const modelRef_profile = reactive({
             id: 0,
@@ -383,11 +386,9 @@ export default defineComponent({
                     validator: (rule, value) => {
                         return new Promise((resolve, reject) => {
                             if (value === "删除我的账户") {
-                                // console.log("confirm_text成功");
                                 state.disable_delete_button = false;
                                 resolve();
                             } else {
-                                // console.log("confirm_text失败");
                                 state.disable_delete_button = true;
                                 reject("");
                             }
@@ -454,10 +455,8 @@ export default defineComponent({
                                     const { code, message } =
                                         response.data.status;
                                     if (code === 0) {
-                                        // console.log("用户名验证成功");
                                         resolve();
                                     } else {
-                                        // console.log("用户名验证失败");
                                         reject(message);
                                     }
                                 });
@@ -493,10 +492,8 @@ export default defineComponent({
                                     const { code, message } =
                                         response.data.status;
                                     if (code === 0) {
-                                        // console.log("电子邮件验证成功");
                                         resolve();
                                     } else {
-                                        // console.log("电子邮件验证失败");
                                         reject(message);
                                     }
                                 });
@@ -523,19 +520,26 @@ export default defineComponent({
             validate_profile().then(() => {
                 const form = toRaw(modelRef_profile);
                 const user = {};
-                Object.keys(form).forEach((key) => {
-                    if (
-                        form[key] &&
-                        form[key] !== state.original_profile[key]
-                    ) {
-                        user[key] = form[key];
-                    }
+                // Object.keys(form).forEach((key) => {
+                //     if (
+                //         form[key] &&
+                //         form[key] !== state.original_profile[key]
+                //     ) {
+                //         user[key] = form[key];
+                //     }
+                // });
+                assignWith(user, form, (objValue, srcValue, key) => {
+                    return srcValue && srcValue !== state.original_profile[key]
+                        ? srcValue
+                        : null;
                 });
+                console.log(user);
                 if (user.length === 0) {
                     return;
                 }
                 edit_user_profile(user)
                     .then((response) => {
+                        update();
                         if (response.data.status.code === 0) {
                             // 修改成功
                             notification["success"]({
@@ -545,7 +549,6 @@ export default defineComponent({
                             // 更新本地用户信息
                             store.dispatch("UPDATE_USER_INFO");
                         } else {
-                            // console.log(response.data);
                             notification["error"]({
                                 message: "您的修改个人信息请求出现错误",
                                 description:

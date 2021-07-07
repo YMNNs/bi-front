@@ -109,16 +109,6 @@ export default defineComponent({
         UserOutlined,
         LockOutlined,
     },
-    // // 设置页面背景
-    // mounted() {
-    //    document
-    //         .querySelector("body")
-    //         .setAttribute("style", "background-color:#ececec");
-    // },
-    // // 取消页面背景
-    // beforeUnmount() {
-    //     document.querySelector("body").removeAttribute("style");
-    // },
 
     setup() {
         const store = useStore();
@@ -145,9 +135,6 @@ export default defineComponent({
             rememberMe: false,
         });
 
-        /**
-         * 玩得一手好watch
-         */
         watch(
             () => modelRef.rememberMe,
             () => {
