@@ -82,9 +82,11 @@ export default defineComponent({
         const store = useStore()
         const $router = useRouter()
         const $route = useRoute()
+
+        // prettier-ignore
         const state = reactive({
-            logout: false,
-            local_test: process.env.VUE_APP_MOCK,
+            logout: false,                          // 退出登录状态
+            local_test: process.env.VUE_APP_MOCK,   // 本地测试状态
         })
 
         onMounted(() => {

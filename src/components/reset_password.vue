@@ -111,11 +111,12 @@ export default defineComponent({
     setup() {
         const $route = useRoute()
 
+        // prettier-ignore
         const state = reactive({
-            subtitle: '如果您无法登录，请填写此表单以重置密码。',
-            reset_password_token: '',
-            step: '',
-            message: [
+            subtitle: '如果您无法登录，请填写此表单以重置密码。',       // 副标题
+            reset_password_token: '',                           // 重置密码令牌
+            step: '',                                           // 当前步骤
+            message: [                                          // 提示
                 {
                     code: 0,
                     problem: '',
@@ -165,7 +166,7 @@ export default defineComponent({
                     link: '/reset_password?token=' + $route.query.token,
                 },
             ],
-            code: 0,
+            code: 0,                                            // 状态码
         })
 
         const onSubmit_request_loading = ref(false)
