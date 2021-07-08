@@ -247,7 +247,7 @@ export default defineComponent({
                             resolve()
                             return
                         }
-                        if (parsed.meta.fields.length !== uniq(parsed.meta.fields.length)) {
+                        if (parsed.meta.fields.length === uniq(parsed.meta.fields.length)) {
                             file.response = '该文件存在重复列名'
                             file.error = true
                             resolve()
