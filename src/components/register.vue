@@ -96,7 +96,7 @@ export default defineComponent({
         // prettier-ignore
         const state = reactive({
             step: 'register',                                           // 当前步骤
-            subtitle: '请填写表单以注册' + process.env.VUE_APP_TITLE,      // 副标题
+            subtitle: `请填写表单以注册${process.env.VUE_APP_TITLE}`,      // 副标题
             error: '',                                                  // 当前错误
         })
 

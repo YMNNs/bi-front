@@ -53,13 +53,9 @@
                                         placeholder="选择一种图表"
                                         option-label-prop="label"
                                     >
-                                        <a-select-option
-                                            v-for="item in chart_type_options"
-                                            :key="item"
-                                            :value="item.value"
-                                            :label="item.label"
-                                            ><div>
-                                                <a-row type="flex" align="middle">
+                                        <template v-for="item in chart_type_options" :key="item">
+                                            <a-select-option :value="item.value" :label="item.label">
+                                                <a-row type="flex" align="middle" style="width: 100%">
                                                     <a-col
                                                         flex="48px"
                                                         style="font-size: 32px; padding-top: 2px; padding-bottom: 2px"
@@ -74,8 +70,8 @@
                                                         }}</a-typography-text>
                                                     </a-col>
                                                 </a-row>
-                                            </div>
-                                        </a-select-option>
+                                            </a-select-option>
+                                        </template>
                                     </a-select>
                                     <template #help>
                                         <p v-if="modelRef_blank.type_id">
@@ -126,6 +122,7 @@ const IconFont = createFromIconfontCN({
 
 export default defineComponent({
     components: {
+        // eslint-disable-next-line vue/no-unused-components
         IconFont,
     },
     setup() {
@@ -157,6 +154,7 @@ export default defineComponent({
                     icon_type: i.icon_type,
                 }
             })
+            console.log(state.chart_type_options)
         }
 
         const onSubmit_blank = () => {

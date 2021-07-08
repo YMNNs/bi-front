@@ -8,7 +8,7 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + 'dashboard/size', 'post', () => {
             message: '仪表盘大小请求成功',
         },
         data: {
-            size: mock_data.dashboard_size,
+            id: mock_data.dashboard_size,
         },
     }
 })

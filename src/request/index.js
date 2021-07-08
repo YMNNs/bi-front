@@ -109,10 +109,11 @@ instance.interceptors.response.use(
                         break
                     }
                     case -10: {
-                        notification['error']({
-                            message: '错误',
-                            description: response.data.status.message,
-                        })
+                        if (process.env.VUE_APP_SHOW_ERROR === 'true')
+                            notification['error']({
+                                message: '错误',
+                                description: response.data.status.message,
+                            })
                         break
                     }
                 }
