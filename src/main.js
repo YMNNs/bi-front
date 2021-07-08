@@ -1,3 +1,4 @@
+console.time('前端启动')
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -46,3 +47,4 @@ setupAntd(app)
 app.use(store)
 app.use(router)
 app.mount('#app')
+console.timeEnd('前端启动')

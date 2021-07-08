@@ -20,6 +20,7 @@ export default defineComponent({
         // 此处随机生成div-id的原因是同一个页面中出现2个同id图表容器将会陷入渲染死循环
         const id = ref(new Date().getTime().toString() + Math.random())
         const render = () => {
+            console.time('渲染饼图')
             const piePlot = new Pie(id.value, {
                 appendPadding: 10,
                 data: props.data,
@@ -35,6 +36,7 @@ export default defineComponent({
             })
 
             piePlot.render()
+            console.timeEnd('渲染饼图')
         }
 
         onMounted(() => {

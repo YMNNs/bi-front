@@ -1,8 +1,7 @@
 import Mock from 'mockjs'
 import { mock_data } from '@/api/mock/mock_data'
 
-Mock.mock(process.env.VUE_APP_API_BASE_URL + 'user/info', 'post', (request) => {
-    console.log(request)
+Mock.mock(process.env.VUE_APP_API_BASE_URL + 'user/info', 'post', () => {
     // 返回用户信息
     return {
         status: {
