@@ -1,11 +1,11 @@
 <template>
     <component
         :is="defineAsyncComponent(chart_meta.component)"
-        v-bind:xField="xField"
-        v-bind:yField="yField"
-        v-bind:seriesField="seriesField"
-        v-bind:data="data"
-        v-bind:key="key"
+        :xField="xField"
+        :yField="yField"
+        :seriesField="seriesField"
+        :data="data"
+        :key="key"
         v-if="ready"
     />
 </template>

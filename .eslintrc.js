@@ -11,6 +11,7 @@ module.exports = {
         indent: ['off', 4], // 设置缩进4字符
         quotes: [2, 'single'], //强制双引号
         semi: [2, 'never'], //语句强制分号结尾
+        'vue/v-bind-style': ['error', 'shorthand'], //用":"代替"v-bind:"
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         // 闭合html标签

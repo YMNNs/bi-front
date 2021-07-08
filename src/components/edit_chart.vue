@@ -109,7 +109,7 @@
                             <a-card-grid
                                 style="width: calc(1 / 3 * 100%); text-align: center"
                                 v-for="item in chart_types_display"
-                                v-bind:key="item"
+                                :key="item"
                                 ><div class="cover-icon">
                                     <icon-font :type="item.icon_type" />
                                 </div>
@@ -133,10 +133,10 @@
                                 <a-typography-paragraph>
                                     在预览图表之前，请先修复下列问题：
                                     <ul>
-                                        <li v-for="item in problems.text" v-bind:key="item">
+                                        <li v-for="item in problems.text" :key="item">
                                             {{ item }}
                                         </li>
-                                        <li v-for="item in problems.number" v-bind:key="item">
+                                        <li v-for="item in problems.number" :key="item">
                                             {{ item }}
                                         </li>
                                     </ul>
