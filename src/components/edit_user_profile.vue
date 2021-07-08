@@ -256,7 +256,7 @@ export default defineComponent({
                     if (response.data.status.code === 0) {
                         notification['success']({
                             message: '成功',
-                            description: '已向 ' + state.original_profile.email + ' 发送激活邮件',
+                            description: `已向 ${state.original_profile.email} 发送激活邮件`,
                         })
                         state.disable_resend_link = true
                     } else {
@@ -489,7 +489,7 @@ export default defineComponent({
                         } else {
                             notification['error']({
                                 message: '您的修改个人信息请求出现错误',
-                                description: '个人信息未被修改，因为' + response.data.status.message + '。',
+                                description: `个人信息未被修改，因为 ${response.data.status.message}。`,
                             })
                         }
                     })
@@ -524,7 +524,7 @@ export default defineComponent({
                         // console.log(response.data);
                         notification['error']({
                             message: '您的修改密码请求出现错误',
-                            description: '您的密码未被修改，因为' + response.data.status.message + '。',
+                            description: `您的密码未被修改，因为 ${response.data.status.message}。`,
                         })
                     }
                 })
@@ -542,13 +542,13 @@ export default defineComponent({
                             store.commit('CLEAR_TOKEN')
                             notification['success']({
                                 message: '成功',
-                                description: '用户' + form.username + '已删除，正在前往登录页面。',
+                                description: `用户 ${form.username} 已删除，正在前往登录页面。`,
                             })
                             $router.push('/login')
                         } else {
                             notification['error']({
                                 message: '您的删除账户请求出现错误',
-                                description: '您的账户未被删除，因为' + response.data.status.message + '。',
+                                description: `您的账户未被删除，因为 ${response.data.status.message}。`,
                             })
                         }
                     })

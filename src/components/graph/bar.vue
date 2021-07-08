@@ -44,7 +44,7 @@ export default defineComponent({
                     ],
                 },
             })
-            console.log('渲染条形图图')
+            console.log('渲染条形图')
             stackedBarPlot.render()
         }
 

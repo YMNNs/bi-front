@@ -365,7 +365,7 @@ export default defineComponent({
                                 if (_response.data.status.code === 0) {
                                     notification['success']({
                                         message: '成功',
-                                        description: '已创建数据集“' + form.data_name + '”',
+                                        description: `已创建数据集“${form.data_name}”`,
                                     })
                                     router.push('/data_display/' + response.data.data.id)
                                 } else {

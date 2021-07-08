@@ -116,7 +116,7 @@ export default defineComponent({
             switch (key) {
                 case 'delete': {
                     Modal.confirm({
-                        title: '您确定要删除“' + item._item.name + '”吗？',
+                        title: `您确定要删除“${item._item.name}”吗？`,
                         icon: createVNode(ExclamationCircleOutlined),
                         content: '此数据删除后将不可恢复。',
                         okText: '确定',
@@ -128,7 +128,7 @@ export default defineComponent({
                                 if (response.data.status.code === 0) {
                                     notification['success']({
                                         message: '成功',
-                                        description: '已删除“' + item._item.name + '”。',
+                                        description: `已删除“${item._item.name}”。`,
                                     })
                                 } else {
                                     notification['error']({

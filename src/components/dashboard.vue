@@ -164,9 +164,7 @@
                                 <WarningTwoTone twoToneColor="#ff4d4f" style="margin-right: 4px" /> </a-tooltip
                             ><strong>{{ item.chart.chart_name }}</strong></template
                         >
-
                         <Graph_api
-                            :key="new Date().getTime()"
                             :data="dataSources.find((i) => i.id === item.data_id).dataSource"
                             :columns="
                                 dataSources
@@ -180,7 +178,6 @@
                             :y-field="item.chart.yField"
                             :series-field="item.chart.seriesField"
                         />
-
                         <template class="ant-card-actions" #actions v-if="edit">
                             <LeftOutlined
                                 key="left"
@@ -338,7 +335,8 @@ export default defineComponent({
             state.dataSources.length = 0
             get_dashboard_size().then((response) => {
                 if (response.data.status.code === 0) {
-                    list_size.value = response.data.data.size
+                    // 后端要改成id
+                    list_size.value = response.data.data.id
                 } else {
                     notification['error']({
                         message: '错误',
@@ -350,7 +348,7 @@ export default defineComponent({
                 if (response.data.status.code === 0) {
                     if (!response.data.data) {
                         // 仪表盘为空
-                        console.log('无仪表')
+                        console.warn('无仪表')
                         state.ready = true
                         return
                     }
@@ -423,8 +421,6 @@ export default defineComponent({
                     // 设置index
                     rearrangeIndex(instruments)
                     state.instruments = instruments
-                    console.log('全部仪表信息')
-                    console.log(instruments)
                     // 复制为展示图表
                     handleReset()
                     // 设置尺寸
@@ -442,7 +438,7 @@ export default defineComponent({
         onMounted(() => {
             for (let i = 1; i <= 4; i++) {
                 state.size_options.push({
-                    label: '每行显示 ' + i + ' 个',
+                    label: `每行显示 ${i} 个`,
                     value: i,
                 })
             }
@@ -601,7 +597,6 @@ export default defineComponent({
             // 打开时重置表单
             // 打开时重置表单
             resetFields()
-            console.log(target)
             if (target) {
                 // 编辑图表
                 state.purpose = 'edit'
@@ -646,7 +641,6 @@ export default defineComponent({
                 // 添加图表
                 state.purpose = 'create'
             }
-            console.log(modelRef)
             load_charts()
             state.visible = true
         }
@@ -702,8 +696,6 @@ export default defineComponent({
                 state.dataSources.push(new_data)
                 state_instrument.data_id = new_data.id
             }
-            console.log(state.instruments_display)
-            console.log(state.dataSources)
             assessEdit()
             onClose()
         }

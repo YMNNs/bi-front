@@ -250,7 +250,7 @@ export default defineComponent({
                             state.table_name = cloneDeep(state.editableStr)
                             notification['success']({
                                 message: '成功',
-                                description: '数据表的名称已变更为 ' + state.editableStr,
+                                description: `数据表的名称已变更为 ${state.editableStr}`,
                             })
                             update()
                         } else {
