@@ -328,6 +328,7 @@ export default defineComponent({
         }
 
         const update = () => {
+            console.time('仪表准备完成')
             state.incomplete = 0
             state.ready = false
             state.edit = false
@@ -425,7 +426,7 @@ export default defineComponent({
                     // 复制为展示图表
                     handleReset()
                     // 设置尺寸
-                    console.log('仪表准备完成')
+                    console.timeEnd('仪表准备完成')
                     state.ready = true
                 } else {
                     notification['error']({

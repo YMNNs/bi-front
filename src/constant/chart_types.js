@@ -135,7 +135,7 @@ export const chart_types = [
 ]
 
 export const prepare_data = (data, columns, number_keys, text_keys) => {
-    const label = `计算图表数据（${data.length} 行）`
+    const label = `计算图表数据（${data.length} 行，${number_keys.length + text_keys.length} 列）`
     console.time(label)
     const _result = []
     const columns_number = columns.filter((i) => i.type === 'number')
@@ -160,6 +160,7 @@ export const prepare_data = (data, columns, number_keys, text_keys) => {
             const line = {}
             line[text_keys[0]] = j
             line['category'] = i
+            // 对指标求和
             line['value'] = _line.reduce((previousValue, currentValue) => {
                 return previousValue + currentValue['value']
             }, 0)

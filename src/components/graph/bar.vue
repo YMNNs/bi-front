@@ -20,6 +20,7 @@ export default defineComponent({
         // 此处随机生成div-id的原因是同一个页面中出现2个同id图表容器将会陷入渲染死循环
         const id = ref(new Date().getTime().toString() + Math.random())
         const render = () => {
+            console.time('渲染条形图')
             const stackedBarPlot = new Bar(id.value, {
                 data: props.data,
                 isGroup: true,
@@ -44,8 +45,8 @@ export default defineComponent({
                     ],
                 },
             })
-            console.log('渲染条形图')
             stackedBarPlot.render()
+            console.timeEnd('渲染条形图')
         }
 
         onMounted(() => {

@@ -20,6 +20,7 @@ export default defineComponent({
         // 此处随机生成div-id的原因是同一个页面中出现2个同id图表容器将会陷入渲染死循环
         const id = ref(new Date().getTime().toString() + Math.random())
         const render = () => {
+            console.time('渲染折线图')
             const line = new Line(id.value, {
                 data: props.data,
                 xField: props.xField,
@@ -29,8 +30,8 @@ export default defineComponent({
                 yAxis: {},
             })
 
-            console.log('渲染折线图')
             line.render()
+            console.timeEnd('渲染折线图')
         }
 
         onMounted(() => {
