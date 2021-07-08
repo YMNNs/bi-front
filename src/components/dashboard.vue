@@ -43,7 +43,7 @@
             <a-form-item>
                 <Graph_api
                     v-if="modelRef.chart_id && preview_chart.ready === 'true'"
-                    :key="new Date().getTime()"
+                    :key="uniqueId()"
                     :type_id="preview_chart.type_id"
                     :series-field="preview_chart.seriesField"
                     :x-field="preview_chart.xField"
@@ -165,6 +165,7 @@
                             ><strong>{{ item.chart.chart_name }}</strong></template
                         >
                         <Graph_api
+                            :key="item.data_id"
                             :data="dataSources.find((i) => i.id === item.data_id).dataSource"
                             :columns="
                                 dataSources
@@ -227,7 +228,7 @@ import {
 import Graph_api from '@/components/graph/graph_api'
 import { edit_dashboard } from '@/api/post/edit_dashboard'
 import { all_charts } from '@/api/post/all_charts'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep, uniqueId } from 'lodash-es'
 
 export default defineComponent({
     components: {
@@ -722,6 +723,7 @@ export default defineComponent({
             validate,
             onCheck,
             onSelectChange,
+            uniqueId,
         }
     },
 })
