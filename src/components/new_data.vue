@@ -142,7 +142,7 @@ export default defineComponent({
 
         const limit = {
             size: 100 * 1024 * 1024,
-            type: 'application/vnd.ms-excel',
+            type: ['application/vnd.ms-excel', 'text/csv'],
             postfix: 'csv',
         }
 
@@ -206,6 +206,7 @@ export default defineComponent({
         }
 
         const beforeUpload = (file) => {
+            console.warn(`当前文件类型：${file.type}`)
             return new Promise((resolve) => {
                 // 判断文件大小
                 if (file.size > limit.size) {
@@ -214,7 +215,7 @@ export default defineComponent({
                     resolve()
                     return
                 }
-                if (file.type.toLowerCase() !== limit.type) {
+                if (limit.type.indexOf(file.type) < 0) {
                     // 判断文件类型
                     // 不是csv
                     file.error = true
