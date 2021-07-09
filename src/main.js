@@ -7,6 +7,11 @@ import router from './router'
 import store from './store'
 import { setupAntd } from '@/antd'
 
+/** [Violation] Added non-passive event listener to a scroll-blocking 'wheel' event.
+ * Consider marking event handler as 'passive' to make the page more responsive.
+ * See https://www.chromestatus.com/feature/5745543795965952 */
+// import 'default-passive-events'
+
 // 本地测试使用假后端
 if (process.env.VUE_APP_MOCK === 'true') {
     import('@/api/mock/user_info')
@@ -49,4 +54,8 @@ setupAntd(app)
 app.use(store)
 app.use(router)
 app.mount('#app')
-log.success('前端启动')
+
+log.success(`APP version ${app.version}`)
+log.info(process.env.VUE_APP_TITLE)
+log.info(`编译时间: ${process.env.BUILD_TIME}`)
+log.logLevel()

@@ -36,6 +36,7 @@
                 </a-form-item>
                 <a-form-item v-bind="validateInfos.password" :wrapper-col="{ span: 24, offset: 0 }">
                     <a-input-password
+                        autocomplete
                         v-model:value="modelRef.password"
                         placeholder="密码"
                         size="large"

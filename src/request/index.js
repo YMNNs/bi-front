@@ -26,7 +26,7 @@ instance.interceptors.request.use(
             // 判断是否存在token，如果存在的话，则每个http header都加上token
             config.headers.Authorization = token
         }
-        log.info(`${config.method.toUpperCase()} ${config.url}`)
+        log.info(`${config.method.toUpperCase()} '${config.url}'`)
         return config
     },
     (error) => Promise.error(error)
@@ -35,12 +35,12 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response) => {
         if (response && response.data && response.data.status) {
-            log.success(`${response.status} ${response.statusText} ${response.config.url}`)
+            log.success(`RESP ${response.status} '${response.config.url}'`)
             store.commit('SET_NETWORK_STATUS', true)
             if (response.data.status.code >= 0) {
                 return response
             } else {
-                log.fail(`${response.status} ${response.statusText} ${response.config.url}`)
+                log.fail(`${response.data.status.code} ${response.data.status.message} '${response.config.url}'`)
                 switch (response.data.status.code) {
                     case -1: {
                         //未携带token
@@ -122,8 +122,8 @@ instance.interceptors.response.use(
         }
     },
     (error) => {
+        log.fail(`${error.message} '${error.config.url}'`)
         if (error.status) {
-            log.fail(`${error.status} ${error.statusText} ${error.config.url}`)
             store.commit('SET_NETWORK_STATUS', true)
             errorHandle(error.status, error.data.status.message)
             return Promise.reject(error)

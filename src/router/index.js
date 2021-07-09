@@ -1,17 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store'
 import { notification } from 'ant-design-vue'
-// 页面加载进度条
-import NProgress from 'nprogress'
+import log from '@/util/logger'
+import NProgress from 'nprogress' // 页面加载进度条
 import 'nprogress/nprogress.css'
+
+// prettier-ignore
 NProgress.configure({
-    easing: 'ease', // 动画方式
-    speed: 500, // 递增进度条的速度
-    showSpinner: false, // 是否显示加载ico
-    trickleSpeed: 200, // 自动递增间隔
-    minimum: 0.3, // 初始化时的最小百分比
+    easing: 'ease',         // 动画方式
+    speed: 500,             // 递增进度条的速度
+    showSpinner: false,     // 是否显示加载ico
+    trickleSpeed: 200,      // 自动递增间隔
+    minimum: 0.3,           // 初始化时的最小百分比
 })
-// const baseTitle = " > " + process.env.VUE_APP_TITLE;
 
 /**
  * 路由表
@@ -188,12 +189,8 @@ router.beforeEach((to, from, next) => {
             next('/login')
         }
         if (!to.meta.role || to.meta.role.indexOf(role) >= 0) {
-            // console.log("to.meta.role = " + to.meta.role);
-            // console.log("role = " + role);
             next()
         } else {
-            // console.log("to.meta.role = " + to.meta.role);
-            // console.log("role = " + role);
             // 403时清除登录信息
             if (!store.state.role) {
                 store.dispatch('UPDATE_USER_INFO')
@@ -209,7 +206,8 @@ router.beforeEach((to, from, next) => {
     }
 })
 
-router.afterEach(() => {
+router.afterEach((to, from) => {
+    log.info(`Router: '${from.fullPath}' --> '${to.fullPath}'`)
     NProgress.done()
 })
 export default router

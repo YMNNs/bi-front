@@ -25,6 +25,7 @@
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.password" label="密码">
                         <a-input-password
+                            autocomplete
                             v-model:value="modelRef.password"
                             size="large"
                             style="width: 100%"

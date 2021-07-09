@@ -93,6 +93,7 @@
                                 <p>要更改密码，您必须提供当前密码。</p>
                             </template>
                             <a-input-password
+                                autocomplete
                                 @blur="validate_password('old_password').catch()"
                                 v-model:value="modelRef_password.old_password"
                             />
@@ -106,6 +107,7 @@
                                 <p>新密码长度必须在8-16字符之间。</p>
                             </template>
                             <a-input-password
+                                autocomplete
                                 @blur="validate_password('new_password').catch()"
                                 v-model:value="modelRef_password.new_password"
                             />
