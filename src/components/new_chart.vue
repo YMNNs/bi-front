@@ -52,26 +52,27 @@
                                         v-model:value="modelRef_blank.type_id"
                                         placeholder="选择一种图表"
                                         option-label-prop="label"
+                                        :options="chart_type_options"
                                     >
-                                        <template v-for="item in chart_type_options" :key="item">
-                                            <a-select-option :value="item.value" :label="item.label">
-                                                <a-row type="flex" align="middle" style="width: 100%">
-                                                    <a-col
-                                                        flex="48px"
-                                                        style="font-size: 32px; padding-top: 2px; padding-bottom: 2px"
-                                                    >
-                                                        <icon-font :type="item.icon_type" />
-                                                    </a-col>
-                                                    <a-col flex="auto">
-                                                        <a-typography-text strong>{{ item.label }}</a-typography-text>
-                                                        <br />
-                                                        <a-typography-text type="secondary">{{
-                                                            item.description
-                                                        }}</a-typography-text>
-                                                    </a-col>
-                                                </a-row>
-                                            </a-select-option>
-                                        </template>
+                                        <!--                                        <template v-for="item in chart_type_options" :key="item">-->
+                                        <!--                                            <a-select-option :value="item.value" :label="item.label">-->
+                                        <!--                                                <a-row type="flex" align="middle" style="width: 100%">-->
+                                        <!--                                                    <a-col-->
+                                        <!--                                                        flex="48px"-->
+                                        <!--                                                        style="font-size: 32px; padding-top: 2px; padding-bottom: 2px"-->
+                                        <!--                                                    >-->
+                                        <!--                                                        <icon-font :type="item.icon_type" />-->
+                                        <!--                                                    </a-col>-->
+                                        <!--                                                    <a-col flex="auto">-->
+                                        <!--                                                        <a-typography-text strong>{{ item.label }}</a-typography-text>-->
+                                        <!--                                                        <br />-->
+                                        <!--                                                        <a-typography-text type="secondary">{{-->
+                                        <!--                                                            item.description-->
+                                        <!--                                                        }}</a-typography-text>-->
+                                        <!--                                                    </a-col>-->
+                                        <!--                                                </a-row>-->
+                                        <!--                                            </a-select-option>-->
+                                        <!--                                        </template>-->
                                     </a-select>
                                     <template #help>
                                         <p v-if="modelRef_blank.type_id">
@@ -154,7 +155,6 @@ export default defineComponent({
                     icon_type: i.icon_type,
                 }
             })
-            console.log(state.chart_type_options)
         }
 
         const onSubmit_blank = () => {

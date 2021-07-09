@@ -109,40 +109,45 @@ const SubMenu = {
     },
     template: `
         <template>
-        <template
-            v-if='menuInfo.children.filter(i=>!i.meta.hidden&&i.meta.role.indexOf($store.state.role)>=0).length>0'>
-            <a-sub-menu :key='menuInfo.path'>
-                <template #icon>
-                    <icon-font :type='menuInfo.meta.icon' />
-                </template>
-                <template #title>{{ menuInfo.meta.title }}</template>
-
-                <template
-                    v-for='item in menuInfo.children.filter(i=>!i.meta.hidden&&i.meta.role.indexOf($store.state.role)>=0)'
-                    :key='item.path'>
-                    <template v-if='!item.children'>
-                        <a-menu-item :key='item.path'>
-                            <template #icon>
-                                <icon-font :type='item.meta.icon' />
-                            </template>
-                            {{ item.meta.title }}
-                        </a-menu-item>
+            <template
+                v-if="
+                menuInfo.children.filter((i) => !i.meta.hidden && i.meta.role.indexOf($store.state.role) >= 0).length >
+                0
+            "
+            >
+                <a-sub-menu :key="menuInfo.path">
+                    <template #icon>
+                        <icon-font :type="menuInfo.meta.icon" />
                     </template>
-                    <template v-else>
-                        <sub-menu :menu-info='item' :key='item.path' />
+                    <template #title>{{ menuInfo.meta.title }}</template>
+                    <template
+                        v-for="item in menuInfo.children.filter(
+                        (i) => !i.meta.hidden && i.meta.role.indexOf($store.state.role) >= 0
+                    )"
+                        :key="item.path"
+                    >
+                        <template v-if="!item.children">
+                            <a-menu-item :key="item.path">
+                                <template #icon>
+                                    <icon-font :type="item.meta.icon" />
+                                </template>
+                                {{ item.meta.title }}
+                            </a-menu-item>
+                        </template>
+                        <template v-else>
+                            <sub-menu :menu-info="item" :key="item.path" />
+                        </template>
                     </template>
-
-                </template>
-            </a-sub-menu>
-        </template>
-        <template v-else>
-            <a-menu-item :key='menuInfo.path'>
-                <template #icon>
-                    <icon-font :type='menuInfo.meta.icon' />
-                </template>
-                {{ menuInfo.meta.title }}
-            </a-menu-item>
-        </template>
+                </a-sub-menu>
+            </template>
+            <template v-else>
+                <a-menu-item :key="menuInfo.path">
+                    <template #icon>
+                        <icon-font :type="menuInfo.meta.icon" />
+                    </template>
+                    {{ menuInfo.meta.title }}
+                </a-menu-item>
+            </template>
         </template>
     `,
     components: {
