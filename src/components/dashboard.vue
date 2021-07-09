@@ -352,6 +352,7 @@ export default defineComponent({
                         // 仪表盘为空
                         console.warn('无仪表')
                         state.ready = true
+                        console.timeEnd('仪表准备完成')
                         return
                     }
                     // 请求成功并按照index排序
