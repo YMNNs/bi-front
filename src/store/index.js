@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import { parseOrNull } from '@/util'
 import { user_info } from '@/api/post/user_info'
 import { notification } from 'ant-design-vue'
+import log from '@/util/logger'
 
 export default createStore({
     state: {
@@ -55,17 +56,16 @@ export default createStore({
     },
     actions: {
         UPDATE_USER_INFO: (context) => {
-            // console.log("store: 请求用户信息");
             return new Promise((resolve, reject) => {
                 user_info()
                     .then((response) => {
                         if (response.data.status.code === 0) {
                             // 有用户信息
-                            // console.log("user_info: 有用户信息");
+                            log.debug('user_info: 有用户信息')
                             context.commit('SET_USER_INFO', response.data.data.user)
                             resolve(response)
                         } else {
-                            // console.log("user_info: 无用户信息");
+                            log.debug('user_info: 无用户信息')
                             context.commit('CLEAR_TOKEN')
                             context.commit('CLEAR_USER_INFO')
                             notification['error']({

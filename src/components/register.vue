@@ -132,10 +132,8 @@ export default defineComponent({
                             validate_username(value).then((response) => {
                                 const { code, message } = response.data.status
                                 if (code === 0) {
-                                    // console.log("用户名验证成功");
                                     resolve()
                                 } else {
-                                    // console.log("用户名验证失败");
                                     reject(message)
                                 }
                             })
@@ -170,10 +168,8 @@ export default defineComponent({
                             validate_email(value).then((response) => {
                                 const { code, message } = response.data.status
                                 if (code === 0) {
-                                    // console.log("电子邮件验证成功");
                                     resolve()
                                 } else {
-                                    // console.log("电子邮件验证失败");
                                     reject(message)
                                 }
                             })
@@ -211,8 +207,6 @@ export default defineComponent({
                             setTimeout(() => {
                                 store.dispatch('UPDATE_USER_INFO').then(() => {
                                     buttonLoading.value = false
-                                    // console.log("已执行更新用户信息");
-                                    // console.log(store.state.role);
                                     state.step = 'done'
                                 })
                             }, 500)

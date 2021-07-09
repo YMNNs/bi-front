@@ -124,6 +124,7 @@ import { create_data } from '@/api/post/create_data'
 import { Form, notification } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { update_data } from '@/api/post/update_data'
+import log from '@/util/logger'
 
 export default defineComponent({
     components: {
@@ -166,7 +167,7 @@ export default defineComponent({
         })
 
         const handleUpload = () => {
-            console.log('上传文件')
+            log.info('上传文件')
         }
 
         const keys_number_options = ref([])
@@ -206,7 +207,7 @@ export default defineComponent({
         }
 
         const beforeUpload = (file) => {
-            console.warn(`当前文件类型：${file.type}`)
+            log.warn(`当前文件类型：${file.type}`)
             return new Promise((resolve) => {
                 // 判断文件大小
                 if (file.size > limit.size) {
@@ -230,7 +231,7 @@ export default defineComponent({
                     const encoding = jschardet.detect(
                         reader.result.slice(0, reader.result.length < 100 ? reader.result.length : 100)
                     )
-                    console.log(encoding)
+                    log.info(encoding)
                     reader.readAsText(file, encoding.encoding)
                     reader.onload = () => {
                         const parsed = Papa.parse(reader.result, parseConfig)

@@ -1,6 +1,8 @@
 import Mock from 'mockjs'
+import log from '@/util/logger'
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + 'dashboard/edit', 'post', (request) => {
+    log.mock(request.url, JSON.parse(request.body))
     console.log(request.body)
     const { instruments } = JSON.parse(request.body)
     if (instruments.length > 0) {

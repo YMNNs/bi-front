@@ -1,7 +1,9 @@
 import Mock from 'mockjs'
 import { mock_data } from '@/api/mock/mock_data'
+import log from '@/util/logger'
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + 'user/change_password', 'post', (request) => {
+    log.mock(request.url, JSON.parse(request.body))
     const { old_password, new_password } = JSON.parse(request.body)
 
     if (old_password !== mock_data.password) {

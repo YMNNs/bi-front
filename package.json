@@ -17,6 +17,7 @@
         "@ant-design/icons-vue": "^6.0.1",
         "@antv/g2plot": "^2.3.26",
         "ant-design-vue": "^2.2.1",
+        "colors": "^1.4.0",
         "core-js": "^3.15.2",
         "js-md5": "^0.7.3",
         "jschardet": "^3.0.0",

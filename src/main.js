@@ -1,4 +1,6 @@
-console.time('前端启动')
+import log from '@/util/logger'
+log.setDefaultLevel(Number.parseInt(process.env.VUE_APP_LOG_LEVEL))
+
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -47,4 +49,4 @@ setupAntd(app)
 app.use(store)
 app.use(router)
 app.mount('#app')
-console.timeEnd('前端启动')
+log.success('前端启动')

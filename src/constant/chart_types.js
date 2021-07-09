@@ -1,3 +1,4 @@
+import log from '@/util/logger'
 export const chart_types = [
     {
         type_id: 1,
@@ -136,7 +137,7 @@ export const chart_types = [
 
 export const prepare_data = (data, columns, number_keys, text_keys) => {
     const label = `计算图表数据（${data.length} 行，${number_keys.length + text_keys.length} 列）`
-    console.time(label)
+    log.time(label)
     const _result = []
     const columns_number = columns.filter((i) => i.type === 'number')
     const all_category_value = new Set()
@@ -167,6 +168,6 @@ export const prepare_data = (data, columns, number_keys, text_keys) => {
             result.push(line)
         })
     })
-    console.timeEnd(label)
+    log.timeEnd(label)
     return result
 }

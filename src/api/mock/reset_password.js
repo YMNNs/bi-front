@@ -1,7 +1,9 @@
 import Mock from 'mockjs'
 import { mock_data } from '@/api/mock/mock_data'
+import log from '@/util/logger'
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + 'user/reset_password', 'post', (request) => {
+    log.mock(request.url, JSON.parse(request.body))
     const { reset_password_token, password } = JSON.parse(request.body)
     if (reset_password_token === mock_data.reset_password_token) {
         // token 正确

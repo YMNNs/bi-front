@@ -154,7 +154,6 @@ export default defineComponent({
                             store.commit('SET_TOKEN', response.data.data)
                             user_info()
                                 .then((response) => {
-                                    // console.log(response);
                                     if (response.data.status.code === 0) {
                                         // 成功后设置用户信息
                                         store.commit('SET_USER_INFO', response.data.data.user)

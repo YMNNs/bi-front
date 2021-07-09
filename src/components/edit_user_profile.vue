@@ -471,7 +471,6 @@ export default defineComponent({
                 assignWith(user, form, (objValue, srcValue, key) => {
                     return srcValue && srcValue !== state.original_profile[key] ? srcValue : null
                 })
-                console.log(user)
                 if (user.length === 0) {
                     return
                 }
@@ -521,7 +520,6 @@ export default defineComponent({
                             })
                             .catch()
                     } else {
-                        // console.log(response.data);
                         notification['error']({
                             message: '您的修改密码请求出现错误',
                             description: `您的密码未被修改，因为 ${response.data.status.message}。`,

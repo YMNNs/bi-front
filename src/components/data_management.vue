@@ -85,6 +85,7 @@ import { all_tables } from '@/api/post/all_tables'
 import { delete_data } from '@/api/post/delete_data'
 import { DatabaseTwoTone, DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue'
 import { Modal, notification } from 'ant-design-vue'
+import log from '@/util/logger'
 
 export default defineComponent({
     components: {
@@ -141,7 +142,7 @@ export default defineComponent({
                         },
 
                         onCancel() {
-                            console.log('Cancel')
+                            log.debug('Cancel')
                         },
                     })
                     break

@@ -1,8 +1,10 @@
 import Mock from 'mockjs'
 import { mock_data } from '@/api/mock/mock_data'
 import { chart_types } from '@/constant/chart_types'
+import log from '@/util/logger'
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + 'chart/create', 'post', (request) => {
+    log.mock(request.url, JSON.parse(request.body))
     const { data_id, type_id, chart_name } = JSON.parse(request.body)
     if (!mock_data.tables.find((i) => i.id === data_id)) {
         //	数据表id无效

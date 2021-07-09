@@ -1,9 +1,10 @@
 import Mock from 'mockjs'
 import { mock_data } from '@/api/mock/mock_data'
+import log from '@/util/logger'
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + 'user/activate_email', 'post', (request) => {
+    log.mock(request.url, JSON.parse(request.body))
     const { activation_token } = JSON.parse(request.body)
-    console.log(request.body)
     if (activation_token === mock_data.activation_token) {
         console.log('激活成功')
         return {

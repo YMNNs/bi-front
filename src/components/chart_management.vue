@@ -115,6 +115,7 @@ import { notification } from 'ant-design-vue'
 import { chart_types } from '@/constant/chart_types'
 import { useRouter } from 'vue-router'
 import { cloneDeep } from 'lodash-es'
+import log from '@/util/logger'
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url,
@@ -141,7 +142,7 @@ export default defineComponent({
         })
 
         const handleClickCard = () => {
-            console.log('click')
+            log.debug('click')
         }
 
         const handleEdit = (id) => {
@@ -208,7 +209,6 @@ export default defineComponent({
         }
 
         const handleSelectChange = () => {
-            // console.log(state.filter);
             switch (state.filter) {
                 case 'last_update': {
                     sortByTime()
