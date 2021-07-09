@@ -1,9 +1,7 @@
 import axios from '@/request'
 
-export function create_data(name, description, columns) {
+export function create_data(columns) {
     return axios.post('data/create', {
-        name: name,
-        description: description,
         columns: columns,
     })
 }
