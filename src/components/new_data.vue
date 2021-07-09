@@ -167,7 +167,7 @@ export default defineComponent({
         })
 
         const handleUpload = () => {
-            log.info('上传文件')
+            log.info('文件已读取')
         }
 
         const keys_number_options = ref([])
@@ -231,7 +231,7 @@ export default defineComponent({
                     const encoding = jschardet.detect(
                         reader.result.slice(0, reader.result.length < 100 ? reader.result.length : 100)
                     )
-                    log.info(encoding)
+                    log.info(`文件编码: ${encoding.encoding}\t准确度: ${encoding.confidence}`)
                     reader.readAsText(file, encoding.encoding)
                     reader.onload = () => {
                         const parsed = Papa.parse(reader.result, parseConfig)
@@ -239,6 +239,9 @@ export default defineComponent({
                             // 存在错误
                             file.error = true
                             file.response = '该文件内容存在问题'
+                            parsed.errors.forEach((i) => {
+                                log.fail(`row #${i.row}\t${i.type}\t${i.message}`)
+                            })
                             resolve()
                             return
                         }
@@ -261,7 +264,10 @@ export default defineComponent({
                             resolve()
                             return
                         }
-                        if (!parsed.meta.fields.every((i) => i.getBytesLength() > 64)) {
+                        if (!parsed.meta.fields.every((i) => i.getBytesLength() <= 64)) {
+                            parsed.meta.fields.forEach((i) => {
+                                log.debug(`byteLength: ${i.getBytesLength()}\tfield: ${i}`)
+                            })
                             file.response = '该文件的一个或多个列名长度超过 64 字节'
                             file.error = true
                             resolve()
@@ -371,24 +377,26 @@ export default defineComponent({
                             }
                         })
                     )
-                create_data(form.data_name, form.description, columns)
+                create_data(columns)
                     .then((response) => {
                         if (response.data.status.code === 0) {
-                            update_data(response.data.data.id, data).then((_response) => {
-                                state.submitLoading = false
-                                if (_response.data.status.code === 0) {
-                                    notification['success']({
-                                        message: '成功',
-                                        description: `已创建数据集“${form.data_name}”`,
-                                    })
-                                    router.push('/data_display/' + response.data.data.id)
-                                } else {
-                                    notification['error']({
-                                        message: '错误',
-                                        description: response.data.status.message,
-                                    })
+                            update_data(response.data.data.id, form.data_name, form.description, data).then(
+                                (_response) => {
+                                    state.submitLoading = false
+                                    if (_response.data.status.code === 0) {
+                                        notification['success']({
+                                            message: '成功',
+                                            description: `已创建数据集“${form.data_name}”`,
+                                        })
+                                        router.push('/data_display/' + response.data.data.id)
+                                    } else {
+                                        notification['error']({
+                                            message: '错误',
+                                            description: response.data.status.message,
+                                        })
+                                    }
                                 }
-                            })
+                            )
                         } else {
                             notification['error']({
                                 message: '错误',

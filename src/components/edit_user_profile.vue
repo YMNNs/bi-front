@@ -45,7 +45,11 @@
                                     >
                                 </p>
                             </template>
-                            <a-input @blur="validate_profile('email').catch()" v-model:value="modelRef_profile.email" />
+                            <a-input
+                                :disabled="disable_resend_link"
+                                @blur="validate_profile('email').catch()"
+                                v-model:value="modelRef_profile.email"
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item v-bind="validateInfos_profile.nickname">
@@ -281,6 +285,7 @@ export default defineComponent({
             resetFields_password()
             user_info().then((response) => {
                 if (response.data.status.code === 0) {
+                    state.disable_resend_link = false
                     state.status = response.data.data.user.status
                     state.email_verified = response.data.data.user.emailVerified === '1'
                     state.last_login = new Date(parseInt(response.data.data.user.last_login) * 1000).toLocaleString()
