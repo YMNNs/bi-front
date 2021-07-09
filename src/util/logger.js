@@ -1,48 +1,53 @@
+/**
+ * 带颜色标签的日志
+ * YMNNs
+ */
+
 const levels = {
     DEBUG: {
-        label: 'DBUG',
+        tag: 'DBUG',
         background: 'LightGoldenRodYellow',
         foreground: 'Black',
         level: 4,
     },
     MOCK: {
-        label: 'MOCK',
+        tag: 'MOCK',
         background: 'LightGoldenRodYellow',
         foreground: 'Black',
         level: 4,
     },
     SUCCESS: {
-        label: 'SCES',
+        tag: 'SCES',
         background: 'Green',
         foreground: 'White',
         level: 3,
     },
     INFO: {
-        label: 'INFO',
+        tag: 'INFO',
         background: 'Gainsboro',
         foreground: 'DimGray',
         level: 3,
     },
     TIMER: {
-        label: 'TIME',
+        tag: 'TIME',
         background: 'Tomato',
         foreground: 'White',
         level: 3,
     },
     FAIL: {
-        label: 'FAIL',
+        tag: 'FAIL',
         background: 'Crimson',
         foreground: 'White',
         level: 2,
     },
     WARN: {
-        label: 'WARN',
+        tag: 'WARN',
         background: 'Orange',
         foreground: 'Black',
         level: 2,
     },
     ERROR: {
-        label: 'ERR!',
+        tag: 'ERR!',
         background: 'Red',
         foreground: 'White',
         level: 1,
@@ -50,6 +55,7 @@ const levels = {
 }
 
 import colors from 'colors'
+import { values } from 'lodash-es'
 colors.enable()
 
 let _level = 2
@@ -64,7 +70,7 @@ export default {
     success: (text) => {
         if (levels.SUCCESS.level <= _level) {
             console.log(
-                `%c ${levels.SUCCESS.label} `,
+                `%c ${levels.SUCCESS.tag} `,
                 `color: ${levels.SUCCESS.foreground}; background-color: ${levels.SUCCESS.background}`,
                 text
             )
@@ -73,7 +79,7 @@ export default {
     fail: (text) => {
         if (levels.FAIL.level <= _level) {
             console.log(
-                `%c ${levels.FAIL.label} `,
+                `%c ${levels.FAIL.tag} `,
                 `color: ${levels.FAIL.foreground}; background-color: ${levels.FAIL.background}`,
                 text
             )
@@ -82,7 +88,7 @@ export default {
     warn: (text) => {
         if (levels.WARN.level <= _level) {
             console.log(
-                `%c ${levels.WARN.label} `,
+                `%c ${levels.WARN.tag} `,
                 `color: ${levels.WARN.foreground}; background-color: ${levels.WARN.background}`,
                 text
             )
@@ -91,7 +97,7 @@ export default {
     debug: (text) => {
         if (levels.DEBUG.level <= _level) {
             console.log(
-                `%c ${levels.DEBUG.label} `,
+                `%c ${levels.DEBUG.tag} `,
                 `color: ${levels.DEBUG.foreground}; background-color: ${levels.DEBUG.background}`,
                 text
             )
@@ -100,7 +106,7 @@ export default {
     info: (text) => {
         if (levels.INFO.level <= _level) {
             console.log(
-                `%c ${levels.INFO.label} `,
+                `%c ${levels.INFO.tag} `,
                 `color: ${levels.INFO.foreground}; background-color: ${levels.INFO.background}`,
                 text
             )
@@ -109,7 +115,7 @@ export default {
     error: (text) => {
         if (levels.ERROR.level <= _level) {
             console.log(
-                `%c ${levels.ERROR.label} `,
+                `%c ${levels.ERROR.tag} `,
                 `color: ${levels.ERROR.foreground}; background-color: ${levels.ERROR.background}`,
                 text
             )
@@ -117,22 +123,34 @@ export default {
     },
     time: (text) => {
         if (levels.TIMER.level <= _level) {
-            console.time(` ${levels.TIMER.label} `.bgWhite + ` ${text}`)
+            console.time(` ${levels.TIMER.tag} `.bgWhite + ` ${text}`)
         }
     },
     timeEnd: (text) => {
         if (levels.TIMER.level <= _level) {
-            console.timeEnd(` ${levels.TIMER.label} `.bgWhite + ` ${text}`)
+            console.timeEnd(` ${levels.TIMER.tag} `.bgWhite + ` ${text}`)
         }
     },
     mock: (url, payload) => {
         if (levels.MOCK.level <= _level) {
             console.log(
-                `%c ${levels.MOCK.label} `,
+                `%c ${levels.MOCK.tag} `,
                 `color: ${levels.MOCK.foreground}; background-color: ${levels.MOCK.background}`,
                 url,
                 payload
             )
         }
+    },
+    logLevel: () => {
+        const l = values(levels)
+            .filter((i) => i.level <= _level)
+            .reduce((previousValue, currentValue) => {
+                return (previousValue += `${currentValue.tag} `)
+            }, '已启用的日志等级: ')
+        console.log(
+            `%c ${levels.INFO.tag} `,
+            `color: ${levels.INFO.foreground}; background-color: ${levels.INFO.background}`,
+            l
+        )
     },
 }

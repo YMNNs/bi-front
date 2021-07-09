@@ -48,7 +48,8 @@
                                             </a-avatar>
                                         </template>
                                     </a-list-item-meta>
-                                    <template #actions>
+                                    <!--暂时不做删除-->
+                                    <template #actions v-if="false">
                                         <a-dropdown>
                                             <a class="ant-dropdown-link" @click.prevent>
                                                 操作

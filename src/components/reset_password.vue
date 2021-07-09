@@ -34,6 +34,7 @@
                 <a-form :label-col="labelCol" :wrapper-col="wrapperCol" :hideRequiredMark="true">
                     <a-form-item v-bind="validateInfos_reset.password" label="新密码">
                         <a-input-password
+                            autocomplete
                             v-model:value="modelRef_reset.password"
                             size="large"
                             style="width: 100%"

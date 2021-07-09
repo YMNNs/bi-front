@@ -365,7 +365,7 @@ export default defineComponent({
                     const chart_ids = new Set()
                     instruments.forEach((i) => {
                         chart_ids.add(i.chart_id)
-                        i.selected_keys = JSON.parse(i.selected_keys)
+                        // i.selected_keys = JSON.parse(i.selected_keys)
                     })
                     // 请求图表信息
                     for (const i of chart_ids) {
@@ -551,10 +551,10 @@ export default defineComponent({
 
         const onFinish = () => {
             const request_data = cloneDeep(state.instruments_display)
-            // 将select_keys格式化为字符串
-            request_data.forEach((i) => {
-                i.selected_keys = JSON.stringify(i.selected_keys)
-            })
+            // 将select_keys格式化为字符串 (弃用)
+            // request_data.forEach((i) => {
+            //     i.selected_keys = JSON.stringify(i.selected_keys)
+            // })
             edit_dashboard(request_data).then((response) => {
                 if (response.data.status.code === 0) {
                     if (response.data.status.code === 0) {
@@ -686,7 +686,7 @@ export default defineComponent({
         const onSubmit_edit = () => {
             const state_instrument = state.instruments_display.find((i) => i.id === modelRef.editing_instrument.id)
             if (!state_instrument.selected_keys.elementEquals(modelRef.selected_keys_text)) {
-                log.info('图表被修改')
+                log.debug('onSubmit_edit: 图表被修改')
                 // 被修改
                 state_instrument.selected_keys = cloneDeep(modelRef.selected_keys_text)
                 // 创建新的数据
