@@ -229,6 +229,7 @@ import Graph_api from '@/components/graph/graph_api'
 import { edit_dashboard } from '@/api/post/edit_dashboard'
 import { all_charts } from '@/api/post/all_charts'
 import { cloneDeep, uniqueId } from 'lodash-es'
+import log from '@/util/logger'
 
 export default defineComponent({
     components: {
@@ -328,7 +329,7 @@ export default defineComponent({
         }
 
         const update = () => {
-            console.time('仪表准备完成')
+            log.time('仪表准备完成')
             state.incomplete = 0
             state.ready = false
             state.edit = false
@@ -350,9 +351,9 @@ export default defineComponent({
                 if (response.data.status.code === 0) {
                     if (!response.data.data) {
                         // 仪表盘为空
-                        console.warn('无仪表')
+                        log.warn('无仪表')
                         state.ready = true
-                        console.timeEnd('仪表准备完成')
+                        log.timeEnd('仪表准备完成')
                         return
                     }
                     // 请求成功并按照index排序
@@ -427,7 +428,7 @@ export default defineComponent({
                     // 复制为展示图表
                     handleReset()
                     // 设置尺寸
-                    console.timeEnd('仪表准备完成')
+                    log.timeEnd('仪表准备完成')
                     state.ready = true
                 } else {
                     notification['error']({
@@ -685,7 +686,7 @@ export default defineComponent({
         const onSubmit_edit = () => {
             const state_instrument = state.instruments_display.find((i) => i.id === modelRef.editing_instrument.id)
             if (!state_instrument.selected_keys.elementEquals(modelRef.selected_keys_text)) {
-                console.log('图表被修改')
+                log.info('图表被修改')
                 // 被修改
                 state_instrument.selected_keys = cloneDeep(modelRef.selected_keys_text)
                 // 创建新的数据

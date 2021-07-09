@@ -39,10 +39,8 @@ export default defineComponent({
                     // 有token，验证
                     state.step = 'waiting'
                     const token = $route.query.token
-                    // console.log(token);
                     activate_email(token)
                         .then((response) => {
-                            // console.log(response);
                             if (response.data.status.code === 0) {
                                 state.step = 'success'
                             } else {

@@ -1,7 +1,8 @@
 import Mock from 'mockjs'
+import log from '@/util/logger'
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + 'data/update', 'post', (request) => {
-    console.log(JSON.parse(request.body))
+    log.mock(request.url, JSON.parse(request.body))
     const { id } = JSON.parse(request.body)
     if (id === 1) {
         return {

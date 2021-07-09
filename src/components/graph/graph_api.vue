@@ -16,6 +16,7 @@
  */
 import { chart_types, prepare_data } from '@/constant/chart_types'
 import { defineComponent, defineAsyncComponent, onBeforeMount, reactive, toRefs, onMounted } from 'vue'
+import log from '@/util/logger'
 
 export default defineComponent({
     components: {
@@ -45,7 +46,7 @@ export default defineComponent({
             ready: false,
         })
         onBeforeMount(() => {
-            console.time(`初始化图表 ${props.text_keys[0]}`)
+            log.time(`初始化图表 ${props.text_keys[0]}`)
             state.type_id = props.type_id
             state.chart_meta = chart_types.find((i) => i.type_id === state.type_id)
             // 优先使用chart_types中定义的属性
@@ -53,7 +54,7 @@ export default defineComponent({
             state.yField = state.chart_meta.yField ? state.chart_meta.yField : props.yField
             state.seriesField = state.chart_meta.seriesField ? state.chart_meta.seriesField : props.seriesField
             state.data = prepare_data(props.data, props.columns, props.number_keys, props.text_keys)
-            console.timeEnd(`初始化图表 ${props.text_keys[0]}`)
+            log.timeEnd(`初始化图表 ${props.text_keys[0]}`)
         })
         onMounted(() => {
             state.key = new Date().getTime().toString() + Math.random()

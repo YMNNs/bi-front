@@ -1,6 +1,8 @@
 import Mock from 'mockjs'
+import log from '@/util/logger'
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + 'chart/view', 'post', (request) => {
+    log.mock('chart/view', JSON.parse(request.body))
     const { id } = JSON.parse(request.body)
     switch (id) {
         case 1: {

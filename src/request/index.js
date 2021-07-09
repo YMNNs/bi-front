@@ -2,6 +2,7 @@ import axios from 'axios'
 import store from '@/store'
 import router from '@/router'
 import { notification } from 'ant-design-vue'
+import log from '@/util/logger'
 
 // 创建axios实例
 const instance = axios.create({ timeout: 1000 * 20 })
@@ -24,9 +25,8 @@ instance.interceptors.request.use(
         if (token) {
             // 判断是否存在token，如果存在的话，则每个http header都加上token
             config.headers.Authorization = token
-            // console.log("添加token" + token);
         }
-        // console.log(config);
+        log.info(`${config.method.toUpperCase()} ${config.url}`)
         return config
     },
     (error) => Promise.error(error)
@@ -35,11 +35,12 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response) => {
         if (response && response.data && response.data.status) {
-            // console.log("收到正确响应");
+            log.success(`${response.status} ${response.statusText} ${response.request.custom.options.url}`)
             store.commit('SET_NETWORK_STATUS', true)
             if (response.data.status.code >= 0) {
                 return response
             } else {
+                log.fail(`${response.status} ${response.statusText} ${response.request.custom.options.url}`)
                 switch (response.data.status.code) {
                     case -1: {
                         //未携带token
@@ -122,12 +123,11 @@ instance.interceptors.response.use(
     },
     (error) => {
         if (error.status) {
-            // console.log("收到错误响应");
+            log.fail(`${error.status} ${error.statusText} ${error.request.custom.options.url}`)
             store.commit('SET_NETWORK_STATUS', true)
             errorHandle(error.status, error.data.status.message)
             return Promise.reject(error)
         } else {
-            // console.log("未收到响应");
             store.commit('SET_NETWORK_STATUS', false)
             return Promise.reject(error)
         }

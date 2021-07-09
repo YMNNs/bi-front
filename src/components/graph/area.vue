@@ -8,6 +8,7 @@
  */
 import { defineComponent, onMounted, ref } from 'vue'
 import { Area } from '@antv/g2plot'
+import log from '@/util/logger'
 
 export default defineComponent({
     props: {
@@ -20,7 +21,7 @@ export default defineComponent({
         // 此处随机生成div-id的原因是同一个页面中出现2个同id图表容器将会陷入渲染死循环
         const id = ref(new Date().getTime().toString() + Math.random())
         const render = () => {
-            console.time('渲染面积图')
+            log.time('渲染面积图')
             const area = new Area(id.value, {
                 data: props.data,
                 xField: props.xField,
@@ -31,7 +32,7 @@ export default defineComponent({
             })
 
             area.render()
-            console.timeEnd('渲染面积图')
+            log.timeEnd('渲染面积图')
         }
 
         onMounted(() => {

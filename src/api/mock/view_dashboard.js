@@ -1,6 +1,8 @@
 import Mock from 'mockjs'
+import log from '@/util/logger'
 
-Mock.mock(process.env.VUE_APP_API_BASE_URL + 'dashboard/view', 'post', () => {
+Mock.mock(process.env.VUE_APP_API_BASE_URL + 'dashboard/view', 'post', (request) => {
+    log.mock(request.url, JSON.parse(request.body))
     return {
         status: {
             code: 0,

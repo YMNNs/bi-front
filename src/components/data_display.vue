@@ -77,9 +77,9 @@ import { CheckOutlined, EditOutlined } from '@ant-design/icons-vue'
 import { cloneDeep, throttle } from 'lodash-es'
 import { table_content } from '@/api/post/table_content'
 import { notification } from 'ant-design-vue'
-import { useRoute } from 'vue-router'
-import router from '@/router'
+import { useRoute, useRouter } from 'vue-router'
 import { change_table } from '@/api/post/change_table'
+import log from '@/util/logger'
 
 export default defineComponent({
     components: {
@@ -87,6 +87,7 @@ export default defineComponent({
         EditOutlined,
     },
     setup() {
+        const router = useRouter()
         const state = reactive({
             table_id: -1,
             table_name: '',
@@ -207,7 +208,6 @@ export default defineComponent({
         onMounted(() => {
             //接收路由传入参数（table_id）
             state.table_id = parseInt(route.params.id)
-            // console.log(state.table_id);
 
             //参数格式不正确
             if (isNaN(state.table_id)) {
@@ -232,7 +232,7 @@ export default defineComponent({
         }
 
         const resetTableName = () => {
-            console.log('重置表名')
+            log.debug('重置表名')
             state.editableStr = cloneDeep(state.table_name)
             update()
         }
@@ -244,7 +244,7 @@ export default defineComponent({
                         resetTableName()
                         return
                     }
-                    console.log('更改表名')
+                    log.debug('更改表名')
                     change_table(state.table_id, state.editableStr).then((response) => {
                         if (response.data.status.code === 0) {
                             state.table_name = cloneDeep(state.editableStr)

@@ -1,6 +1,8 @@
 import Mock from 'mockjs'
+import log from '@/util/logger'
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + 'data/keys', 'post', (request) => {
+    log.mock(request.url, JSON.parse(request.body))
     const { id, keyText } = JSON.parse(request.body)
     if (id === 2 && keyText === 'direction') {
         return {
