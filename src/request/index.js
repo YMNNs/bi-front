@@ -35,12 +35,12 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response) => {
         if (response && response.data && response.data.status) {
-            log.success(`${response.status} ${response.statusText} ${response.request.custom.options.url}`)
+            log.success(`${response.status} ${response.statusText} ${response.config.url}`)
             store.commit('SET_NETWORK_STATUS', true)
             if (response.data.status.code >= 0) {
                 return response
             } else {
-                log.fail(`${response.status} ${response.statusText} ${response.request.custom.options.url}`)
+                log.fail(`${response.status} ${response.statusText} ${response.config.url}`)
                 switch (response.data.status.code) {
                     case -1: {
                         //未携带token
@@ -123,7 +123,7 @@ instance.interceptors.response.use(
     },
     (error) => {
         if (error.status) {
-            log.fail(`${error.status} ${error.statusText} ${error.request.custom.options.url}`)
+            log.fail(`${error.status} ${error.statusText} ${error.config.url}`)
             store.commit('SET_NETWORK_STATUS', true)
             errorHandle(error.status, error.data.status.message)
             return Promise.reject(error)
