@@ -78,7 +78,8 @@
                 </div>
             </a-layout-content>
             <a-layout-footer style="text-align: center">
-                ©{{ new Date().getFullYear() }} {{ systemTitle }}
+                <p>©{{ new Date().getFullYear() }} {{ systemTitle }}</p>
+                <p><a @click.prevent="$router.push('/about')">关于</a></p>
             </a-layout-footer>
         </a-layout>
     </a-layout>
@@ -205,8 +206,6 @@ export default defineComponent({
                 .catch()
         }
 
-        const systemTitle = process.env.VUE_APP_TITLE
-
         const state = reactive({
             collapsed: false,
             rootSubmenuKeys: [],
@@ -231,7 +230,7 @@ export default defineComponent({
 
         return {
             ...toRefs(state),
-            systemTitle,
+            systemTitle: process.env.VUE_APP_TITLE,
             logout,
             updateUserInfo,
             onMenuClick,

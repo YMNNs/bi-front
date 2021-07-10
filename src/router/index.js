@@ -156,6 +156,17 @@ const routes = [
                     hidden: true,
                 },
             },
+            {
+                path: '/about',
+                component: () => import('@/components/about'),
+                name: 'about',
+                meta: {
+                    title: '关于',
+                    role: ['user'],
+                    requireAuth: true,
+                    hidden: true,
+                },
+            },
         ],
     },
     {
