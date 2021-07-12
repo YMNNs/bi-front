@@ -28,4 +28,4 @@ pnpm-debug.log*
 package-lock.json
 
 # 测试报告
-/mochawesome-report
+/mochawesome-report/

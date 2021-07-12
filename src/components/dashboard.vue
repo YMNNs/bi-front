@@ -368,6 +368,11 @@ export default defineComponent({
                                 i.selected_keys = i.select_keys
                                 delete i.select_keys
                             }
+                            if (i.dataId) {
+                                // 后端无法处理下划线，有驼峰优先用驼峰
+                                i.data_id = i.dataId
+                                delete i.dataId
+                            }
                             return i
                         })
                     // 汇总图表id
@@ -556,10 +561,12 @@ export default defineComponent({
         }
 
         const onFinish = () => {
-            // 后端拼写错误 'selected_keys' -> 'select_keys'
             state.finishLoading = { delay: 500 }
             const request_data = state.instruments_display.map((i) => {
+                // 后端拼写错误 'selected_keys' -> 'select_keys'
                 i.select_keys = i.selected_keys
+                // 后端要驼峰
+                i.dataId = i.data_id
                 return i
             })
             edit_dashboard(request_data).then((response) => {

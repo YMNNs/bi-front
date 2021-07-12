@@ -29,7 +29,7 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + 'dashboard/view', 'post', (request)
                     index: 2,
                     chart_id: 2,
                     data_id: 2,
-                    selected_keys: [],
+                    selected_keys: ['南北'],
                 },
             ],
         },

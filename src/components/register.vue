@@ -13,7 +13,11 @@
                             v-model:value="modelRef.email"
                             size="large"
                             style="width: 100%"
-                            @blur="validate('email').catch()"
+                            @blur="
+                                validate('email').catch((_error) => {
+                                    logger.warn(_error)
+                                })
+                            "
                         />
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.username" label="用户名">
@@ -22,7 +26,11 @@
                             v-model:value="modelRef.username"
                             size="large"
                             style="width: 100%"
-                            @blur="validate('username').catch()"
+                            @blur="
+                                validate('username').catch((_error) => {
+                                    logger.warn(_error)
+                                })
+                            "
                         />
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.password" label="密码">
@@ -32,7 +40,11 @@
                             v-model:value="modelRef.password"
                             size="large"
                             style="width: 100%"
-                            @blur="validate('password').catch()"
+                            @blur="
+                                validate('password').catch((_error) => {
+                                    logger.warn(_error)
+                                })
+                            "
                         />
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.nickname" label="昵称">
@@ -42,7 +54,11 @@
                             size="large"
                             placeholder="可稍后设置"
                             style="width: 100%"
-                            @blur="validate('nickname').catch()"
+                            @blur="
+                                validate('nickname').catch((_error) => {
+                                    logger.warn(_error)
+                                })
+                            "
                         />
                     </a-form-item>
                     <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
@@ -102,6 +118,7 @@ import { register } from '@/api/post/register'
 import { useStore } from 'vuex'
 import { Form } from 'ant-design-vue'
 import domMap from '@/constant/dom_map'
+import logger from '@/util/logger'
 
 export default defineComponent({
     setup() {
@@ -233,7 +250,9 @@ export default defineComponent({
                         }
                     })
                 })
-                .catch()
+                .catch((_error) => {
+                    logger.warn(_error)
+                })
         }
 
         return {
@@ -251,6 +270,7 @@ export default defineComponent({
             },
             buttonLoading,
             domMap,
+            logger,
         }
     },
 })
