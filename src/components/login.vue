@@ -69,7 +69,7 @@ import { defineComponent, onMounted, onUnmounted, reactive, toRaw, toRefs, watch
 import { login } from '@/api/post/login'
 import { user_info } from '@/api/post/user_info'
 import { useStore } from 'vuex'
-import { Form, message } from 'ant-design-vue'
+import { Form, notification } from 'ant-design-vue'
 import { useRoute, useRouter } from 'vue-router'
 
 export default defineComponent({
@@ -166,12 +166,18 @@ export default defineComponent({
                                             $router.push('/')
                                         }
                                     } else {
-                                        message.error(response.data.status.message)
+                                        notification['error']({
+                                            message: '错误',
+                                            description: response.data.status.message,
+                                        })
                                     }
                                 })
                                 .catch()
                         } else {
-                            message.error(response.data.status.message)
+                            notification['error']({
+                                message: '错误',
+                                description: response.data.status.message,
+                            })
                         }
                     })
                 })
