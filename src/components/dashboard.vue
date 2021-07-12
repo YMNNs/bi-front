@@ -367,15 +367,13 @@ export default defineComponent({
                                 // 后端拼写错误 'select_keys' -> 'selected_keys'
                                 i.selected_keys = i.select_keys
                                 delete i.select_keys
-                                return i
-                            } else return i
+                            }
+                            return i
                         })
                     // 汇总图表id
-                    // 将选择的keys还原为对象
                     const chart_ids = new Set()
                     instruments.forEach((i) => {
                         chart_ids.add(i.chart_id)
-                        // i.selected_keys = JSON.parse(i.selected_keys)
                     })
                     // 请求图表信息
                     for (const i of chart_ids) {
@@ -394,8 +392,6 @@ export default defineComponent({
                                     state.incomplete += 1
                                     response.data.data.chart.incomplete = true
                                 }
-                                // 删除图表中的数据id
-                                // delete response.data.data.chart.data_id;
                                 state.charts.push(response.data.data.chart)
                             } else {
                                 notification['error']({
