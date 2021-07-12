@@ -256,6 +256,7 @@ export default defineComponent({
             visible: false,                 // 抽屉可见性
             size_options: [],               // 仪表盘尺寸选项
             purpose: 'create',              // 当前意图
+            finishLoading: false,           // 完成按钮加载状态（后端响应慢）
         })
 
         // prettier-ignore
@@ -357,9 +358,18 @@ export default defineComponent({
                         return
                     }
                     // 请求成功并按照index排序
-                    const instruments = response.data.data.instruments.sort((a, b) => {
-                        return a.index - b.index
-                    })
+                    const instruments = response.data.data.instruments
+                        .sort((a, b) => {
+                            return a.index - b.index
+                        })
+                        .map((i) => {
+                            if (i.select_keys) {
+                                // 后端拼写错误 'select_keys' -> 'selected_keys'
+                                i.selected_keys = i.select_keys
+                                delete i.select_keys
+                                return i
+                            } else return i
+                        })
                     // 汇总图表id
                     // 将选择的keys还原为对象
                     const chart_ids = new Set()
@@ -550,12 +560,14 @@ export default defineComponent({
         }
 
         const onFinish = () => {
-            const request_data = cloneDeep(state.instruments_display)
-            // 将select_keys格式化为字符串 (弃用)
-            // request_data.forEach((i) => {
-            //     i.selected_keys = JSON.stringify(i.selected_keys)
-            // })
+            // 后端拼写错误 'selected_keys' -> 'select_keys'
+            state.finishLoading = { delay: 500 }
+            const request_data = state.instruments_display.map((i) => {
+                i.select_keys = i.selected_keys
+                return i
+            })
             edit_dashboard(request_data).then((response) => {
+                state.finishLoading = false
                 if (response.data.status.code === 0) {
                     if (response.data.status.code === 0) {
                         notification['success']({
