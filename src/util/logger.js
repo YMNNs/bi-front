@@ -3,6 +3,8 @@
  * YMNNs
  */
 
+/* eslint-disable no-console */
+
 const levels = {
     DEBUG: {
         tag: 'DBUG',
@@ -145,7 +147,7 @@ export default {
         const l = values(levels)
             .filter((i) => i.level <= _level)
             .reduce((previousValue, currentValue) => {
-                return (previousValue += `${currentValue.tag} `)
+                return previousValue + `${currentValue.tag} `
             }, '已启用的日志等级: ')
         console.log(
             `%c ${levels.INFO.tag} `,
