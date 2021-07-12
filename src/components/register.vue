@@ -9,6 +9,7 @@
                 <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
                     <a-form-item v-bind="validateInfos.email" label="电子邮件地址">
                         <a-input
+                            :id="domMap.register.email"
                             v-model:value="modelRef.email"
                             size="large"
                             style="width: 100%"
@@ -17,6 +18,7 @@
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.username" label="用户名">
                         <a-input
+                            :id="domMap.register.username"
                             v-model:value="modelRef.username"
                             size="large"
                             style="width: 100%"
@@ -25,6 +27,7 @@
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.password" label="密码">
                         <a-input-password
+                            :id="domMap.register.password"
                             autocomplete
                             v-model:value="modelRef.password"
                             size="large"
@@ -34,6 +37,7 @@
                     </a-form-item>
                     <a-form-item v-bind="validateInfos.nickname" label="昵称">
                         <a-input
+                            :id="domMap.register.nickname"
                             v-model:value="modelRef.nickname"
                             size="large"
                             placeholder="可稍后设置"
@@ -42,8 +46,16 @@
                         />
                     </a-form-item>
                     <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
-                        <a-button type="primary" @click.prevent="onSubmit" :loading="buttonLoading">注册 </a-button>
-                        <a-button style="margin-left: 10px" @click="resetFields">重置 </a-button>
+                        <a-button
+                            :id="domMap.register.register"
+                            type="primary"
+                            @click.prevent="onSubmit"
+                            :loading="buttonLoading"
+                            >注册</a-button
+                        >
+                        <a-button :id="domMap.register.reset" style="margin-left: 10px" @click="resetFields"
+                            >重置</a-button
+                        >
                         <template #help
                             ><p>
                                 <br />
@@ -89,6 +101,7 @@ import { validate_email } from '@/api/post/validate_email'
 import { register } from '@/api/post/register'
 import { useStore } from 'vuex'
 import { Form } from 'ant-design-vue'
+import domMap from '@/constant/dom_map'
 
 export default defineComponent({
     setup() {
@@ -166,6 +179,9 @@ export default defineComponent({
                     message: '电子邮件地址已被占用',
                     validator: (rule, value) => {
                         return new Promise((resolve, reject) => {
+                            if (value.length === 0) {
+                                resolve()
+                            }
                             validate_email(value).then((response) => {
                                 const { code, message } = response.data.status
                                 if (code === 0) {
@@ -234,6 +250,7 @@ export default defineComponent({
                 span: 14,
             },
             buttonLoading,
+            domMap,
         }
     },
 })
