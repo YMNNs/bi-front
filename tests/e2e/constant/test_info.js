@@ -11,3 +11,7 @@ export const valid_password = randomString(8)
 export const invalid_password = randomString(8)
 export const nickname = randomString(8)
 export const email = randomString(8) + '@' + randomString(8) + '.xx'
+export const data_name_long = randomString(129)
+export const data_name = randomString(10)
+export const data_description_long = randomString(257)
+export const data_description = randomString(20)

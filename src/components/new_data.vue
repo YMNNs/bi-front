@@ -52,7 +52,11 @@
                                     </template>
                                     <a-input
                                         :id="dom_map.new_data.name"
-                                        @blur="validate_upload('data_name').catch()"
+                                        @blur="
+                                            validate_upload('data_name').catch((_error) => {
+                                                logger.warn(_error)
+                                            })
+                                        "
                                         placeholder="我的新数据"
                                         v-model:value="modelRef_upload.data_name"
                                     />
@@ -67,7 +71,11 @@
                                     </template>
                                     <a-textarea
                                         :id="dom_map.new_data.description"
-                                        @blur="validate_upload('description').catch()"
+                                        @blur="
+                                            validate_upload('description').catch((_error) => {
+                                                logger.warn(_error)
+                                            })
+                                        "
                                         placeholder="此数据为..."
                                         v-model:value="modelRef_upload.description"
                                         auto-size
@@ -192,17 +200,15 @@ export default defineComponent({
 
         const handleUploadChange = ({ file, fileList }) => {
             reset_form()
-            let resFileList = [...fileList]
-            resFileList = resFileList.slice(-1)
-            modelRef_upload.fileList = resFileList
+            modelRef_upload.fileList = [...fileList].slice(-1)
+            logger.debug(modelRef_upload.fileList)
+            state.fileErrorVisible = modelRef_upload.fileList.length > 0 && file.error
             if (file.error) {
                 file.status = 'error'
-                state.fileErrorVisible = true
                 // 文件错误时清空列名
                 state.all_keys_options.length = 0
             } else {
                 file.status = 'done'
-                state.fileErrorVisible = false
             }
 
             if (modelRef_upload.fileList.length > 0) {
@@ -375,65 +381,69 @@ export default defineComponent({
         } = Form.useForm(modelRef_upload, rulesRef_upload)
 
         const onSubmit_upload = () => {
-            validate_upload().then(() => {
-                state.submitLoading = { delay: 100 }
-                const form = toRaw(modelRef_upload)
-                const keys = form.keys_number.concat(form.keys_text)
-                // 筛选需要的列
-                const data = state.parsed.data.map((i) => {
-                    return pick(i, keys)
-                })
-                // 写入列信息
-                const columns = form.keys_number
-                    .map((i) => {
-                        return {
-                            title: i,
-                            key: i,
-                            dataIndex: i,
-                            type: 'number',
-                        }
+            validate_upload()
+                .then(() => {
+                    state.submitLoading = { delay: 100 }
+                    const form = toRaw(modelRef_upload)
+                    const keys = form.keys_number.concat(form.keys_text)
+                    // 筛选需要的列
+                    const data = state.parsed.data.map((i) => {
+                        return pick(i, keys)
                     })
-                    .concat(
-                        form.keys_text.map((j) => {
+                    // 写入列信息
+                    const columns = form.keys_number
+                        .map((i) => {
                             return {
-                                title: j,
-                                key: j,
-                                dataIndex: j,
-                                type: 'string',
+                                title: i,
+                                key: i,
+                                dataIndex: i,
+                                type: 'number',
                             }
                         })
-                    )
-                create_data(columns)
-                    .then((response) => {
-                        if (response.data.status.code === 0) {
-                            update_data(response.data.data.id, form.data_name, form.description, data).then(
-                                (_response) => {
-                                    state.submitLoading = false
-                                    if (_response.data.status.code === 0) {
-                                        notification['success']({
-                                            message: '成功',
-                                            description: `已创建数据集“${form.data_name}”`,
-                                        })
-                                        router.push('/data_display/' + response.data.data.id)
-                                    } else {
-                                        notification['error']({
-                                            message: '错误',
-                                            description: response.data.status.message,
-                                        })
-                                    }
+                        .concat(
+                            form.keys_text.map((j) => {
+                                return {
+                                    title: j,
+                                    key: j,
+                                    dataIndex: j,
+                                    type: 'string',
                                 }
-                            )
-                        } else {
-                            notification['error']({
-                                message: '错误',
-                                description: response.data.status.message,
                             })
-                        }
-                    })
-                    .catch(() => {
-                        state.submitLoading = false
-                    })
-            })
+                        )
+                    create_data(columns)
+                        .then((response) => {
+                            if (response.data.status.code === 0) {
+                                update_data(response.data.data.id, form.data_name, form.description, data).then(
+                                    (_response) => {
+                                        state.submitLoading = false
+                                        if (_response.data.status.code === 0) {
+                                            notification['success']({
+                                                message: '成功',
+                                                description: `已创建数据集“${form.data_name}”`,
+                                            })
+                                            router.push('/data_display/' + response.data.data.id)
+                                        } else {
+                                            notification['error']({
+                                                message: '错误',
+                                                description: response.data.status.message,
+                                            })
+                                        }
+                                    }
+                                )
+                            } else {
+                                notification['error']({
+                                    message: '错误',
+                                    description: response.data.status.message,
+                                })
+                            }
+                        })
+                        .catch(() => {
+                            state.submitLoading = false
+                        })
+                })
+                .catch((_error) => {
+                    logger.warn(_error)
+                })
         }
 
         return {
@@ -453,6 +463,7 @@ export default defineComponent({
             setOptions,
             onSubmit_upload,
             dom_map,
+            logger,
         }
     },
 })
