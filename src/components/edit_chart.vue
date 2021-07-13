@@ -2,8 +2,17 @@
     <a-page-header @back="$router.go(-1)">
         <template #title>编辑图表</template>
         <template #extra>
-            <a-button key="2" @click="onReset" :disabled="change_list.length === 0">重置</a-button>
-            <a-button key="1" type="primary" @click="onSubmit" :disabled="save_disabled">保存图表</a-button>
+            <a-button key="2" :id="dom_map.edit_chart.reset" @click="onReset" :disabled="change_list.length === 0"
+                >重置</a-button
+            >
+            <a-button
+                key="1"
+                :id="dom_map.edit_chart.submit"
+                type="primary"
+                @click="showConfirm"
+                :disabled="save_disabled"
+                >保存图表</a-button
+            >
         </template>
     </a-page-header>
     <a-row :gutter="[16, 16]">
@@ -12,9 +21,9 @@
                 :level="4"
                 v-model:content="graph_options.chart_name"
                 :editable="{
-                    maxlength: 32,
+                    maxlength: 128,
                 }"
-                ><template #editableTooltip>名称长度上限为 32 字符</template></a-typography-title
+                ><template #editableTooltip>名称长度上限为 128 字符</template></a-typography-title
             >
         </a-col>
     </a-row>
@@ -94,7 +103,7 @@
             </a-row>
             <a-row :gutter="[16, 16]">
                 <a-col :span="24" style="margin-top: 16px">
-                    <a-radio-group v-model:value="graph_options.type_id" @change="onTypeChange"
+                    <a-radio-group v-model:value="graph_options.type_id" @change="onTypeChange" style="min-width: 100%"
                         ><a-card size="small">
                             <template #title>
                                 图表类型&nbsp;&nbsp;<a-tag
@@ -106,10 +115,7 @@
                                 </a-tag></template
                             >
 
-                            <a-card-grid
-                                style="width: calc(1 / 3 * 100%); text-align: center"
-                                v-for="item in chart_types_display"
-                                :key="item"
+                            <a-card-grid style="text-align: center" v-for="item in chart_types_display" :key="item"
                                 ><div class="cover-icon">
                                     <icon-font :type="item.icon_type" />
                                 </div>
@@ -117,7 +123,11 @@
                                     <a-typography-text strong>{{ item.type_name }}</a-typography-text>
                                 </div>
                                 <div style="margin-top: 8px">
-                                    <a-radio :value="item.type_id" style="margin-left: 8px" />
+                                    <a-radio
+                                        :id="dom_map.edit_chart.chart_type_prefix + item.type_id"
+                                        :value="item.type_id"
+                                        style="margin-left: 8px"
+                                    />
                                 </div>
                             </a-card-grid>
                         </a-card> </a-radio-group
@@ -167,17 +177,25 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive, toRefs, watch, ref, computed, h } from 'vue'
+import { defineComponent, onMounted, reactive, toRefs, watch, ref, computed, h, createVNode } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { chart_types } from '@/constant/chart_types'
 import { view_chart } from '@/api/post/view_chart'
-import { FieldStringOutlined, FieldNumberOutlined, LoadingOutlined, createFromIconfontCN } from '@ant-design/icons-vue'
+import {
+    FieldStringOutlined,
+    FieldNumberOutlined,
+    LoadingOutlined,
+    createFromIconfontCN,
+    ExclamationCircleOutlined,
+} from '@ant-design/icons-vue'
 import { icon_url } from '@/util/iconfont'
 import { table_content } from '@/api/post/table_content'
-import { notification } from 'ant-design-vue'
+import { Modal, notification } from 'ant-design-vue'
 import Graph_api from '@/components/graph/graph_api'
 import { edit_chart } from '@/api/post/edit_chart'
 import { cloneDeep } from 'lodash-es'
+import dom_map from '@/constant/dom_map'
+import { view_dashboard } from '@/api/post/view_dashboard'
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url,
@@ -256,6 +274,7 @@ export default defineComponent({
             ready: false,                   // 图表加载完毕状态
             change_list: [],                // 变更列表
             skip_check: false,              // 跳过变更检查
+            instrument_count: 0             // 与图表关联的仪表数量
         })
 
         // 注入路由
@@ -280,6 +299,14 @@ export default defineComponent({
         const update = () => {
             state.ready = false
             state.chart_types_display = state.chart_types
+            state.instrument_count = 0
+            view_dashboard().then((response) => {
+                if (response.data.status.code === 0) {
+                    state.instrument_count = response.data.data.instruments.filter(
+                        (i) => i.chart_id === state.chart_id
+                    ).length
+                }
+            })
             view_chart(state.chart_id)
                 .then((response) => {
                     if (response.data.status.code === 0) {
@@ -441,6 +468,7 @@ export default defineComponent({
                             message: '成功',
                             description: response.data.status.message,
                         })
+                        update()
                     } else {
                         notification['error']({
                             message: '错误',
@@ -457,6 +485,28 @@ export default defineComponent({
             clear_filter_field()
         }
 
+        const showConfirm = () => {
+            if (state.change_list.filter((i) => ['keys_text', 'keys_number'].indexOf(i.key) >= 0).length > 0) {
+                Modal.confirm({
+                    title: '您确定要继续吗？',
+                    icon: createVNode(ExclamationCircleOutlined),
+                    content: createVNode(
+                        'div',
+                        {},
+                        `您修改了图表列信息。保存后与此图表关联的 ${state.instrument_count} 个仪表盘条目将被自动删除。`
+                    ),
+
+                    onOk() {
+                        onSubmit()
+                    },
+
+                    onCancel() {},
+                })
+            } else {
+                onSubmit()
+            }
+        }
+
         return {
             ...toRefs(state),
             onSearch_field,
@@ -466,10 +516,11 @@ export default defineComponent({
             checkedKeys_number,
             checkedKeys_text,
             onTypeChange,
-            onSubmit,
             onReset,
             save_disabled,
             indicator,
+            dom_map,
+            showConfirm,
         }
     },
 })

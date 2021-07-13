@@ -44,15 +44,9 @@ Cypress.Commands.add('login', function () {
             login_info.password = mock_data.password
             login_info.nickname = mock_data.nickname
         }
-        cy.get('#' + dom_map.login.username)
-            .clear()
-            .type(login_info.username)
-            .should('have.value', login_info.username)
-        cy.get('#' + dom_map.login.password)
-            .clear()
-            .type(login_info.password)
-            .should('have.value', login_info.password)
-        cy.get('#' + dom_map.login.login).click()
+        cy.get(`#${dom_map.login.username}`).clear().type(login_info.username).should('have.value', login_info.username)
+        cy.get(`#${dom_map.login.password}`).clear().type(login_info.password).should('have.value', login_info.password)
+        cy.get(`#${dom_map.login.login}`).click()
         cy.contains(login_info.nickname, { timeout: 2000 })
     })
 })

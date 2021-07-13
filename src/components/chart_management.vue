@@ -99,7 +99,7 @@
                                         <icon-font :type="item.icon_type" />
                                     </div>
                                 </template>
-                                <a-card-meta :title="item.chart_name" @click="handleEdit">
+                                <a-card-meta :title="item.chart_name" @click="handleEdit(item.id)">
                                     <template #description>{{ item.type_name }} </template>
                                 </a-card-meta>
                             </a-card>

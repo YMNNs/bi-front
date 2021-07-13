@@ -7,7 +7,7 @@
 
 const levels = {
     DEBUG: {
-        tag: 'DBUG',
+        tag: 'DEBUG',
         background: 'LightGoldenRodYellow',
         foreground: 'Black',
         level: 4,
@@ -19,7 +19,7 @@ const levels = {
         level: 4,
     },
     SUCCESS: {
-        tag: 'SCES',
+        tag: 'SUCCESS',
         background: 'Green',
         foreground: 'White',
         level: 3,
@@ -49,7 +49,7 @@ const levels = {
         level: 2,
     },
     ERROR: {
-        tag: 'ERR!',
+        tag: 'ERROR',
         background: 'Red',
         foreground: 'White',
         level: 1,
