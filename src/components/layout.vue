@@ -166,8 +166,8 @@ export default defineComponent({
         const store = useStore()
         const router = useRouter()
 
-        onMounted(() => {
-            updateUserInfo()
+        onMounted(async () => {
+            await updateUserInfo()
             state.menuList = router.options.routes
                 .find((i) => i.name === 'layout')
                 .children.filter((i) => !i.meta.hidden && i.meta.role.indexOf(store.state.role) >= 0)
@@ -232,7 +232,6 @@ export default defineComponent({
             ...toRefs(state),
             systemTitle: process.env.VUE_APP_TITLE,
             logout,
-            updateUserInfo,
             onMenuClick,
             onOpenChange,
             handleClick,
