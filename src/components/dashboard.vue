@@ -110,7 +110,9 @@
                 添加
             </a-button>
             <a-button key="3" type="default" v-if="edit" :disabled="!edited" @click="handleReset">重置</a-button>
-            <a-button key="4" type="primary" v-if="edit && edited" @click="onFinish">完成</a-button>
+            <a-button key="4" type="primary" v-if="edit && edited" @click="onFinish" :loading="finishLoading"
+                >完成</a-button
+            >
             <a-button key="5" type="default" v-if="edit && !edited" @click="edit = false">取消</a-button>
         </template>
     </a-page-header>
@@ -569,6 +571,8 @@ export default defineComponent({
                 i.select_keys = i.selected_keys
                 // 后端要驼峰
                 i.dataId = i.data_id
+                i.selectKeys = i.selected_keys
+                i.selectedKeys = i.selected_keys
                 return i
             })
             edit_dashboard(request_data).then((response) => {
@@ -708,7 +712,7 @@ export default defineComponent({
                 state_instrument.selected_keys = cloneDeep(modelRef.selected_keys_text)
                 // 创建新的数据
                 const new_data = cloneDeep(state.dataSources.find((i) => i.id === state_instrument.chart.data_id))
-                new_data.id = new Date().getTime() * -1
+                new_data.id = uniqueId() * -1
                 new_data.dataSource = new_data.dataSource.filter((i) =>
                     state_instrument.selected_keys.length > 0
                         ? state_instrument.selected_keys.indexOf(i[state_instrument.chart.keys_text[0]]) >= 0

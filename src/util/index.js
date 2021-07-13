@@ -21,7 +21,7 @@ export function parseOrNull(o, k) {
  */
 Array.prototype.elementEquals = function (array) {
     return (
-        this.length !== array.length &&
+        this.length === array.length &&
         this.every((i) => array.indexOf(i) >= 0 && array.every((i) => this.indexOf(i) >= 0))
     )
 }
