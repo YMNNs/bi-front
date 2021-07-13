@@ -13,7 +13,7 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + 'user/validate_email', 'post', (req
             },
             data: null,
         }
-    } else if (email.match('^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$')) {
+    } else {
         return {
             status: {
                 code: 0,
@@ -21,12 +21,5 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + 'user/validate_email', 'post', (req
             },
             data: null,
         }
-    } else
-        return {
-            status: {
-                code: 2,
-                message: '电子邮件地址无效',
-            },
-            data: null,
-        }
+    }
 })

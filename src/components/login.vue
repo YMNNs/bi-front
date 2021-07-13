@@ -28,7 +28,13 @@
             <!--登录表单-->
             <a-form>
                 <a-form-item v-bind="validateInfos.login" :wrapper-col="{ span: 24, offset: 0 }">
-                    <a-input v-model:value="modelRef.login" placeholder="用户名" size="large" style="width: 100%">
+                    <a-input
+                        :id="dom_map.login.username"
+                        v-model:value="modelRef.login"
+                        placeholder="用户名"
+                        size="large"
+                        style="width: 100%"
+                    >
                         <template #prefix>
                             <user-outlined type="user" />
                         </template>
@@ -37,6 +43,7 @@
                 <a-form-item v-bind="validateInfos.password" :wrapper-col="{ span: 24, offset: 0 }">
                     <a-input-password
                         autocomplete
+                        :id="dom_map.login.password"
                         v-model:value="modelRef.password"
                         placeholder="密码"
                         size="large"
@@ -49,10 +56,14 @@
                     </a-input-password>
                 </a-form-item>
                 <a-form-item v-bind="validateInfos.rememberMe">
-                    <a-checkbox v-model:checked="modelRef.rememberMe">{{ text.rememberMePrompt }} </a-checkbox>
+                    <a-checkbox v-model:checked="modelRef.rememberMe" :id="dom_map.login.rememberMe"
+                        >记住我<template v-if="modelRef.rememberMe">（请勿在公共电脑上选中此选项）</template>
+                    </a-checkbox>
                 </a-form-item>
                 <a-form-item :wrapper-col="{ span: 24, offset: 0 }">
-                    <a-button block size="large" type="primary" @click.prevent="onSubmit">登录 </a-button>
+                    <a-button :id="dom_map.login.login" block size="large" type="primary" @click.prevent="onSubmit"
+                        >登录</a-button
+                    >
                 </a-form-item>
             </a-form>
             <div style="text-align: center">
@@ -65,12 +76,14 @@
 
 <script>
 import { LockOutlined, UserOutlined } from '@ant-design/icons-vue'
-import { defineComponent, onMounted, onUnmounted, reactive, toRaw, toRefs, watch } from 'vue'
+import { defineComponent, onMounted, onUnmounted, reactive, toRaw, toRefs } from 'vue'
 import { login } from '@/api/post/login'
 import { user_info } from '@/api/post/user_info'
 import { useStore } from 'vuex'
 import { Form, notification } from 'ant-design-vue'
 import { useRoute, useRouter } from 'vue-router'
+import dom_map from '@/constant/dom_map'
+import logger from '@/util/logger'
 
 export default defineComponent({
     components: {
@@ -106,20 +119,8 @@ export default defineComponent({
             rememberMe: false,
         })
 
-        watch(
-            () => modelRef.rememberMe,
-            () => {
-                if (modelRef.rememberMe) {
-                    text.rememberMePrompt = '记住我（请勿在公共电脑上勾选）'
-                } else {
-                    text.rememberMePrompt = '记住我'
-                }
-            }
-        )
-
         const text = reactive({
             appTitle: process.env.VUE_APP_TITLE,
-            rememberMePrompt: '记住我',
         })
 
         // 表单验证规则
@@ -173,6 +174,11 @@ export default defineComponent({
                                     }
                                 })
                                 .catch()
+                        } else if (response.data.status.code === 1 || response.data.status.code === 2) {
+                            notification['warning']({
+                                message: '登录失败',
+                                description: '您提供的用户名或密码无效',
+                            })
                         } else {
                             notification['error']({
                                 message: '错误',
@@ -181,7 +187,9 @@ export default defineComponent({
                         }
                     })
                 })
-                .catch()
+                .catch((_error) => {
+                    logger.warn(_error)
+                })
         }
 
         return {
@@ -191,6 +199,7 @@ export default defineComponent({
             modelRef,
             text,
             onSubmit,
+            dom_map,
         }
     },
 })
