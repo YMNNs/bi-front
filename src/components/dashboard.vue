@@ -567,6 +567,8 @@ export default defineComponent({
         const onFinish = () => {
             state.finishLoading = { delay: 500 }
             const request_data = state.instruments_display.map((i) => {
+                // 使用字符串
+                i.selected_keys = JSON.stringify(i.selected_keys)
                 // 后端拼写错误 'selected_keys' -> 'select_keys'
                 i.select_keys = i.selected_keys
                 // 后端要驼峰

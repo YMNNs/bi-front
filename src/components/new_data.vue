@@ -17,9 +17,15 @@
                     >
                         <div v-if="tabKey === 'upload'">
                             <a-form layout="vertical" :hideRequiredMark="true">
+                                <a-form-item v-if="fileErrorVisible"
+                                    ><a-alert
+                                        banner
+                                        message="您上传的文件存在问题，将鼠标悬停在红色的文件标题上来了解错误信息。"
+                                /></a-form-item>
                                 <a-form-item v-bind="validateInfos_upload.fileList">
                                     <template #label><strong>上传文件</strong></template>
                                     <a-upload-dragger
+                                        :id="dom_map.new_data.select_file"
                                         v-model:fileList="modelRef_upload.fileList"
                                         name="file"
                                         :multiple="false"
@@ -45,6 +51,7 @@
                                         <p>默认为上传的文件名，您也可以在此处修改。</p>
                                     </template>
                                     <a-input
+                                        :id="dom_map.new_data.name"
                                         @blur="validate_upload('data_name').catch()"
                                         placeholder="我的新数据"
                                         v-model:value="modelRef_upload.data_name"
@@ -59,6 +66,7 @@
                                         </p>
                                     </template>
                                     <a-textarea
+                                        :id="dom_map.new_data.description"
                                         @blur="validate_upload('description').catch()"
                                         placeholder="此数据为..."
                                         v-model:value="modelRef_upload.description"
@@ -71,6 +79,7 @@
                                         <p>维度一般指自变量。</p>
                                     </template>
                                     <a-select
+                                        :id="dom_map.new_data.keys_text"
                                         mode="multiple"
                                         v-model:value="modelRef_upload.keys_text"
                                         style="width: 100%"
@@ -85,6 +94,7 @@
                                         <p>指标一般指因变量。</p>
                                     </template>
                                     <a-select
+                                        :id="dom_map.new_data.keys_number"
                                         mode="multiple"
                                         v-model:value="modelRef_upload.keys_number"
                                         style="width: 100%"
@@ -94,7 +104,11 @@
                                     />
                                 </a-form-item>
                                 <a-form-item>
-                                    <a-button type="primary" @click.prevent="onSubmit_upload" :loading="submitLoading"
+                                    <a-button
+                                        type="primary"
+                                        @click.prevent="onSubmit_upload"
+                                        :loading="submitLoading"
+                                        :id="dom_map.new_data.submit"
                                         >完成</a-button
                                     >
                                     <a-button style="margin-left: 10px" @click="$router.go(-1)">取消</a-button>
@@ -125,6 +139,8 @@ import { Form, notification } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { update_data } from '@/api/post/update_data'
 import log from '@/util/logger'
+import dom_map from '@/constant/dom_map'
+import logger from '@/util/logger'
 
 export default defineComponent({
     components: {
@@ -139,6 +155,7 @@ export default defineComponent({
             all_keys_options: [],       // 所有列名选项
             parsed: {},                 // 已读取的数据
             submitLoading: false,       // 提交按钮加载状态
+            fileErrorVisible: false,    // 文件错误横幅展示状态
         })
 
         const limit = {
@@ -180,10 +197,12 @@ export default defineComponent({
             modelRef_upload.fileList = resFileList
             if (file.error) {
                 file.status = 'error'
+                state.fileErrorVisible = true
                 // 文件错误时清空列名
                 state.all_keys_options.length = 0
             } else {
                 file.status = 'done'
+                state.fileErrorVisible = false
             }
 
             if (modelRef_upload.fileList.length > 0) {
@@ -214,14 +233,16 @@ export default defineComponent({
                     file.error = true
                     file.response = '文件大小超过限制'
                     resolve()
+                    logger.warn(file.response)
                     return
                 }
                 if (limit.type.indexOf(file.type) < 0) {
                     // 判断文件类型
                     // 不是csv
                     file.error = true
-                    file.response = '不是有效的CSV文件'
+                    file.response = '不是有效的 CSV 文件'
                     resolve()
+                    logger.warn(file.response)
                     return
                 }
                 const reader = new FileReader()
@@ -243,6 +264,7 @@ export default defineComponent({
                                 log.fail(`row #${i.row}\t${i.type}\t${i.message}`)
                             })
                             resolve()
+                            logger.warn(file.response)
                             return
                         }
                         // 读取列
@@ -250,18 +272,21 @@ export default defineComponent({
                             file.response = '该文件存在空列名'
                             file.error = true
                             resolve()
+                            logger.warn(file.response)
                             return
                         }
                         if (parsed.meta.fields.length === uniq(parsed.meta.fields.length)) {
                             file.response = '该文件存在重复列名'
                             file.error = true
                             resolve()
+                            logger.warn(file.response)
                             return
                         }
                         if (!parsed.meta.fields.every((i) => i.length === trim(i).length)) {
                             file.response = '该文件的一个或多个列名首尾存在空格'
                             file.error = true
                             resolve()
+                            logger.warn(file.response)
                             return
                         }
                         if (!parsed.meta.fields.every((i) => i.getBytesLength() <= 64)) {
@@ -271,6 +296,7 @@ export default defineComponent({
                             file.response = '该文件的一个或多个列名长度超过 64 字节'
                             file.error = true
                             resolve()
+                            logger.warn(file.response)
                             return
                         }
                         state.all_keys_options = parsed.meta.fields.map((i) => {
@@ -426,6 +452,7 @@ export default defineComponent({
             keys_text_options,
             setOptions,
             onSubmit_upload,
+            dom_map,
         }
     },
 })

@@ -16,4 +16,12 @@ export default {
         rememberMe: 'rememberMe',
         login: 'login',
     },
+    new_data: {
+        select_file: 'select_file',
+        name: 'name',
+        description: 'description',
+        keys_text: 'keys_text',
+        keys_number: 'keys_number',
+        submit: 'submit',
+    },
 }
