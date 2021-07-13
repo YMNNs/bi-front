@@ -1,5 +1,13 @@
 import 'cypress-file-upload'
-import { dom_map, data_name_long, data_description_long, data_description, data_name } from '../constant/test_info'
+import {
+    dom_map,
+    data_name_long,
+    data_description_long,
+    data_description,
+    data_name,
+    mock_data,
+    nickname,
+} from '../constant/test_info'
 
 describe('上传数据：异常处理', () => {
     it('文件格式不匹配', function () {
@@ -105,15 +113,27 @@ describe('上传数据：正确路径', () => {
     })
 })
 
-describe.only('修改表名：异常处理', () => {
-    it('表名过长', function () {
+describe('修改表名：正确路径', () => {
+    it('修改表名', function () {
         cy.login()
         cy.visit('/data_management')
         cy.url().then((el) => {
+            const data_info = {}
             if (el.indexOf('develop') > 0) {
                 // 服务器
-                cy.contains('成功')
+                data_info.data_name = data_name
+            } else {
+                data_info.data_name = mock_data.tables[0].name
             }
+            cy.contains(data_info.data_name).click()
+            cy.get('.ant-typography-edit').click()
+            cy.get('.ant-input').clear().type('xxx\n')
+            cy.contains('成功', { timeout: 3000 })
+            cy.get('.ant-typography-edit').click()
+            cy.get('.ant-input')
+                .clear()
+                .type(data_info.data_name + '\n')
+            cy.contains('成功', { timeout: 3000 })
         })
     })
 })

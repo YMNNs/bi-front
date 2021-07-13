@@ -24,4 +24,8 @@ export default {
         keys_number: 'keys_number',
         submit: 'submit',
     },
+    chart_management: {
+        search: 'search',
+        sort: 'sort',
+    },
 }

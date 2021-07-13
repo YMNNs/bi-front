@@ -20,6 +20,7 @@ job_install_deps:
     - develop
     - master
   script:
+    - rm package-lock.json
     - sudo npm install
 
 

@@ -42,10 +42,17 @@
                 </div>
             </a-col>
             <a-col :span="6">
-                <a-input-search v-model:value="searchQuery" placeholder="搜索" size="large" @search="onSearch" />
+                <a-input-search
+                    :id="dom_map.chart_management.search"
+                    v-model:value="searchQuery"
+                    placeholder="搜索"
+                    size="large"
+                    @search="onSearch"
+                />
             </a-col>
             <a-col :span="6">
                 <a-select
+                    :id="dom_map.chart_management.sort"
                     v-model:value="filter"
                     style="width: 100%"
                     ref="select"
@@ -116,6 +123,7 @@ import { chart_types } from '@/constant/chart_types'
 import { useRouter } from 'vue-router'
 import { cloneDeep } from 'lodash-es'
 import log from '@/util/logger'
+import dom_map from '@/constant/dom_map'
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url,
@@ -250,6 +258,7 @@ export default defineComponent({
             handleClickCard,
             handleEdit,
             handleDelete,
+            dom_map,
         }
     },
 })
