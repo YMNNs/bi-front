@@ -368,6 +368,8 @@ export default defineComponent({
                                 i.selected_keys = i.select_keys
                                 delete i.select_keys
                             }
+                            // 使用字符串
+                            i.selected_keys = JSON.parse(i.selected_keys)
                             if (i.dataId) {
                                 // 后端无法处理下划线，有驼峰优先用驼峰
                                 i.data_id = i.dataId

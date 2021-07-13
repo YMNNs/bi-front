@@ -10,4 +10,10 @@ export default {
         register: 'register',
         reset: 'reset',
     },
+    login: {
+        username: 'username',
+        password: 'password',
+        rememberMe: 'rememberMe',
+        login: 'login',
+    },
 }
