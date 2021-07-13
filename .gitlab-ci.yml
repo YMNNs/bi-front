@@ -20,7 +20,7 @@ job_install_deps:
     - develop
     - master
   script:
-    - npm install
+    - sudo npm install
 
 
 # 编译并部署develop
