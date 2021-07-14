@@ -15,7 +15,7 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + 'dashboard/view', 'post', (request)
                     index: 0,
                     chart_id: 2,
                     data_id: 2,
-                    selected_keys: '["南"]',
+                    selected_keys: '[]',
                 },
                 {
                     id: 455,
@@ -23,13 +23,6 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + 'dashboard/view', 'post', (request)
                     chart_id: 1,
                     data_id: 1,
                     selected_keys: '[]',
-                },
-                {
-                    id: 456,
-                    index: 2,
-                    chart_id: 2,
-                    data_id: 2,
-                    selected_keys: '["南北"]',
                 },
             ],
         },

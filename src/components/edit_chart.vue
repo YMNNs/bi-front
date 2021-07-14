@@ -486,7 +486,10 @@ export default defineComponent({
         }
 
         const showConfirm = () => {
-            if (state.change_list.filter((i) => ['keys_text', 'keys_number'].indexOf(i.key) >= 0).length > 0) {
+            if (
+                state.change_list.filter((i) => ['keys_text', 'keys_number'].indexOf(i.key) >= 0).length > 0 &&
+                state.instrument_count > 0
+            ) {
                 Modal.confirm({
                     title: '您确定要继续吗？',
                     icon: createVNode(ExclamationCircleOutlined),

@@ -42,12 +42,40 @@ describe.only('编辑仪表盘', () => {
                 // 服务器
                 dashboard_info.chart_name = chart_name
             } else {
-                dashboard_info.chart_name = mock_data.charts[0].chart_name
+                dashboard_info.chart_name = mock_data.charts.find((i) => i.id === 2).chart_name
             }
+            // 删除再恢复
             cy.contains('.ant-card-head-title', dashboard_info.chart_name)
-                .parent('.ant-card')
+                .parents('.ant-card')
                 .children('.ant-card-actions')
-                .get(`${dom_map.dashboard.edit}`)
+                .find(`#${dom_map.dashboard.delete}`)
+                .click()
+            cy.contains('确 定').click()
+            cy.contains('.ant-card-head-title', dashboard_info.chart_name).should('not.exist')
+            cy.get(`#${dom_map.dashboard.reset}`).click()
+            // 进入编辑
+            cy.contains('.ant-card-head-title', dashboard_info.chart_name)
+                .parents('.ant-card')
+                .children('.ant-card-actions')
+                .find(`#${dom_map.dashboard.edit_instrument}`)
+                .click()
+            // 勾选并清空筛选值
+            cy.get(`#${dom_map.dashboard.filter_checkbox}`).click()
+            cy.get('.ant-select-selection-overflow')
+                .children()
+                .find('.ant-select-selection-item-remove')
+                .each((i) => {
+                    cy.get(i).click()
+                })
+            cy.get('.ant-checkbox-checked').should('not.exist')
+            cy.get(`#${dom_map.dashboard.filter_checkbox}`).click()
+            // 只删除一个筛选值
+            cy.get('.ant-select-selection-overflow').children().get('.ant-select-selection-item-remove').first().click()
+            cy.get('.ant-checkbox-checked').should('exist')
+            cy.get(`#${dom_map.dashboard.finish_edit_chart}`).click()
+            cy.get(`#${dom_map.dashboard.finish_edit_dashboard}`).click()
+            // 保存编辑
+            cy.contains('成功')
         })
     })
 })
