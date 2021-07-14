@@ -5,12 +5,7 @@
             <a-button key="2" :id="dom_map.edit_chart.reset" @click="onReset" :disabled="change_list.length === 0"
                 >重置</a-button
             >
-            <a-button
-                key="1"
-                :id="dom_map.edit_chart.submit"
-                type="primary"
-                @click="showConfirm"
-                :disabled="save_disabled"
+            <a-button key="1" :id="dom_map.edit_chart.submit" type="primary" @click="onSubmit" :disabled="save_disabled"
                 >保存图表</a-button
             >
         </template>
@@ -137,8 +132,27 @@
         <a-col :span="14">
             <a-row :gutter="[16, 16]">
                 <a-col :span="24">
+                    <div
+                        v-if="
+                            change_list.filter((i) => ['keys_text', 'keys_number'].indexOf(i.key) >= 0).length > 0 &&
+                            instrument_count > 0
+                        "
+                        style="margin-bottom: 16px"
+                    >
+                        <a-alert type="warning" show-icon banner>
+                            <template #message><strong>您更改了维度和指标</strong></template>
+                            <template #description>
+                                <a-typography
+                                    >保存后，与此图表关联的&nbsp;{{
+                                        instrument_count
+                                    }}&nbsp;个仪表盘条目的筛选条件将被<strong>自动清除</strong>。</a-typography
+                                >
+                            </template>
+                        </a-alert>
+                    </div>
                     <div v-if="error">
-                        <a-alert type="warning" message="图表无法预览" show-icon banner>
+                        <a-alert type="error" show-icon banner>
+                            <template #message><strong>图表无法预览</strong></template>
                             <template #description>
                                 <a-typography-paragraph>
                                     在预览图表之前，请先修复下列问题：
@@ -177,20 +191,14 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive, toRefs, watch, ref, computed, h, createVNode } from 'vue'
+import { defineComponent, onMounted, reactive, toRefs, watch, ref, computed, h } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { chart_types } from '@/constant/chart_types'
 import { view_chart } from '@/api/post/view_chart'
-import {
-    FieldStringOutlined,
-    FieldNumberOutlined,
-    LoadingOutlined,
-    createFromIconfontCN,
-    ExclamationCircleOutlined,
-} from '@ant-design/icons-vue'
+import { FieldStringOutlined, FieldNumberOutlined, LoadingOutlined, createFromIconfontCN } from '@ant-design/icons-vue'
 import { icon_url } from '@/util/iconfont'
 import { table_content } from '@/api/post/table_content'
-import { Modal, notification } from 'ant-design-vue'
+import { notification } from 'ant-design-vue'
 import Graph_api from '@/components/graph/graph_api'
 import { edit_chart } from '@/api/post/edit_chart'
 import { cloneDeep } from 'lodash-es'
@@ -466,7 +474,7 @@ export default defineComponent({
                     if (response.data.status.code === 0) {
                         notification['success']({
                             message: '成功',
-                            description: response.data.status.message,
+                            description: '图表已保存',
                         })
                         update()
                     } else {
@@ -485,31 +493,6 @@ export default defineComponent({
             clear_filter_field()
         }
 
-        const showConfirm = () => {
-            if (
-                state.change_list.filter((i) => ['keys_text', 'keys_number'].indexOf(i.key) >= 0).length > 0 &&
-                state.instrument_count > 0
-            ) {
-                Modal.confirm({
-                    title: '您确定要继续吗？',
-                    icon: createVNode(ExclamationCircleOutlined),
-                    content: createVNode(
-                        'div',
-                        {},
-                        `您修改了图表列信息。保存后与此图表关联的 ${state.instrument_count} 个仪表盘条目的筛选条件将被自动清除。`
-                    ),
-
-                    onOk() {
-                        onSubmit()
-                    },
-
-                    onCancel() {},
-                })
-            } else {
-                onSubmit()
-            }
-        }
-
         return {
             ...toRefs(state),
             onSearch_field,
@@ -523,7 +506,7 @@ export default defineComponent({
             save_disabled,
             indicator,
             dom_map,
-            showConfirm,
+            onSubmit,
         }
     },
 })

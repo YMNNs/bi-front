@@ -171,7 +171,7 @@ describe('修改密码：正确路径', () => {
     })
 })
 
-describe('注销账户：错误处理', () => {
+describe('删除账户：错误处理', () => {
     it('用户名不匹配', function () {
         cy.login()
         cy.visit('/edit_user_profile')
@@ -200,7 +200,7 @@ describe('注销账户：错误处理', () => {
                 .type(delete_info.password)
                 .blur()
             cy.get(`#${Cypress.config('dom_map').profile.confirm_delete_button}`).click()
-            cy.contains('您的注销账户请求出现错误')
+            cy.contains('您的删除账户请求出现错误')
         })
     })
 
@@ -232,13 +232,13 @@ describe('注销账户：错误处理', () => {
                 .type(Cypress.config('valid_password'))
                 .blur()
             cy.get(`#${Cypress.config('dom_map').profile.confirm_delete_button}`).click()
-            cy.contains('您的注销账户请求出现错误')
+            cy.contains('您的删除账户请求出现错误')
         })
     })
 })
 
-describe('注销账户：正确路径', () => {
-    it('注销账户', function () {
+describe('删除账户：正确路径', () => {
+    it('删除账户', function () {
         cy.login()
         cy.visit('/edit_user_profile')
         cy.get(`#${Cypress.config('dom_map').profile.delete_account_button}`).click()

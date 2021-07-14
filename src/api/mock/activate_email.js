@@ -6,7 +6,6 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + 'user/activate_email', 'post', (req
     log.mock(request.url, JSON.parse(request.body))
     const { activation_token } = JSON.parse(request.body)
     if (activation_token === mock_data.activation_token) {
-        console.log('激活成功')
         return {
             status: {
                 code: 0,
@@ -15,7 +14,6 @@ Mock.mock(process.env.VUE_APP_API_BASE_URL + 'user/activate_email', 'post', (req
             data: null,
         }
     } else {
-        console.log('激活失败')
         return {
             status: {
                 code: 1,
