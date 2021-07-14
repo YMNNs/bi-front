@@ -1,21 +1,30 @@
 <template>
     <div class="page-wrapper">
         <a-card :bordered="true" style="width: 700px; margin: 0 auto">
-            <!--            请求重置密码-->
+            <!--请求重置密码-->
             <template v-if="step === 'request'">
                 <a-page-header title="重置密码" :sub-title="subtitle" @back="$router.go(-1)" />
                 <br />
                 <a-form :label-col="labelCol" :wrapper-col="wrapperCol" :hideRequiredMark="true">
                     <a-form-item v-bind="validateInfos_request.email" label="电子邮件地址">
                         <a-input
+                            :id="dom_map.reset_password.email"
                             v-model:value="modelRef_request.email"
                             size="large"
                             style="width: 100%"
-                            @blur="validate_request('email').catch()"
+                            @blur="
+                                validate_request('email').catch((_error) => {
+                                    logger.warn(_error)
+                                })
+                            "
                         />
                     </a-form-item>
                     <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
-                        <a-button type="primary" @click.prevent="onSubmit_request" :loading="onSubmit_request_loading"
+                        <a-button
+                            :id="dom_map.reset_password.request_button"
+                            type="primary"
+                            @click.prevent="onSubmit_request"
+                            :loading="onSubmit_request_loading"
                             >发送重置密码邮件
                         </a-button>
                         <template #help>
@@ -34,15 +43,25 @@
                 <a-form :label-col="labelCol" :wrapper-col="wrapperCol" :hideRequiredMark="true">
                     <a-form-item v-bind="validateInfos_reset.password" label="新密码">
                         <a-input-password
+                            :id="dom_map.reset_password.new_password"
                             autocomplete
                             v-model:value="modelRef_reset.password"
                             size="large"
                             style="width: 100%"
-                            @blur="validate_reset('password').catch()"
+                            @blur="
+                                validate_reset('password').catch((_error) => {
+                                    logger.warn(_error)
+                                })
+                            "
                         />
                     </a-form-item>
                     <a-form-item :wrapper-col="{ span: 14, offset: 6 }">
-                        <a-button type="primary" @click.prevent="onSubmit_reset">重置密码 </a-button>
+                        <a-button
+                            :id="dom_map.reset_password.reset_button"
+                            type="primary"
+                            @click.prevent="onSubmit_reset"
+                            >重置密码</a-button
+                        >
                         <template #help>
                             <p>
                                 <br />
@@ -72,11 +91,7 @@
             <template v-if="step === 'waiting'">
                 <a-result
                     title="已发送电子邮件"
-                    :sub-title="
-                        '系统已接受您的重置密码请求，请访问您的电子邮箱（' +
-                        modelRef_request.email.toLowerCase() +
-                        '），根据邮件内容提示步骤，重置密码。'
-                    "
+                    :sub-title="`系统已接受您的重置密码请求，请访问您的电子邮箱（${modelRef_request.email.toLowerCase()}），根据邮件内容提示步骤，重置密码。`"
                 >
                     <template #extra>
                         <a-button @click="$router.go(-1)" type="primary">返回</a-button>
@@ -103,6 +118,8 @@ import { CloseCircleOutlined } from '@ant-design/icons-vue'
 import { request_reset_password } from '@/api/post/request_reset_password'
 import { reset_password } from '@/api/post/reset_password'
 import { Form } from 'ant-design-vue'
+import dom_map from '@/constant/dom_map'
+import logger from '@/util/logger'
 
 export default defineComponent({
     components: {
@@ -214,7 +231,7 @@ export default defineComponent({
                     trigger: 'blur',
                     min: 8,
                     max: 16,
-                    message: '密码长度应在 8-16 字符之间',
+                    message: '密码长度必须在 8-16 字符之间',
                 },
             ],
         })
@@ -261,7 +278,9 @@ export default defineComponent({
                         }
                     })
                 })
-                .catch()
+                .catch((_error) => {
+                    logger.warn(_error)
+                })
         }
 
         const onSubmit_reset = () => {
@@ -279,7 +298,9 @@ export default defineComponent({
                         }
                     })
                 })
-                .catch()
+                .catch((_error) => {
+                    logger.warn(_error)
+                })
         }
 
         return {
@@ -301,6 +322,8 @@ export default defineComponent({
             wrapperCol: {
                 span: 14,
             },
+            dom_map,
+            logger,
         }
     },
 })

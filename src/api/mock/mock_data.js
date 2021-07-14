@@ -1,9 +1,13 @@
-export const mock_data = {
+/**
+ * 测试中用到，不支持ES6
+ * @type {{charts: [{chart_name: string, last_modified_time: number, type_id: number, id: number}, {chart_name: string, last_modified_time: number, type_id: number, id: number}], email_verified: string, duplicated_username: string, reset_password_token: string, duplicated_email: string, token: string, activation_token: string, password: string, tables: [{editable: boolean, name: string, description: string, id: number}, {editable: boolean, name: string, description: string, id: number}], user_id: number, nickname: string, dashboard_size: number, email: string, username: string}}
+ */
+module.exports = {
     username: 'bilyn',
     duplicated_username: 'bbilyn',
     password: '12345678',
     email: 'i@stager.top',
-    duplicated_email: 'i@stager.top',
+    duplicated_email: 'ii@stager.top',
     nickname: '本地用户',
     user_id: 23445,
     token: '234234234',

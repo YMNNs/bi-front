@@ -1,8 +1,9 @@
 /**
  * 控件id表，列举了所有页面的可交互元素id
  * 引用于页面和测试用例
+ * 测试中用到，不支持ES6
  */
-export default {
+module.exports = {
     register: {
         email: 'email',
         username: 'username',
@@ -72,5 +73,11 @@ export default {
         delete_confirm: 'delete_confirm',
         delete_password: 'delete_password',
         confirm_delete_button: 'confirm_delete_button',
+    },
+    reset_password: {
+        email: 'email',
+        request_button: 'request_button',
+        new_password: 'new_password',
+        reset_button: 'reset_button',
     },
 }

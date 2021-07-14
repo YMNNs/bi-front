@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-import { mock_data } from '@/api/mock/mock_data'
+import mock_data from '@/api/mock/mock_data'
 import log from '@/util/logger'
 
 Mock.mock(process.env.VUE_APP_API_BASE_URL + 'chart/all', 'post', (request) => {

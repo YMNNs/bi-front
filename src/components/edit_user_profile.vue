@@ -413,7 +413,7 @@ export default defineComponent({
                     trigger: 'blur',
                     min: 8,
                     max: 16,
-                    message: '密码长度应在 8-16 字符之间',
+                    message: '密码长度必须在 8-16 字符之间',
                 },
             ],
         })
@@ -428,7 +428,7 @@ export default defineComponent({
                     trigger: 'blur',
                     min: 8,
                     max: 16,
-                    message: '密码长度应在 8-16 字符之间',
+                    message: '密码长度必须在 8-16 字符之间',
                 },
             ],
             new_password: [
@@ -440,7 +440,7 @@ export default defineComponent({
                     trigger: 'blur',
                     min: 8,
                     max: 16,
-                    message: '密码长度应在 8-16 字符之间',
+                    message: '密码长度必须在 8-16 字符之间',
                 },
             ],
         })
@@ -526,14 +526,6 @@ export default defineComponent({
             validate_profile().then(() => {
                 const form = toRaw(modelRef_profile)
                 const user = {}
-                // Object.keys(form).forEach((key) => {
-                //     if (
-                //         form[key] &&
-                //         form[key] !== state.original_profile[key]
-                //     ) {
-                //         user[key] = form[key];
-                //     }
-                // });
                 assignWith(user, form, (objValue, srcValue, key) => {
                     return srcValue && srcValue !== state.original_profile[key] ? srcValue : null
                 })
@@ -554,7 +546,7 @@ export default defineComponent({
                         } else {
                             notification['error']({
                                 message: '您的修改个人信息请求出现错误',
-                                description: `个人信息未被修改，因为 ${response.data.status.message}。`,
+                                description: `个人信息未被修改，因为${response.data.status.message}。`,
                             })
                         }
                     })
@@ -588,7 +580,7 @@ export default defineComponent({
                     } else {
                         notification['error']({
                             message: '您的修改密码请求出现错误',
-                            description: `您的密码未被修改，因为 ${response.data.status.message}。`,
+                            description: `您的密码未被修改，因为${response.data.status.message}。`,
                         })
                     }
                 })
@@ -611,8 +603,8 @@ export default defineComponent({
                             $router.push('/login')
                         } else {
                             notification['error']({
-                                message: '您的删除账户请求出现错误',
-                                description: `您的账户未被删除，因为 ${response.data.status.message}。`,
+                                message: '您的注销账户请求出现错误',
+                                description: `您的账户未被注销，因为${response.data.status.message}。`,
                             })
                         }
                     })
