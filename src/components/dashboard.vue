@@ -27,10 +27,14 @@
             <template v-if="purpose === 'edit'">
                 <a-form-item v-bind="validateInfos.selected_keys_text">
                     <template #label>
-                        <a-checkbox v-model:checked="modelRef.selected" @change="onCheck" />&nbsp;
-                        <strong>筛选维度：</strong>{{ modelRef.col_name }}
+                        <a-checkbox
+                            :id="dom_map.dashboard.filter_checkbox"
+                            v-model:checked="modelRef.selected"
+                            @change="onCheck"
+                        />&nbsp; <strong>筛选维度：</strong>{{ modelRef.col_name }}
                     </template>
                     <a-select
+                        :id="dom_map.dashboard.select_keys"
                         mode="multiple"
                         v-model:value="modelRef.selected_keys_text"
                         style="width: 100%"
@@ -761,7 +765,7 @@ export default defineComponent({
                 state.dataSources.push(new_data)
                 state_instrument.data_id = new_data.id
             }
-            assessEdit()
+            rearrangeIndex(state.instruments_display)
             onClose()
         }
 

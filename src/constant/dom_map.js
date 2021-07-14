@@ -55,5 +55,7 @@ export default {
         right: 'right',
         delete: 'delete',
         edit_instrument: 'edit_instrument',
+        filter_checkbox: 'filter_checkbox',
+        select_keys: 'select_keys',
     },
 }
