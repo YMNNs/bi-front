@@ -1,5 +1,6 @@
 /**
- * 控件id表，引用于页面和测试用例
+ * 控件id表，列举了所有页面的可交互元素id
+ * 引用于页面和测试用例
  */
 export default {
     register: {
@@ -41,5 +42,18 @@ export default {
     },
     dashboard: {
         size: 'size',
+        edit: 'edit',
+        add: 'add',
+        cancel_edit_dashboard: 'cancel_edit_dashboard',
+        cancel_add_edit_chart: 'cancel_add_edit_chart',
+        reset: 'reset',
+        finish_edit_dashboard: 'finish_edit_dashboard',
+        finish_add: 'finish_add',
+        finish_edit_chart: 'finish_edit_chart',
+        select_chart: 'select_chart',
+        left: 'left',
+        right: 'right',
+        delete: 'delete',
+        edit_instrument: 'edit_instrument',
     },
 }

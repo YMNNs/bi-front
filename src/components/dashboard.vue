@@ -5,7 +5,7 @@
         <a-typography-title :level="3" v-if="purpose === 'edit'">编辑仪表</a-typography-title>
         <p v-if="purpose === 'create'">您可以将图表附加在仪表盘中以便随时查看，并为仪表指定专属的数据子集。</p>
         <p v-if="purpose === 'edit'">正在编辑仪表“{{ modelRef.editing_instrument.chart.chart_name }}”</p>
-        <a-form layout="vertical">
+        <a-form layout="vertical" hide-required-mark>
             <a-form-item v-bind="validateInfos.chart_id">
                 <template #label>
                     <strong>图表</strong>
@@ -16,6 +16,7 @@
                     </p>
                 </template>
                 <a-select
+                    :id="dom_map.dashboard.select_chart"
                     v-model:value="modelRef.chart_id"
                     :disabled="purpose === 'edit'"
                     :options="chart_options"
@@ -83,8 +84,11 @@
                 zIndex: 1,
             }"
         >
-            <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
+            <a-button :id="dom_map.dashboard.cancel_add_edit_chart" style="margin-right: 8px" @click="onClose"
+                >取消</a-button
+            >
             <a-button
+                :id="dom_map.dashboard.finish_add"
                 type="primary"
                 v-if="purpose === 'create'"
                 @click="onSubmit_create"
@@ -92,6 +96,7 @@
                 >完成</a-button
             >
             <a-button
+                :id="dom_map.dashboard.finish_edit_chart"
                 type="primary"
                 v-if="purpose === 'edit'"
                 @click="onSubmit_edit"
@@ -102,18 +107,41 @@
     </a-drawer>
     <a-page-header title="仪表盘">
         <template v-slot:extra>
-            <a-button key="1" type="primary" v-if="!edit" @click="edit = true">编辑</a-button>
-            <a-button key="2" type="dashed" @click="showDrawer(null)" v-if="edit">
+            <a-button :id="dom_map.dashboard.edit" key="1" type="primary" v-if="!edit" @click="edit = true"
+                >编辑</a-button
+            >
+            <a-button :id="dom_map.dashboard.add" key="2" type="dashed" @click="showDrawer(null)" v-if="edit">
                 <template #icon>
                     <PlusOutlined />
                 </template>
                 添加
             </a-button>
-            <a-button key="3" type="default" v-if="edit" :disabled="!edited" @click="handleReset">重置</a-button>
-            <a-button key="4" type="primary" v-if="edit && edited" @click="onFinish" :loading="finishLoading"
+            <a-button
+                :id="dom_map.dashboard.reset"
+                key="3"
+                type="default"
+                v-if="edit"
+                :disabled="!edited"
+                @click="handleReset"
+                >重置</a-button
+            >
+            <a-button
+                :id="dom_map.dashboard.finish_edit_dashboard"
+                key="4"
+                type="primary"
+                v-if="edit && edited"
+                @click="onFinish"
+                :loading="finishLoading"
                 >完成</a-button
             >
-            <a-button key="5" type="default" v-if="edit && !edited" @click="edit = false">取消</a-button>
+            <a-button
+                :id="dom_map.dashboard.cancel_edit_dashboard"
+                key="5"
+                type="default"
+                v-if="edit && !edited"
+                @click="edit = false"
+                >取消</a-button
+            >
         </template>
     </a-page-header>
     <template v-if="incomplete > 0 && !edit">
@@ -184,19 +212,26 @@
                         />
                         <template class="ant-card-actions" #actions v-if="edit">
                             <LeftOutlined
+                                :id="dom_map.dashboard.left"
                                 key="left"
                                 v-if="instruments_display.indexOf(item) !== 0"
                                 @click="moveLeft(item.index)"
                             />
-                            <EditOutlined key="edit" v-if="!item.chart.incomplete" @click="showDrawer(item.id)" />
+                            <EditOutlined
+                                :id="dom_map.dashboard.edit_instrument"
+                                key="edit"
+                                v-if="!item.chart.incomplete"
+                                @click="showDrawer(item.id)"
+                            />
                             <a-popconfirm @confirm="handleDelete(item.index)"
                                 ><template #title>
                                     您可以通过页面上方的
                                     <strong>重置</strong> 按钮撤销此操作。
                                 </template>
-                                <DeleteOutlined key="delete" />
+                                <DeleteOutlined :id="dom_map.dashboard.delete" key="delete" />
                             </a-popconfirm>
                             <RightOutlined
+                                :id="dom_map.dashboard.right"
                                 key="right"
                                 v-if="instruments_display.indexOf(item) !== instruments_display.length - 1"
                                 @click="moveRight(item.index)"
@@ -648,8 +683,9 @@ export default defineComponent({
                         modelRef.col_name = response.data.data.table.columns.find(
                             (i) => i.key === modelRef.editing_instrument.chart.keys_text[0]
                         ).title
-                        if (response.data.data.table.dataSources) {
+                        if (response.data.data.table.dataSource) {
                             // 补充到DataSources
+                            response.data.data.table.id = modelRef.editing_instrument.chart.data_id
                             state.dataSources.push(response.data.data.table)
                         }
                     }
