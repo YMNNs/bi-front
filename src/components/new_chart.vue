@@ -23,7 +23,12 @@
                                         <strong>图表名称</strong>
                                     </template>
                                     <a-input
-                                        @blur="validate_blank('chart_name').catch()"
+                                        :id="dom_map.new_chart.name"
+                                        @blur="
+                                            validate_blank('chart_name').catch((_error) => {
+                                                logger.warn(_error)
+                                            })
+                                        "
                                         placeholder="我的新图表"
                                         v-model:value="modelRef_blank.chart_name"
                                     />
@@ -39,6 +44,7 @@
                                         </p>
                                     </template>
                                     <a-select
+                                        :id="dom_map.new_chart.data"
                                         v-model:value="modelRef_blank.data_id"
                                         :options="data_options"
                                         placeholder="选择一个数据集"
@@ -49,6 +55,7 @@
                                         <strong>图表类型</strong>
                                     </template>
                                     <a-select
+                                        :id="dom_map.new_chart.chart_type"
                                         v-model:value="modelRef_blank.type_id"
                                         placeholder="选择一种图表"
                                         option-label-prop="label"
@@ -89,7 +96,12 @@
                                     </template>
                                 </a-form-item>
                                 <a-form-item>
-                                    <a-button type="primary" @click.prevent="onSubmit_blank">完成</a-button>
+                                    <a-button
+                                        type="primary"
+                                        @click.prevent="onSubmit_blank"
+                                        :id="dom_map.new_chart.submit"
+                                        >完成</a-button
+                                    >
                                     <a-button style="margin-left: 10px" @click="$router.go(-1)">取消</a-button>
                                     <template #help
                                         ><p>
@@ -116,6 +128,8 @@ import { createFromIconfontCN } from '@ant-design/icons-vue'
 import { create_chart } from '@/api/post/create_chart'
 import { Form, notification } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
+import dom_map from '@/constant/dom_map'
+import logger from '@/util/logger'
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url,
@@ -158,25 +172,29 @@ export default defineComponent({
         }
 
         const onSubmit_blank = () => {
-            validate_blank().then(() => {
-                const form = toRaw(modelRef_blank)
-                create_chart(form.data_id, form.type_id ? form.type_id : 1, form.chart_name)
-                    .then((response) => {
-                        if (response.data.status.code === 0) {
-                            notification['success']({
-                                message: '成功',
-                                description: '已创建图表“' + form.chart_name + '”。',
-                            })
-                            router.push('/edit_chart/' + response.data.data.chart_id)
-                        } else {
-                            notification['error']({
-                                message: '错误',
-                                description: response.data.status.message,
-                            })
-                        }
-                    })
-                    .catch()
-            })
+            validate_blank()
+                .then(() => {
+                    const form = toRaw(modelRef_blank)
+                    create_chart(form.data_id, form.type_id ? form.type_id : chart_types[0].type_id, form.chart_name)
+                        .then((response) => {
+                            if (response.data.status.code === 0) {
+                                notification['success']({
+                                    message: '成功',
+                                    description: '已创建图表“' + form.chart_name + '”。',
+                                })
+                                router.push('/edit_chart/' + response.data.data.chart_id)
+                            } else {
+                                notification['error']({
+                                    message: '错误',
+                                    description: response.data.status.message,
+                                })
+                            }
+                        })
+                        .catch()
+                })
+                .catch((_error) => {
+                    logger.warn(_error)
+                })
         }
 
         onMounted(() => {
@@ -244,6 +262,8 @@ export default defineComponent({
             validate_blank,
             modelRef_blank,
             onSubmit_blank,
+            dom_map,
+            logger,
         }
     },
 })

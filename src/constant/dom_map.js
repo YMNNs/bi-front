@@ -24,4 +24,22 @@ export default {
         keys_number: 'keys_number',
         submit: 'submit',
     },
+    chart_management: {
+        search: 'search',
+        sort: 'sort',
+    },
+    new_chart: {
+        name: 'name',
+        data: 'data',
+        chart_type: 'chart_type',
+        submit: 'submit',
+    },
+    edit_chart: {
+        submit: 'submit',
+        reset: 'reset',
+        chart_type_prefix: 'chart_type_',
+    },
+    dashboard: {
+        size: 'size',
+    },
 }

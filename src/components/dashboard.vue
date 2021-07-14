@@ -144,6 +144,7 @@
         </a-col>
         <a-col :span="6">
             <a-select
+                :id="dom_map.dashboard.size"
                 v-model:value="list_size"
                 style="width: 100%"
                 ref="select"
@@ -232,6 +233,7 @@ import { edit_dashboard } from '@/api/post/edit_dashboard'
 import { all_charts } from '@/api/post/all_charts'
 import { cloneDeep, uniqueId } from 'lodash-es'
 import log from '@/util/logger'
+import dom_map from '@/constant/dom_map'
 
 export default defineComponent({
     components: {
@@ -750,6 +752,7 @@ export default defineComponent({
             onCheck,
             onSelectChange,
             uniqueId,
+            dom_map,
         }
     },
 })
