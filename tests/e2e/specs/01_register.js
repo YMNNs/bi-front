@@ -1,0 +1,93 @@
+describe('注册：异常处理', () => {
+    it('电子邮件地址被占用', function () {
+        cy.log(Cypress.config('dev_hostname'))
+        cy.visit('/register')
+        cy.get(`#${Cypress.config('dom_map').register.email}`)
+            .clear()
+            .type(Cypress.config('mock_data').duplicated_email)
+            .should('have.value', Cypress.config('mock_data').duplicated_email)
+            .blur()
+        cy.contains('电子邮件地址已被占用')
+    })
+
+    it('用户名被占用', function () {
+        cy.visit('/register')
+        cy.get(`#${Cypress.config('dom_map').register.username}`)
+            .clear()
+            .type(Cypress.config('mock_data').duplicated_username)
+            .should('have.value', Cypress.config('mock_data').duplicated_username)
+            .blur()
+        cy.contains('用户名已被占用')
+    })
+
+    it('用户名过长', function () {
+        cy.visit('/register')
+        cy.get(`#${Cypress.config('dom_map').register.username}`)
+            .clear()
+            .type(Cypress.config('username_long'))
+            .should('have.value', Cypress.config('username_long'))
+            .blur()
+        cy.contains('用户名长度上限为 16 字符')
+    })
+
+    it('密码格式不正确', function () {
+        cy.visit('/register')
+        cy.get(`#${Cypress.config('dom_map').register.password}`)
+            .clear()
+            .type(Cypress.config('password_short'))
+            .should('have.value', Cypress.config('password_short'))
+            .blur()
+        cy.contains('密码长度必须在 8-16 字符之间')
+    })
+
+    it('昵称过长', function () {
+        cy.visit('/register')
+        cy.get(`#${Cypress.config('dom_map').register.nickname}`)
+            .clear()
+            .type(Cypress.config('nickname_long'))
+            .should('have.value', Cypress.config('nickname_long'))
+            .blur()
+        cy.contains('昵称长度上限为 16 字符')
+    })
+
+    it('缺少必填项目', function () {
+        cy.visit('/register')
+        cy.get(`#${Cypress.config('dom_map').register.register}`).click()
+        cy.contains('请输入')
+    })
+
+    it('重置表单', function () {
+        cy.visit('/register')
+        cy.get(`#${Cypress.config('dom_map').register.register}`).click()
+        cy.get(`#${Cypress.config('dom_map').register.reset}`).click()
+        cy.contains('请输入').should('not.exist')
+    })
+})
+
+describe('注册：正确路径', function () {
+    it('注册', () => {
+        cy.visit('/register')
+        cy.get(`#${Cypress.config('dom_map').register.email}`)
+            .clear()
+            .type(Cypress.config('email'))
+            .should('have.value', Cypress.config('email'))
+            .blur()
+        cy.get(`#${Cypress.config('dom_map').register.username}`)
+            .clear()
+            .type(Cypress.config('valid_username'))
+            .should('have.value', Cypress.config('valid_username'))
+            .blur()
+        cy.get(`#${Cypress.config('dom_map').register.password}`)
+            .clear()
+            .type(Cypress.config('valid_password'))
+            .should('have.value', Cypress.config('valid_password'))
+            .blur()
+        cy.get(`#${Cypress.config('dom_map').register.nickname}`)
+            .clear()
+            .type(Cypress.config('nickname'))
+            .should('have.value', Cypress.config('nickname'))
+            .blur()
+        cy.get(`#${Cypress.config('dom_map').register.register}`).click()
+        cy.contains('注册完成')
+    })
+})

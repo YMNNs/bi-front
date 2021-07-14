@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-import { mock_data } from '@/api/mock/mock_data'
+import mock_data from '@/api/mock/mock_data'
 import { chart_types } from '@/constant/chart_types'
 import log from '@/util/logger'
 

@@ -496,7 +496,7 @@ export default defineComponent({
                     content: createVNode(
                         'div',
                         {},
-                        `您修改了图表列信息。保存后与此图表关联的 ${state.instrument_count} 个仪表盘条目将被自动删除。`
+                        `您修改了图表列信息。保存后与此图表关联的 ${state.instrument_count} 个仪表盘条目的筛选条件将被自动清除。`
                     ),
 
                     onOk() {
