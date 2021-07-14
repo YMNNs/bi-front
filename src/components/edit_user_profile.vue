@@ -18,7 +18,12 @@
                                 <p>用户名作为您的登录凭据之一，不会对外公开显示。</p>
                             </template>
                             <a-input
-                                @blur="validate_profile('username').catch()"
+                                :id="dom_map.profile.username"
+                                @blur="
+                                    validate_profile('username').catch((_error) => {
+                                        logger.warn(_error)
+                                    })
+                                "
                                 v-model:value="modelRef_profile.username"
                             >
                                 <template #addonAfter>
@@ -40,14 +45,20 @@
                                     <strong>{{ original_profile.email }}</strong
                                     >。 <br /><a-typography-link
                                         :disabled="disable_resend_link"
+                                        :id="dom_map.profile.resend_link"
                                         @click.prevent="send_email"
                                         >重新发送激活邮件</a-typography-link
                                     >
                                 </p>
                             </template>
                             <a-input
+                                :id="dom_map.profile.email"
                                 :disabled="disable_resend_link"
-                                @blur="validate_profile('email').catch()"
+                                @blur="
+                                    validate_profile('email').catch((_error) => {
+                                        logger.warn(_error)
+                                    })
+                                "
                                 v-model:value="modelRef_profile.email"
                             />
                         </a-form-item>
@@ -60,7 +71,12 @@
                                 <p>输入你的名字，这样你认识的人就能认出你。</p>
                             </template>
                             <a-input
-                                @blur="validate_profile('nickname').catch()"
+                                :id="dom_map.profile.nickname"
+                                @blur="
+                                    validate_profile('nickname').catch((_error) => {
+                                        logger.warn(_error)
+                                    })
+                                "
                                 v-model:value="modelRef_profile.nickname"
                             />
                         </a-form-item>
@@ -72,7 +88,12 @@
                                     以上的所有字段都是可选的，可以在任何时候删除。通过填写它们，您就同意我们在您的用户信息出现的任何地方共享这些数据。请参阅我们的隐私声明，了解更多关于我们如何使用这些信息。
                                 </p>
                             </template>
-                            <a-button type="primary" @click.prevent="onSubmit_profile">保存个人信息</a-button>
+                            <a-button
+                                :id="dom_map.profile.update_profile_button"
+                                type="primary"
+                                @click.prevent="onSubmit_profile"
+                                >保存个人信息</a-button
+                            >
                         </a-form-item>
                     </a-form></a-col
                 >
@@ -97,8 +118,13 @@
                                 <p>要更改密码，您必须提供当前密码。</p>
                             </template>
                             <a-input-password
+                                :id="dom_map.profile.current_password"
                                 autocomplete
-                                @blur="validate_password('old_password').catch()"
+                                @blur="
+                                    validate_password('old_password').catch((_error) => {
+                                        logger.warn(_error)
+                                    })
+                                "
                                 v-model:value="modelRef_password.old_password"
                             />
                         </a-form-item>
@@ -111,14 +137,24 @@
                                 <p>新密码长度必须在8-16字符之间。</p>
                             </template>
                             <a-input-password
+                                :id="dom_map.profile.new_password"
                                 autocomplete
-                                @blur="validate_password('new_password').catch()"
+                                @blur="
+                                    validate_password('new_password').catch((_error) => {
+                                        logger.warn(_error)
+                                    })
+                                "
                                 v-model:value="modelRef_password.new_password"
                             />
                         </a-form-item>
                         <br />
                         <a-form-item>
-                            <a-button type="primary" @click.prevent="onSubmit_password">更新密码</a-button>
+                            <a-button
+                                :id="dom_map.profile.update_password_button"
+                                type="primary"
+                                @click.prevent="onSubmit_password"
+                                >更新密码</a-button
+                            >
                         </a-form-item>
                     </a-form>
                 </a-col>
@@ -142,7 +178,9 @@
                                     在删除账户之前，我们需要确认您对账户的所有权。
                                 </p>
                             </template>
-                            <a-button danger @click.prevent="showModal">删除账户</a-button>
+                            <a-button :id="dom_map.profile.delete_account_button" danger @click.prevent="showModal"
+                                >删除账户</a-button
+                            >
                         </a-form-item>
                     </a-form>
                     <a-modal v-model:visible="modal_visible" :confirm-loading="modal_confirmLoading" :footer="null">
@@ -169,7 +207,12 @@
                                     <strong>您的用户名</strong>
                                 </template>
                                 <a-input
-                                    @blur="validate_delete('username').catch()"
+                                    :id="dom_map.profile.delete_username"
+                                    @blur="
+                                        validate_delete('username').catch((_error) => {
+                                            logger.warn(_error)
+                                        })
+                                    "
                                     v-model:value="modelRef_delete.username"
                                 />
                             </a-form-item>
@@ -178,7 +221,12 @@
                                     <strong>在下方输入“<i>删除我的账户</i>”以确认</strong>
                                 </template>
                                 <a-input
-                                    @change="validate_delete('confirm_text').catch()"
+                                    :id="dom_map.profile.delete_confirm"
+                                    @change="
+                                        validate_delete('confirm_text').catch((_error) => {
+                                            logger.warn(_error)
+                                        })
+                                    "
                                     v-model:value="modelRef_delete.confirm_text"
                                 />
                             </a-form-item>
@@ -187,13 +235,19 @@
                                     <strong>确认您的密码</strong>
                                 </template>
                                 <a-input-password
-                                    @blur="validate_delete('password').catch()"
+                                    :id="dom_map.profile.delete_password"
+                                    @blur="
+                                        validate_delete('password').catch((_error) => {
+                                            logger.warn(_error)
+                                        })
+                                    "
                                     v-model:value="modelRef_delete.password"
                                 />
                             </a-form-item>
                             <a-form-item>
                                 <a-button
                                     danger
+                                    :id="dom_map.profile.confirm_delete_button"
                                     :disabled="disable_delete_button"
                                     ghost
                                     block
@@ -224,6 +278,8 @@ import { WarningOutlined } from '@ant-design/icons-vue'
 import { delete_account } from '@/api/post/delete_account'
 import { resend_activation_email } from '@/api/post/resend_activation_email'
 import { assign, assignWith } from 'lodash-es'
+import dom_map from '@/constant/dom_map'
+import logger from '@/util/logger'
 
 export default defineComponent({
     components: {
@@ -402,6 +458,9 @@ export default defineComponent({
                     message: '用户名已被占用',
                     validator: (rule, value) => {
                         return new Promise((resolve, reject) => {
+                            if (value.length === 0) {
+                                resolve()
+                            }
                             if (value !== state.original_profile.username) {
                                 validate_username(value).then((response) => {
                                     const { code, message } = response.data.status
@@ -414,7 +473,7 @@ export default defineComponent({
                             } else {
                                 resolve()
                             }
-                        }).catch()
+                        })
                     },
                 },
                 {
@@ -537,10 +596,10 @@ export default defineComponent({
         }
 
         const onSubmit_delete = () => {
-            validate_delete().then(() => {
-                const form = toRaw(modelRef_delete)
-                delete_account(form.username, form.password)
-                    .then((response) => {
+            validate_delete()
+                .then(() => {
+                    const form = toRaw(modelRef_delete)
+                    delete_account(form.username, form.password).then((response) => {
                         if (response.data.status.code === 0) {
                             //删除成功
                             store.commit('CLEAR_USER_INFO')
@@ -557,8 +616,10 @@ export default defineComponent({
                             })
                         }
                     })
-                    .catch()
-            })
+                })
+                .catch((_error) => {
+                    logger.warn(_error)
+                })
         }
 
         const {
@@ -599,6 +660,8 @@ export default defineComponent({
             showModal,
             send_email,
             app_title,
+            dom_map,
+            logger,
         }
     },
 })

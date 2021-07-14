@@ -5,7 +5,7 @@ import log from '@/util/logger'
 Mock.mock(process.env.VUE_APP_API_BASE_URL + 'user/validate_email', 'post', (request) => {
     log.mock(request.url, JSON.parse(request.body))
     const { email } = JSON.parse(request.body)
-    if (email === mock_data.email) {
+    if ([mock_data.email, mock_data.duplicated_email].indexOf(email) >= 0) {
         return {
             status: {
                 code: 1,
