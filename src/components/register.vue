@@ -160,6 +160,9 @@ export default defineComponent({
                     message: '用户名已被占用',
                     validator: (rule, value) => {
                         return new Promise((resolve, reject) => {
+                            if (value.length === 0) {
+                                resolve()
+                            }
                             validate_username(value).then((response) => {
                                 const { code, message } = response.data.status
                                 if (code === 0) {

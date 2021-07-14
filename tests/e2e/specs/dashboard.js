@@ -11,7 +11,7 @@ describe('更改仪表盘尺寸', () => {
     })
 })
 
-describe.only('编辑仪表盘', () => {
+describe('编辑仪表盘', () => {
     it('新增仪表', function () {
         cy.login()
         cy.visit('/dashboard')
@@ -32,7 +32,7 @@ describe.only('编辑仪表盘', () => {
         })
     })
 
-    it.only('编辑仪表', function () {
+    it('编辑仪表', function () {
         cy.login()
         cy.visit('/dashboard')
         cy.get(`#${dom_map.dashboard.edit}`).click()

@@ -1,7 +1,9 @@
 export const mock_data = {
     username: 'bilyn',
+    duplicated_username: 'bbilyn',
     password: '12345678',
     email: 'i@stager.top',
+    duplicated_email: 'i@stager.top',
     nickname: '本地用户',
     user_id: 23445,
     token: '234234234',

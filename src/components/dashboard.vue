@@ -616,6 +616,7 @@ export default defineComponent({
                 i.dataId = i.data_id
                 i.selectKeys = i.selected_keys
                 i.selectedKeys = i.selected_keys
+                i.number = i.index
                 return i
             })
             edit_dashboard(request_data).then((response) => {

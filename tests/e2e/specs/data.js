@@ -36,7 +36,7 @@ describe('上传数据：异常处理', () => {
     it('一个或多个列名首尾存在空格', function () {
         cy.login()
         cy.visit('/new_data')
-        const path = '../files/co2_long_col.csv'
+        const path = '../files/co2_space_col.csv'
         cy.get(`#${dom_map.new_data.select_file}`).attachFile(path)
         cy.contains('您上传的文件存在问题', { timeout: 2000 })
     })
@@ -44,7 +44,7 @@ describe('上传数据：异常处理', () => {
     it('文件存在重复列名', function () {
         cy.login()
         cy.visit('/new_data')
-        const path = '../files/co2_long_col.csv'
+        const path = '../files/co2_duplicated_col.csv'
         cy.get(`#${dom_map.new_data.select_file}`).attachFile(path)
         cy.contains('您上传的文件存在问题', { timeout: 2000 })
     })
