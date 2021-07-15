@@ -1,5 +1,5 @@
-import axios from "@/request";
+import axios from '@/request'
 
 export function view_dashboard() {
-    return axios.post("dashboard/view", {});
+    return axios.post('dashboard/view', {})
 }

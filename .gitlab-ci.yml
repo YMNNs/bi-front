@@ -20,7 +20,8 @@ job_install_deps:
     - develop
     - master
   script:
-    - npm install
+    - rm package-lock.json || true
+    - sudo npm install
 
 
 # 编译并部署develop

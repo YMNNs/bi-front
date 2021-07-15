@@ -1,17 +1,11 @@
 <template>
-    <a-page-header
-        title="设置"
-        sub-title="您可以在此页面编辑您的设置"
-        @back="$router.go(-1)"
-    />
+    <a-page-header title="设置" sub-title="您可以在此页面编辑您的设置" @back="$router.go(-1)" />
     <a-row>
         <a-col :span="22" :offset="1">
             <a-divider />
             <a-row :gutter="32">
                 <a-col :span="8"
-                    ><a-typography-title :level="3"
-                        >个人信息</a-typography-title
-                    >
+                    ><a-typography-title :level="3">个人信息</a-typography-title>
                     <p>此信息将显示在您的个人资料中。</p>
                 </a-col>
                 <a-col :span="14"
@@ -21,19 +15,19 @@
                                 <strong>用户名</strong>
                             </template>
                             <template #help>
-                                <p>
-                                    用户名作为您的登录凭据之一，不会对外公开显示。
-                                </p>
+                                <p>用户名作为您的登录凭据之一，不会对外公开显示。</p>
                             </template>
                             <a-input
-                                @blur="validate_profile('username').catch()"
+                                :id="dom_map.profile.username"
+                                @blur="
+                                    validate_profile('username').catch((_error) => {
+                                        logger.warn(_error)
+                                    })
+                                "
                                 v-model:value="modelRef_profile.username"
                             >
                                 <template #addonAfter>
-                                    <strong
-                                        >用户 ID:
-                                        {{ modelRef_profile.id }}</strong
-                                    >
+                                    <strong>用户 ID: {{ modelRef_profile.id }}</strong>
                                 </template>
                             </a-input>
                         </a-form-item>
@@ -51,16 +45,22 @@
                                     <strong>{{ original_profile.email }}</strong
                                     >。 <br /><a-typography-link
                                         :disabled="disable_resend_link"
+                                        :id="dom_map.profile.resend_link"
                                         @click.prevent="send_email"
                                         >重新发送激活邮件</a-typography-link
                                     >
                                 </p>
                             </template>
                             <a-input
-                                @blur="validate_profile('email').catch()"
+                                :id="dom_map.profile.email"
+                                :disabled="disable_resend_link"
+                                @blur="
+                                    validate_profile('email').catch((_error) => {
+                                        logger.warn(_error)
+                                    })
+                                "
                                 v-model:value="modelRef_profile.email"
-                            >
-                            </a-input>
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item v-bind="validateInfos_profile.nickname">
@@ -71,10 +71,14 @@
                                 <p>输入你的名字，这样你认识的人就能认出你。</p>
                             </template>
                             <a-input
-                                @blur="validate_profile('nickname').catch()"
+                                :id="dom_map.profile.nickname"
+                                @blur="
+                                    validate_profile('nickname').catch((_error) => {
+                                        logger.warn(_error)
+                                    })
+                                "
                                 v-model:value="modelRef_profile.nickname"
-                            >
-                            </a-input>
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item>
@@ -85,6 +89,7 @@
                                 </p>
                             </template>
                             <a-button
+                                :id="dom_map.profile.update_profile_button"
                                 type="primary"
                                 @click.prevent="onSubmit_profile"
                                 >保存个人信息</a-button
@@ -101,15 +106,11 @@
             <a-row :gutter="32">
                 <a-col :span="8"
                     ><a-typography-title :level="3">密码</a-typography-title>
-                    <p>
-                        密码更新成功后，您将被重定向到登录页面，您可以使用新密码登录。
-                    </p>
+                    <p>密码更新成功后，您将被重定向到登录页面，您可以使用新密码登录。</p>
                 </a-col>
                 <a-col :span="14">
                     <a-form layout="vertical" :hideRequiredMark="true">
-                        <a-form-item
-                            v-bind="validateInfos_password.old_password"
-                        >
+                        <a-form-item v-bind="validateInfos_password.old_password">
                             <template #label>
                                 <strong>当前密码</strong>
                             </template>
@@ -117,17 +118,18 @@
                                 <p>要更改密码，您必须提供当前密码。</p>
                             </template>
                             <a-input-password
+                                :id="dom_map.profile.current_password"
+                                autocomplete
                                 @blur="
-                                    validate_password('old_password').catch()
+                                    validate_password('old_password').catch((_error) => {
+                                        logger.warn(_error)
+                                    })
                                 "
                                 v-model:value="modelRef_password.old_password"
-                            >
-                            </a-input-password>
+                            />
                         </a-form-item>
                         <br />
-                        <a-form-item
-                            v-bind="validateInfos_password.new_password"
-                        >
+                        <a-form-item v-bind="validateInfos_password.new_password">
                             <template #label>
                                 <strong>新密码</strong>
                             </template>
@@ -135,16 +137,20 @@
                                 <p>新密码长度必须在8-16字符之间。</p>
                             </template>
                             <a-input-password
+                                :id="dom_map.profile.new_password"
+                                autocomplete
                                 @blur="
-                                    validate_password('new_password').catch()
+                                    validate_password('new_password').catch((_error) => {
+                                        logger.warn(_error)
+                                    })
                                 "
                                 v-model:value="modelRef_password.new_password"
-                            >
-                            </a-input-password>
+                            />
                         </a-form-item>
                         <br />
                         <a-form-item>
                             <a-button
+                                :id="dom_map.profile.update_password_button"
                                 type="primary"
                                 @click.prevent="onSubmit_password"
                                 >更新密码</a-button
@@ -160,9 +166,7 @@
             <a-divider />
             <a-row :gutter="32">
                 <a-col :span="8"
-                    ><a-typography-title type="danger" :level="3"
-                        >删除账户</a-typography-title
-                    >
+                    ><a-typography-title type="danger" :level="3">删除账户</a-typography-title>
                     <p>一旦你删除了你的账户，将无法恢复。</p>
                 </a-col>
                 <a-col :span="14">
@@ -174,36 +178,23 @@
                                     在删除账户之前，我们需要确认您对账户的所有权。
                                 </p>
                             </template>
-                            <a-button type="danger" @click.prevent="showModal"
+                            <a-button :id="dom_map.profile.delete_account_button" danger @click.prevent="showModal"
                                 >删除账户</a-button
                             >
                         </a-form-item>
                     </a-form>
-                    <a-modal
-                        v-model:visible="modal_visible"
-                        :confirm-loading="modal_confirmLoading"
-                        :footer="null"
-                    >
+                    <a-modal v-model:visible="modal_visible" :confirm-loading="modal_confirmLoading" :footer="null">
                         <template #title>
                             <strong>你确定要这么做吗？</strong>
                         </template>
-                        <a-alert
-                            message="注意"
-                            description="请认真阅读下面的说明，这非常重要。"
-                            type="error"
-                            show-icon
-                            banner
-                        >
+                        <a-alert description="请认真阅读下面的说明，这非常重要。" type="error" show-icon banner>
+                            <template #message><strong>注意</strong></template>
                             <template #icon><WarningOutlined /></template>
                         </a-alert>
                         <br />
-                        <p>
-                            我们将<strong>立即删除你所有的数据和图表</strong>，以及个人信息。
-                        </p>
-                        <p>你的用户名将对{{ app_title }}上的所有人开放。</p>
-                        <p>
-                            欲了解更多帮助，请阅读我们的文章“删除您的用户帐户”。
-                        </p>
+                        <p>我们将<strong>立即删除您所有的数据、图表、仪表盘</strong>，以及个人信息。</p>
+                        <p>您的用户名将对{{ app_title }}上的所有人开放。</p>
+                        <p>欲了解更多帮助，请阅读我们的文章“删除您的用户帐户”。</p>
                         <a-divider />
                         <a-form layout="vertical" :hideRequiredMark="true">
                             <a-form-item v-bind="validateInfos_delete.username">
@@ -211,40 +202,47 @@
                                     <strong>您的用户名</strong>
                                 </template>
                                 <a-input
-                                    @blur="validate_delete('username').catch()"
+                                    :id="dom_map.profile.delete_username"
+                                    @blur="
+                                        validate_delete('username').catch((_error) => {
+                                            logger.warn(_error)
+                                        })
+                                    "
                                     v-model:value="modelRef_delete.username"
-                                >
-                                </a-input>
+                                />
                             </a-form-item>
-                            <a-form-item
-                                v-bind="validateInfos_delete.confirm_text"
-                            >
+                            <a-form-item v-bind="validateInfos_delete.confirm_text">
                                 <template #label>
-                                    <strong
-                                        >在下方输入“<i>删除我的账户</i>”以确认</strong
-                                    >
+                                    <strong>在下方输入“<i>删除我的账户</i>”以确认</strong>
                                 </template>
                                 <a-input
+                                    :id="dom_map.profile.delete_confirm"
                                     @change="
-                                        validate_delete('confirm_text').catch()
+                                        validate_delete('confirm_text').catch((_error) => {
+                                            logger.warn(_error)
+                                        })
                                     "
                                     v-model:value="modelRef_delete.confirm_text"
-                                >
-                                </a-input>
+                                />
                             </a-form-item>
                             <a-form-item v-bind="validateInfos_delete.password">
                                 <template #label>
                                     <strong>确认您的密码</strong>
                                 </template>
                                 <a-input-password
-                                    @blur="validate_delete('password').catch()"
+                                    :id="dom_map.profile.delete_password"
+                                    @blur="
+                                        validate_delete('password').catch((_error) => {
+                                            logger.warn(_error)
+                                        })
+                                    "
                                     v-model:value="modelRef_delete.password"
-                                >
-                                </a-input-password>
+                                />
                             </a-form-item>
                             <a-form-item>
                                 <a-button
-                                    type="danger"
+                                    danger
+                                    :id="dom_map.profile.confirm_delete_button"
                                     :disabled="disable_delete_button"
                                     ghost
                                     block
@@ -261,400 +259,373 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive, toRaw, toRefs } from "vue";
-import { useForm } from "@ant-design-vue/use";
-import { validate_username } from "@/api/post/validate_username";
-import { validate_email } from "@/api/post/validate_email";
-import { edit_user_profile } from "@/api/post/edit_user_profile";
-import { notification } from "ant-design-vue";
-import { change_password } from "@/api/post/change_password";
-import { logout } from "@/api/post/logout";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
-import { user_info } from "@/api/post/user_info";
-import { WarningOutlined } from "@ant-design/icons-vue";
-import { delete_account } from "@/api/post/delete_account";
-import { resend_activation_email } from "@/api/post/resend_activation_email";
+import { defineComponent, onMounted, reactive, toRaw, toRefs } from 'vue'
+import { validate_username } from '@/api/post/validate_username'
+import { validate_email } from '@/api/post/validate_email'
+import { edit_user_profile } from '@/api/post/edit_user_profile'
+import { Form, notification } from 'ant-design-vue'
+import { change_password } from '@/api/post/change_password'
+import { logout } from '@/api/post/logout'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { user_info } from '@/api/post/user_info'
+import { WarningOutlined } from '@ant-design/icons-vue'
+import { delete_account } from '@/api/post/delete_account'
+import { resend_activation_email } from '@/api/post/resend_activation_email'
+import { assign, assignWith } from 'lodash-es'
+import dom_map from '@/constant/dom_map'
+import logger from '@/util/logger'
 
 export default defineComponent({
     components: {
         WarningOutlined,
     },
     setup() {
-        const store = useStore();
-        const $router = useRouter();
+        const store = useStore()
+        const $router = useRouter()
 
-        const app_title = process.env.VUE_APP_TITLE;
+        const app_title = process.env.VUE_APP_TITLE
 
+        // prettier-ignore
         const state = reactive({
-            modal_visible: false,
-            modal_confirmLoading: false,
-            email_verified: false,
-            status: "",
-            last_login: "",
-            disable_delete_button: true,
-            disable_resend_link: false,
-            original_profile: {
+            modal_visible: false,           // 对话框可见状态
+            modal_confirmLoading: false,    // 对话框按钮加载状态
+            email_verified: false,          // 电子邮件地址验证状态
+            status: '',                     // 用户状态
+            last_login: '',                 // 上次登录时间
+            disable_delete_button: true,    // 禁用删除按钮状态
+            disable_resend_link: false,     // 禁用发送电子邮件按钮状态
+            original_profile: {             // 原始用户信息
                 id: 0,
-                username: "",
-                nickname: "",
-                email: "",
+                username: '',
+                nickname: '',
+                email: '',
             },
-        });
+        })
 
         const showModal = () => {
-            state.modal_visible = true;
-        };
+            state.modal_visible = true
+        }
 
         const send_email = () => {
             resend_activation_email()
                 .then((response) => {
                     if (response.data.status.code === 0) {
-                        notification["success"]({
-                            message: "成功",
-                            description:
-                                "已向 " +
-                                state.original_profile.email +
-                                " 发送激活邮件",
-                        });
-                        state.disable_resend_link = true;
+                        notification['success']({
+                            message: '成功',
+                            description: `已向 ${state.original_profile.email} 发送激活邮件`,
+                        })
+                        state.disable_resend_link = true
                     } else {
-                        notification["error"]({
-                            message: "错误",
+                        notification['error']({
+                            message: '错误',
                             description: response.data.status.message,
-                        });
+                        })
                     }
                 })
-                .catch();
-        };
+                .catch()
+        }
 
         onMounted(() => {
+            update()
+        })
+
+        const update = () => {
+            resetFields_delete()
+            resetFields_profile()
+            resetFields_password()
             user_info().then((response) => {
                 if (response.data.status.code === 0) {
-                    state.status = response.data.data.user.status;
-                    state.email_verified =
-                        response.data.data.user.emailVerified === "1";
-                    state.last_login = new Date(
-                        parseInt(response.data.data.user.last_login) * 1000
-                    ).toLocaleString();
-                    Object.keys(state.original_profile).forEach((key) => {
-                        state.original_profile[key] =
-                            response.data.data.user[key];
-                    });
-                    Object.keys(modelRef_profile).forEach((key) => {
-                        modelRef_profile[key] = state.original_profile[key];
-                    });
+                    state.disable_resend_link = false
+                    state.status = response.data.data.user.status
+                    state.email_verified = response.data.data.user.emailVerified === '1'
+                    state.last_login = new Date(parseInt(response.data.data.user.last_login) * 1000).toLocaleString()
+                    assign(state.original_profile, response.data.data.user)
+                    assign(modelRef_profile, state.original_profile)
                 }
-            });
-        });
+            })
+        }
 
         const modelRef_profile = reactive({
             id: 0,
-            username: "",
-            nickname: "",
-            email: "",
-        });
+            username: '',
+            nickname: '',
+            email: '',
+        })
 
         const modelRef_password = reactive({
-            old_password: "",
-            new_password: "",
-        });
+            old_password: '',
+            new_password: '',
+        })
 
         const modelRef_delete = reactive({
-            username: "",
-            confirm_text: "",
-            password: "",
-        });
+            username: '',
+            confirm_text: '',
+            password: '',
+        })
 
         const rulesRef_delete = reactive({
             username: [
                 {
-                    trigger: "blur",
+                    trigger: 'blur',
                     required: true,
-                    message: "请输入用户名",
-                    type: "string",
+                    message: '请输入用户名',
+                    type: 'string',
                 },
                 {
-                    trigger: "blur",
+                    trigger: 'blur',
                     max: 16,
-                    message: "用户名长度上限为16字符",
+                    message: '用户名长度上限为 16 字符',
                 },
             ],
             confirm_text: [
                 {
-                    trigger: "change",
+                    trigger: 'change',
                     required: false,
-                    type: "string",
+                    type: 'string',
                 },
                 {
-                    trigger: "change",
+                    trigger: 'change',
                     validator: (rule, value) => {
                         return new Promise((resolve, reject) => {
-                            if (value === "删除我的账户") {
-                                // console.log("confirm_text成功");
-                                state.disable_delete_button = false;
-                                resolve();
+                            if (value === '删除我的账户') {
+                                state.disable_delete_button = false
+                                resolve()
                             } else {
-                                // console.log("confirm_text失败");
-                                state.disable_delete_button = true;
-                                reject("");
+                                state.disable_delete_button = true
+                                reject('')
                             }
-                        }).catch();
+                        }).catch()
                     },
                 },
             ],
             password: [
                 {
                     required: true,
-                    message: "请输入密码",
+                    message: '请输入密码',
                 },
                 {
-                    trigger: "blur",
+                    trigger: 'blur',
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16字符之间",
+                    message: '密码长度必须在 8-16 字符之间',
                 },
             ],
-        });
+        })
 
         const rulesRef_password = reactive({
             old_password: [
                 {
                     required: true,
-                    message: "请输入当前密码",
+                    message: '请输入当前密码',
                 },
                 {
-                    trigger: "blur",
+                    trigger: 'blur',
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16字符之间",
+                    message: '密码长度必须在 8-16 字符之间',
                 },
             ],
             new_password: [
                 {
                     required: true,
-                    message: "请输入新密码",
+                    message: '请输入新密码',
                 },
                 {
-                    trigger: "blur",
+                    trigger: 'blur',
                     min: 8,
                     max: 16,
-                    message: "密码长度应在8-16字符之间",
+                    message: '密码长度必须在 8-16 字符之间',
                 },
             ],
-        });
+        })
 
         const rulesRef_profile = reactive({
             username: [
                 {
-                    trigger: "blur",
+                    trigger: 'blur',
                     required: true,
-                    message: "请输入用户名",
-                    type: "string",
+                    message: '请输入用户名',
+                    type: 'string',
                 },
                 {
-                    trigger: "blur",
-                    message: "用户名已被占用",
+                    trigger: 'blur',
+                    message: '用户名已被占用',
                     validator: (rule, value) => {
                         return new Promise((resolve, reject) => {
+                            if (value.length === 0) {
+                                resolve()
+                            }
                             if (value !== state.original_profile.username) {
                                 validate_username(value).then((response) => {
-                                    const { code, message } =
-                                        response.data.status;
+                                    const { code, message } = response.data.status
                                     if (code === 0) {
-                                        // console.log("用户名验证成功");
-                                        resolve();
+                                        resolve()
                                     } else {
-                                        // console.log("用户名验证失败");
-                                        reject(message);
+                                        reject(message)
                                     }
-                                });
+                                })
                             } else {
-                                resolve();
+                                resolve()
                             }
-                        }).catch();
+                        })
                     },
                 },
                 {
-                    trigger: "blur",
+                    trigger: 'blur',
                     max: 16,
-                    message: "用户名长度上限为16字符",
+                    message: '用户名长度上限为 16 字符',
                 },
             ],
             email: [
                 {
-                    trigger: "blur",
+                    trigger: 'blur',
                     required: true,
-                    message: "请输入有效的电子邮件地址",
-                    type: "email",
+                    message: '请输入有效的电子邮件地址',
+                    type: 'email',
                 },
                 {
-                    trigger: "blur",
-                    message: "电子邮件地址已被占用",
+                    trigger: 'blur',
+                    message: '电子邮件地址已被占用',
                     validator: (rule, value) => {
                         return new Promise((resolve, reject) => {
-                            if (
-                                value.toUpperCase() !==
-                                state.original_profile.email.toUpperCase()
-                            ) {
+                            if (value.toUpperCase() !== state.original_profile.email.toUpperCase()) {
                                 validate_email(value).then((response) => {
-                                    const { code, message } =
-                                        response.data.status;
+                                    const { code, message } = response.data.status
                                     if (code === 0) {
-                                        // console.log("电子邮件验证成功");
-                                        resolve();
+                                        resolve()
                                     } else {
-                                        // console.log("电子邮件验证失败");
-                                        reject(message);
+                                        reject(message)
                                     }
-                                });
+                                })
                             } else {
-                                resolve();
+                                resolve()
                             }
-                        }).catch();
+                        }).catch()
                     },
                 },
             ],
             nickname: [
                 {
-                    trigger: "blur",
+                    trigger: 'blur',
                     required: false,
                     min: 1,
                     max: 16,
-                    type: "string",
-                    message: "昵称长度上限为16字符",
+                    type: 'string',
+                    message: '昵称长度上限为 16 字符',
                 },
             ],
-        });
+        })
 
         const onSubmit_profile = () => {
             validate_profile().then(() => {
-                const form = toRaw(modelRef_profile);
-                const user = {};
-                Object.keys(form).forEach((key) => {
-                    if (
-                        form[key] &&
-                        form[key] !== state.original_profile[key]
-                    ) {
-                        user[key] = form[key];
-                    }
-                });
+                const form = toRaw(modelRef_profile)
+                const user = {}
+                assignWith(user, form, (objValue, srcValue, key) => {
+                    return srcValue && srcValue !== state.original_profile[key] ? srcValue : null
+                })
                 if (user.length === 0) {
-                    return;
+                    return
                 }
                 edit_user_profile(user)
                     .then((response) => {
+                        update()
                         if (response.data.status.code === 0) {
                             // 修改成功
-                            notification["success"]({
-                                message: "成功",
-                                description: "您的个人信息现已更新。",
-                            });
+                            notification['success']({
+                                message: '成功',
+                                description: '您的个人信息现已更新。',
+                            })
                             // 更新本地用户信息
-                            store.dispatch("UPDATE_USER_INFO");
+                            store.dispatch('UPDATE_USER_INFO')
                         } else {
-                            // console.log(response.data);
-                            notification["error"]({
-                                message: "您的修改个人信息请求出现错误",
-                                description:
-                                    "个人信息未被修改，因为" +
-                                    response.data.status.message +
-                                    "。",
-                            });
+                            notification['error']({
+                                message: '您的修改个人信息请求出现错误',
+                                description: `个人信息未被修改，因为${response.data.status.message}。`,
+                            })
                         }
                     })
-                    .catch();
-            });
-        };
+                    .catch()
+            })
+        }
 
         const onSubmit_password = () => {
             validate_password().then(() => {
-                const form = toRaw(modelRef_password);
-                change_password(form.old_password, form.new_password).then(
-                    (response) => {
-                        if (response.data.status.code === 0) {
-                            //修改密码成功
-                            // 修改成功
-                            notification["success"]({
-                                message: "成功",
-                                description:
-                                    "您的个人密码现已更新，请使用新密码重新登录。",
-                            });
-                            logout()
-                                .then((response) => {
-                                    if (response.data) {
-                                        // 退出成功
-                                        //退出成功
-                                        store.commit("SET_LOGOUT", true);
-                                        store.commit("CLEAR_USER_INFO");
-                                        store.commit("CLEAR_TOKEN");
-                                        $router.push("/login");
-                                    }
-                                })
-                                .catch();
-                        } else {
-                            // console.log(response.data);
-                            notification["error"]({
-                                message: "您的修改密码请求出现错误",
-                                description:
-                                    "您的密码未被修改，因为" +
-                                    response.data.status.message +
-                                    "。",
-                            });
-                        }
+                const form = toRaw(modelRef_password)
+                change_password(form.old_password, form.new_password).then((response) => {
+                    if (response.data.status.code === 0) {
+                        //修改密码成功
+                        // 修改成功
+                        notification['success']({
+                            message: '成功',
+                            description: '您的个人密码现已更新，请使用新密码重新登录。',
+                        })
+                        logout()
+                            .then((response) => {
+                                if (response.data) {
+                                    // 退出成功
+                                    //退出成功
+                                    store.commit('SET_LOGOUT', true)
+                                    store.commit('CLEAR_USER_INFO')
+                                    store.commit('CLEAR_TOKEN')
+                                    $router.push('/login')
+                                }
+                            })
+                            .catch()
+                    } else {
+                        notification['error']({
+                            message: '您的修改密码请求出现错误',
+                            description: `您的密码未被修改，因为${response.data.status.message}。`,
+                        })
                     }
-                );
-            });
-        };
+                })
+            })
+        }
 
         const onSubmit_delete = () => {
-            validate_delete().then(() => {
-                const form = toRaw(modelRef_delete);
-                delete_account(form.username, form.password)
-                    .then((response) => {
+            validate_delete()
+                .then(() => {
+                    const form = toRaw(modelRef_delete)
+                    delete_account(form.username, form.password).then((response) => {
                         if (response.data.status.code === 0) {
                             //删除成功
-                            store.commit("CLEAR_USER_INFO");
-                            store.commit("CLEAR_TOKEN");
-                            notification["success"]({
-                                message: "成功",
-                                description:
-                                    "用户" +
-                                    form.username +
-                                    "已删除，正在前往登录页面。",
-                            });
-                            $router.push("/login");
+                            store.commit('CLEAR_USER_INFO')
+                            store.commit('CLEAR_TOKEN')
+                            notification['success']({
+                                message: '成功',
+                                description: `用户 ${form.username} 已删除，正在前往登录页面。`,
+                            })
+                            $router.push('/login')
                         } else {
-                            notification["error"]({
-                                message: "您的删除账户请求出现错误",
-                                description:
-                                    "您的账户未被删除，因为" +
-                                    response.data.status.message +
-                                    "。",
-                            });
+                            notification['error']({
+                                message: '您的删除账户请求出现错误',
+                                description: `您的账户未被删除，因为${response.data.status.message}。`,
+                            })
                         }
                     })
-                    .catch();
-            });
-        };
+                })
+                .catch((_error) => {
+                    logger.warn(_error)
+                })
+        }
 
         const {
             resetFields: resetFields_profile,
             validate: validate_profile,
             validateInfos: validateInfos_profile,
-        } = useForm(modelRef_profile, rulesRef_profile);
+        } = Form.useForm(modelRef_profile, rulesRef_profile)
 
         const {
             resetFields: resetFields_password,
             validate: validate_password,
             validateInfos: validateInfos_password,
-        } = useForm(modelRef_password, rulesRef_password);
+        } = Form.useForm(modelRef_password, rulesRef_password)
 
         const {
             resetFields: resetFields_delete,
             validate: validate_delete,
             validateInfos: validateInfos_delete,
-        } = useForm(modelRef_delete, rulesRef_delete);
+        } = Form.useForm(modelRef_delete, rulesRef_delete)
 
         return {
             ...toRefs(state),
@@ -676,9 +647,11 @@ export default defineComponent({
             showModal,
             send_email,
             app_title,
-        };
+            dom_map,
+            logger,
+        }
     },
-});
+})
 </script>
 
 <style scoped></style>

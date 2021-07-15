@@ -1,5 +1,5 @@
-import axios from "@/request";
+import axios from '@/request'
 
 export function edit_dashboard(instruments) {
-    return axios.post("dashboard/edit", { instruments: instruments });
+    return axios.post('dashboard/edit', { instruments: instruments })
 }
