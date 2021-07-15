@@ -74,7 +74,7 @@
 <script>
 import { defineComponent, reactive, toRefs, computed, onMounted } from 'vue'
 import { CheckOutlined, EditOutlined } from '@ant-design/icons-vue'
-import { cloneDeep, throttle } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
 import { table_content } from '@/api/post/table_content'
 import { notification } from 'ant-design-vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -159,38 +159,31 @@ export default defineComponent({
             update()
         }
 
-        const updateTableName = throttle(
-            () => {
-                if (state.table_name !== state.editableStr) {
-                    if (state.editableStr.length === 0) {
-                        resetTableName()
-                        return
-                    }
-                    log.debug('更改表名')
-                    change_table(state.table_id, state.editableStr).then((response) => {
-                        if (response.data.status.code === 0) {
-                            state.table_name = cloneDeep(state.editableStr)
-                            notification['success']({
-                                message: '成功',
-                                description: `数据表的名称已变更为 ${state.editableStr}`,
-                            })
-                            update()
-                        } else {
-                            state.editableStr = cloneDeep(state.table_name)
-                            notification['error']({
-                                message: '错误',
-                                description: response.data.status.message,
-                            })
-                        }
-                    })
+        const updateTableName = () => {
+            if (state.table_name !== state.editableStr) {
+                if (state.editableStr.length === 0) {
+                    resetTableName()
+                    return
                 }
-            },
-            1000,
-            {
-                leading: true,
-                trailing: false,
+                log.debug('更改表名')
+                change_table(state.table_id, state.editableStr).then((response) => {
+                    if (response.data.status.code === 0) {
+                        state.table_name = cloneDeep(state.editableStr)
+                        notification['success']({
+                            message: '成功',
+                            description: `数据表的名称已变更为 ${state.editableStr}`,
+                        })
+                        update()
+                    } else {
+                        state.editableStr = cloneDeep(state.table_name)
+                        notification['error']({
+                            message: '错误',
+                            description: response.data.status.message,
+                        })
+                    }
+                })
             }
-        )
+        }
 
         //单元格编辑功能
         //计算数据表存储元素个数
