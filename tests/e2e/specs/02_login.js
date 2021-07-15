@@ -44,7 +44,10 @@ describe('登录：异常处理', () => {
 })
 
 describe('登录：正确路径', () => {
-    it('登录成功', function () {
+    it('登录并退出', function () {
         cy.login()
+        cy.get(`#${Cypress.config('dom_map').layout.dropdown}`).click()
+        cy.get(`#${Cypress.config('dom_map').layout.logout}`).click()
+        cy.contains('您已退出登录')
     })
 })

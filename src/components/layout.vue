@@ -38,7 +38,7 @@
                             <a-col :span="24">
                                 <div id="drop_down">
                                     <a-dropdown>
-                                        <a class="ant-dropdown-link" @click.prevent>
+                                        <a class="ant-dropdown-link" @click.prevent :id="dom_map.layout.dropdown">
                                             {{ $store.state.nickname ? $store.state.nickname : '未设置昵称' }}
                                             <DownOutlined />
                                         </a>
@@ -49,11 +49,11 @@
                                                     <strong>{{ $store.state.username }}</strong>
                                                 </a-menu-item>
                                                 <a-menu-divider />
-                                                <a-menu-item key="settings">
+                                                <a-menu-item key="settings" :id="dom_map.layout.settings">
                                                     <strong>设置</strong>
                                                 </a-menu-item>
                                                 <a-menu-divider />
-                                                <a-menu-item key="logout">
+                                                <a-menu-item key="logout" :id="dom_map.layout.logout">
                                                     <strong>退出登录</strong>
                                                 </a-menu-item>
                                             </a-menu>
@@ -91,6 +91,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { logout as logout_request } from '@/api/post/logout'
 import { icon_url } from '@/util/iconfont'
+import dom_map from '@/constant/dom_map'
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url, //图标,随时更新
@@ -235,6 +236,7 @@ export default defineComponent({
             onMenuClick,
             onOpenChange,
             handleClick,
+            dom_map,
         }
     },
 })
