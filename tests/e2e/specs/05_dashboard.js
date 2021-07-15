@@ -60,23 +60,27 @@ describe('编辑仪表盘', () => {
                 .children('.ant-card-actions')
                 .find(`#${Cypress.config('dom_map').dashboard.edit_instrument}`)
                 .click()
-            // 勾选并清空筛选值
-            cy.get(`#${Cypress.config('dom_map').dashboard.filter_checkbox}`).click()
-            cy.get('.ant-select-selection-overflow')
-                .children()
-                .find('.ant-select-selection-item-remove')
-                .each((i) => {
-                    cy.get(i).click()
-                })
-            cy.get('.ant-checkbox-checked').should('not.exist')
+            // 勾选并清空筛选值（慢）
+            // cy.get(`#${Cypress.config('dom_map').dashboard.filter_checkbox}`).click()
+            // cy.get('.ant-select-selection-overflow')
+            //     .children()
+            //     .find('.ant-select-selection-item-remove')
+            //     .each((i) => {
+            //         cy.get(i).click()
+            //     })
+            // cy.get('.ant-checkbox-checked').should('not.exist')
             cy.get(`#${Cypress.config('dom_map').dashboard.filter_checkbox}`).click()
             // 只删除一个筛选值
-            cy.get('.ant-select-selection-overflow').children().get('.ant-select-selection-item-remove').first().click()
+            cy.get('.ant-select-selection-overflow')
+                .children()
+                .first()
+                .find('.ant-select-selection-item-remove')
+                .click()
             cy.get('.ant-checkbox-checked').should('exist')
             cy.get(`#${Cypress.config('dom_map').dashboard.finish_edit_chart}`).click()
             cy.get(`#${Cypress.config('dom_map').dashboard.finish_edit_dashboard}`).click()
             // 保存编辑
-            cy.contains('成功')
+            cy.contains('已保存仪表盘')
         })
     })
 })

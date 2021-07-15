@@ -80,4 +80,9 @@ module.exports = {
         new_password: 'new_password',
         reset_button: 'reset_button',
     },
+    layout: {
+        dropdown: 'dropdown',
+        settings: 'settings',
+        logout: 'logout',
+    },
 }
