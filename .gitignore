@@ -29,3 +29,5 @@ package-lock.json
 
 # 测试报告
 /mochawesome-report/
+/report/*
+

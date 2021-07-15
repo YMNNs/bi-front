@@ -187,13 +187,8 @@
                         <template #title>
                             <strong>你确定要这么做吗？</strong>
                         </template>
-                        <a-alert
-                            message="注意"
-                            description="请认真阅读下面的说明，这非常重要。"
-                            type="error"
-                            show-icon
-                            banner
-                        >
+                        <a-alert description="请认真阅读下面的说明，这非常重要。" type="error" show-icon banner>
+                            <template #message><strong>注意</strong></template>
                             <template #icon><WarningOutlined /></template>
                         </a-alert>
                         <br />
@@ -603,8 +598,8 @@ export default defineComponent({
                             $router.push('/login')
                         } else {
                             notification['error']({
-                                message: '您的注销账户请求出现错误',
-                                description: `您的账户未被注销，因为${response.data.status.message}。`,
+                                message: '您的删除账户请求出现错误',
+                                description: `您的账户未被删除，因为${response.data.status.message}。`,
                             })
                         }
                     })
