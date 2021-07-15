@@ -39,7 +39,7 @@ describe('新建图表：正确路径', () => {
             cy.get(`#${Cypress.config('dom_map').new_chart.chart_type}`).click()
             cy.contains('折线图').click()
             cy.get(`#${Cypress.config('dom_map').new_chart.submit}`).click()
-            cy.contains('成功')
+            cy.contains('已创建图表')
         })
     })
 })
@@ -60,10 +60,10 @@ describe('查看图表', () => {
                 .clear()
                 .type(chart_info.name + '\n')
             cy.contains(chart_info.name)
-            cy.contains('已过滤')
-            // 清除过滤器
-            cy.get('.anticon-close').click()
-            cy.contains('已过滤').should('not.exist')
+            // cy.contains('已过滤')
+            // // 清除过滤器
+            // cy.get('.anticon-close').click()
+            // cy.contains('已过滤').should('not.exist')
         })
     })
 })
@@ -82,10 +82,14 @@ describe('编辑图表：正确路径', () => {
             }
             cy.contains(chart_info.name).click()
             cy.contains('编辑图表')
-            // 取消勾选
-            cy.get('.ant-tree-checkbox-checked').each((i) => {
-                cy.get(i).click()
-            })
+            if (el.indexOf(Cypress.config('dev_hostname')) >= 0) {
+                // 服务器
+            } else {
+                // 取消勾选
+                cy.get('.ant-tree-checkbox-checked').each((i) => {
+                    cy.get(i).click()
+                })
+            }
             // 勾选第一个维度和第一个指标
             cy.get('.ant-tree').each((i) => {
                 cy.get(i).children().first().children('.ant-tree-checkbox').click()

@@ -204,6 +204,7 @@ import { edit_chart } from '@/api/post/edit_chart'
 import { cloneDeep } from 'lodash-es'
 import dom_map from '@/constant/dom_map'
 import { view_dashboard } from '@/api/post/view_dashboard'
+import logger from '@/util/logger'
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url,
@@ -310,9 +311,11 @@ export default defineComponent({
             state.instrument_count = 0
             view_dashboard().then((response) => {
                 if (response.data.status.code === 0) {
-                    state.instrument_count = response.data.data.instruments.filter(
-                        (i) => i.chart_id === state.chart_id
-                    ).length
+                    logger.debug('仪表信息')
+                    logger.debug(response.data.data)
+                    state.instrument_count = response.data.data
+                        ? response.data.data.instruments.filter((i) => i.chart_id === state.chart_id).length
+                        : 0
                 }
             })
             view_chart(state.chart_id)
