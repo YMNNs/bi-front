@@ -412,7 +412,7 @@ export default defineComponent({
                                 delete i.select_keys
                             }
                             // 使用字符串
-                            i.selected_keys = JSON.parse(i.selected_keys)
+                            i.selected_keys = i.selected_keys ? JSON.parse(i.selected_keys) : []
                             if (i.dataId) {
                                 // 后端无法处理下划线，有驼峰优先用驼峰
                                 i.data_id = i.dataId
@@ -626,13 +626,13 @@ export default defineComponent({
                         message: '成功',
                         description: response.data.status.message,
                     })
-                    update()
                 } else {
                     notification['error']({
                         message: '错误',
                         description: response.data.status.message,
                     })
                 }
+                update()
             })
             state.edit = false
         }
