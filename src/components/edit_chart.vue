@@ -145,7 +145,7 @@
                                 <a-typography
                                     >保存后，与此图表关联的&nbsp;{{
                                         instrument_count
-                                    }}&nbsp;个仪表盘条目的筛选条件将被<strong>自动清除</strong>。</a-typography
+                                    }}&nbsp;个仪表盘条目将被<strong>自动删除</strong>。</a-typography
                                 >
                             </template>
                         </a-alert>
