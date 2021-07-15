@@ -624,7 +624,7 @@ export default defineComponent({
                 if (response.data.status.code === 0) {
                     notification['success']({
                         message: '成功',
-                        description: response.data.status.message,
+                        description: '已保存仪表盘',
                     })
                 } else {
                     notification['error']({
@@ -751,8 +751,11 @@ export default defineComponent({
             const state_instrument = state.instruments_display.find((i) => i.id === modelRef.editing_instrument.id)
             if (!state_instrument.selected_keys.elementEquals(modelRef.selected_keys_text)) {
                 log.debug('onSubmit_edit: 图表被修改')
-                // 被修改
-                state_instrument.selected_keys = cloneDeep(modelRef.selected_keys_text)
+                // 如果全选就清空
+                state_instrument.selected_keys =
+                    modelRef.selected_keys_text.length === modelRef.all_keys_text.length
+                        ? []
+                        : cloneDeep(modelRef.selected_keys_text)
                 // 创建新的数据
                 const new_data = cloneDeep(state.dataSources.find((i) => i.id === state_instrument.chart.data_id))
                 new_data.id = uniqueId() * -1

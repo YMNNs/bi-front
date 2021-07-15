@@ -97,7 +97,7 @@ describe('上传数据：正确路径', () => {
             .blur()
         cy.get(`#${Cypress.config('dom_map').new_data.keys_number}`)
             .click()
-            .type('Cement production\nGas flarinl\nGas fuel\nLiquid fuel\nSolid fuel')
+            .type('Cement production\nGas flarinl\nGas fuel\nLiquid fuel\nSolid fuel\n')
             .blur()
         cy.get(`#${Cypress.config('dom_map').new_data.submit}`).click()
         cy.contains('成功', { timeout: 3000 })
