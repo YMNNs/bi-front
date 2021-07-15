@@ -229,7 +229,7 @@ describe('删除账户：错误处理', () => {
                 .blur()
             cy.get(`#${Cypress.config('dom_map').profile.delete_password}`)
                 .clear()
-                .type(Cypress.config('valid_password'))
+                .type(Cypress.config('invalid_password'))
                 .blur()
             cy.get(`#${Cypress.config('dom_map').profile.confirm_delete_button}`).click()
             cy.contains('您的删除账户请求出现错误')
