@@ -622,18 +622,16 @@ export default defineComponent({
             edit_dashboard(request_data).then((response) => {
                 state.finishLoading = false
                 if (response.data.status.code === 0) {
-                    if (response.data.status.code === 0) {
-                        notification['success']({
-                            message: '成功',
-                            description: response.data.status.message,
-                        })
-                        update()
-                    } else {
-                        notification['error']({
-                            message: '错误',
-                            description: response.data.status.message,
-                        })
-                    }
+                    notification['success']({
+                        message: '成功',
+                        description: response.data.status.message,
+                    })
+                    update()
+                } else {
+                    notification['error']({
+                        message: '错误',
+                        description: response.data.status.message,
+                    })
                 }
             })
             state.edit = false
