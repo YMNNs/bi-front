@@ -108,7 +108,7 @@ export default defineComponent({
                     table_content(state.table_id, 10, current).then((response) => {
                         if (response.data.status.code === 0) {
                             response.data.data.table.dataSource.forEach((i) => {
-                                i.key = i.ranking
+                                i.key = i.ranking ? i.ranking : i.id
                             })
                             state.dataSource = response.data.data.table.dataSource
                         } else {
