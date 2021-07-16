@@ -167,7 +167,7 @@ export default defineComponent({
         })
 
         const limit = {
-            size: 100 * 1024 * 1024,
+            size: 1024 * 1024,
             type: ['application/vnd.ms-excel', 'text/csv'],
             postfix: 'csv',
         }
