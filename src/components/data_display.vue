@@ -142,7 +142,7 @@ export default defineComponent({
             table_content(state.table_id, 10, 1).then((response) => {
                 if (response.data.status.code === 0) {
                     response.data.data.table.dataSource.forEach((i) => {
-                        i.key = i.ranking
+                        i.key = i.ranking ? i.ranking : i.id
                     })
                     state.table_name = response.data.data.table.table_name
                     state.pagination.total = response.data.data.table.total
