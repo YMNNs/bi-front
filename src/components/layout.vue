@@ -204,7 +204,11 @@ export default defineComponent({
                         router.push('/login')
                     }
                 })
-                .catch()
+                .catch(() => {
+                    store.commit('SET_LOGOUT', true)
+                    store.commit('CLEAR_USER_INFO')
+                    store.commit('CLEAR_TOKEN')
+                })
         }
 
         const state = reactive({
