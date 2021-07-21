@@ -88,8 +88,16 @@
                                 <template class="ant-card-actions" #actions>
                                     <edit-outlined key="edit" @click="handleEdit(item.id)" />
                                     <a-popconfirm
+                                        :title="`此图表与 ${item.relatedDashboardItem} 个仪表盘条目关联。删除此图表后，关联的仪表盘条目将被一并删除且不可恢复。`"
+                                        @confirm="handleDelete(item.id)"
+                                        v-if="item.relatedDashboardItem > 0"
+                                    >
+                                        <DeleteOutlined key="delete" />
+                                    </a-popconfirm>
+                                    <a-popconfirm
                                         title="图表删除后将不可恢复，您确定要删除吗？"
                                         @confirm="handleDelete(item.id)"
+                                        v-else
                                     >
                                         <DeleteOutlined key="delete" />
                                     </a-popconfirm>
@@ -124,6 +132,7 @@ import { useRouter } from 'vue-router'
 import { cloneDeep } from 'lodash-es'
 import log from '@/util/logger'
 import dom_map from '@/constant/dom_map'
+import { view_dashboard } from '@/api/post/view_dashboard'
 
 const IconFont = createFromIconfontCN({
     scriptUrl: icon_url,
@@ -147,6 +156,7 @@ export default defineComponent({
             chartsDisplay: [],              // 展示图表
             searchQuery: '',                // 搜索词
             filter: 'last_update',          // 过滤器
+            dashboardData: []               // 仪表盘条目
         })
 
         const handleClickCard = () => {
@@ -171,17 +181,29 @@ export default defineComponent({
         }
 
         const update = () => {
-            all_charts().then((response) => {
+            all_charts().then(async (response) => {
                 if (response.data.status.code === 0) {
                     // 请求成功
                     state.quota = response.data.data.all_charts.quota
                     state.used = response.data.data.all_charts.charts.length
                     state.available = state.quota - state.used
                     state.charts = response.data.data.all_charts.charts
+                    await view_dashboard().then((response) => {
+                        if (response.data.status.code === 0 && response.data.data) {
+                            state.dashboardData = response.data.data.instruments
+                        }
+                    })
                     state.charts.forEach((chart) => {
                         const chart_ref = chart_types.find((i) => i.type_id === chart.type_id)
                         chart.icon_type = chart_ref.icon_type
                         chart.type_name = chart_ref.type_name
+                        if (state.dashboardData.length > 0) {
+                            chart.relatedDashboardItem = state.dashboardData.filter(
+                                (i) => i.chart_id === chart.id
+                            ).length
+                        } else {
+                            chart.relatedDashboardItem = 0
+                        }
                     })
                     state.chartsDisplay = cloneDeep(state.charts)
                     sortByTime()
